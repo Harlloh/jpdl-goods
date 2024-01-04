@@ -2,6 +2,8 @@ import React from "react";
 import Container from "../Container";
 import Link from "next/link";
 import { Redressed } from "next/font/google";
+import Image from "next/image";
+import CartCount from "./CartCount";
 
 const redressFont = Redressed({ subsets: ["latin"], weight: ["400"] });
 
@@ -11,16 +13,21 @@ export default function Navbar() {
       <div className="py-4 border-b-[1px]">
         <Container>
           <div className="flex items-center justify-between gap-3 md-gap-0">
-            <Link
-              href="/"
-              className={`${redressFont.className} font-bold text-2xl`}
-            >
-              E-Shop
-            </Link>
+            <span className="flex items-center gap-2">
+              <Image width={50} height={50} src="/logo.png" alt="logo" />
+              <Link
+                href="/"
+                className={`${redressFont.className} font-bold text-2xl`}
+              >
+                JPL GOODS
+              </Link>
+            </span>
             <div className="hidden md:block">Search</div>
             <div className="flex items-center gap-8 md:gap-12">
-              <div className="cartcoutn">CartCount</div>
-              <div className="usermenu">UseMenu</div>
+              <div className="cartcoutn">
+                <CartCount />
+              </div>
+              <div className="usermenu">UserMenu</div>
             </div>
           </div>
         </Container>
