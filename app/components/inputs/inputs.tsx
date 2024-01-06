@@ -12,7 +12,7 @@ interface InputProp {
   errors: FieldErrors;
 }
 
-const inputs: React.FC<InputProp> = ({
+const Inputs: React.FC<InputProp> = ({
   id,
   label,
   type,
@@ -36,11 +36,16 @@ const inputs: React.FC<InputProp> = ({
         }`}
         type={type}
       />
-      <label className="absolute " htmlFor={id}>
+      <label
+        className={`absolute cursor-text text-md duration-150 transform -translate-y-3 top-5 z-10 origin-[0] left-4 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4 ${
+          errors[id] ? "text-rose-500" : "text-slate-400"
+        }`}
+        htmlFor={id}
+      >
         {label}
       </label>
     </div>
   );
 };
 
-export default inputs;
+export default Inputs;
