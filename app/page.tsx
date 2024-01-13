@@ -2,13 +2,13 @@ import Container from "./components/Container";
 import Homebanner from "./components/Homebanner";
 // import Image from 'next/image'
 import ProductCard from "./components/Products/ProductCard";
-import Slides from "./components/slider/Slides";
 import { products } from "./utils/Product";
+import HeroSection from "./components/HeroSection";
 
 export default function Home() {
   return (
     <>
-      <Slides />
+      <HeroSection />
       <div className="p-8">
         <Container>
           <div>

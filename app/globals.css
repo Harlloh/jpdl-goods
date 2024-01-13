@@ -2,3 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+.herosection {
+  background: linear-gradient(rgba(0, 0, 0, 0.655), rgba(0, 0, 0, 0.704)),
+    url("../public/hero-image.jpg");
+  height: 80vh;
+  background-size: cover;
+  background-position: center center;
+}
