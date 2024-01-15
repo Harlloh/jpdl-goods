@@ -10,6 +10,7 @@ import ProductImage from "@/app/components/Products/ProductImage";
 import { useCart } from "@/hooks/useCartHook";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { truncateText } from "@/app/utils/TruncateText";
 
 interface ProductParams {
   products: any;
@@ -126,7 +127,7 @@ const ProductDetails: React.FC<ProductParams> = ({ products }) => {
 
       <div className="flex flex-col gap-1 text-slate-500 text-sm">
         <h2 className="text-3xl font-medium text-slate-700 text-3xl ">
-          {products?.name}
+          {truncateText(products?.name)}
         </h2>
 
         {/* RATING */}

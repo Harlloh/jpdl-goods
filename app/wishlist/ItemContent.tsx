@@ -7,17 +7,31 @@ import { truncateText } from "../utils/TruncateText";
 import SetQuantity from "../components/Products/SetQuantity";
 import Image from "next/image";
 import { useCart } from "@/hooks/useCartHook";
+import { ImageType } from "../admin/add-products/addProductForm";
+import { useRouter } from "next/navigation";
+import Button from "../components/Button";
+
+export type wishProductType = {
+  id: string;
+  name: string;
+  description: string;
+  category: string;
+  brand: string;
+  images: {
+    color: string;
+    colorCode: string;
+    image: string;
+  }[];
+  quantity: number;
+  price: number;
+};
 
 interface ProductContentProp {
-  item: cartProductType;
+  item: wishProductType;
 }
 
 const ItemContent: React.FC<ProductContentProp> = ({ item }) => {
-  const {
-    handleRemoveProductFromCart,
-    handleCartQtyIncrease,
-    handleCartQtyDecrease,
-  } = useCart();
+  const { handleRemoveProductFromWish } = useCart();
   // const handleQuantityDecrease = useCallback(() => {
   //   if (cartProduct.quantity === 1) {
   //     return;
@@ -41,17 +55,18 @@ const ItemContent: React.FC<ProductContentProp> = ({ item }) => {
   //     };
   //   });
   // }, [cartProduct]);
-  console.log(item, "cartItemsmmmmmm");
+  const router = useRouter();
+  console.log(item.images[0].image, "ZZZZZZZZZ");
 
   return (
-    <div className="grid grid-cols-5 text-xs md:text-sm gap-4 border-t-[1.5px] border-slate-20 py-4 items-center">
-      <div className="col-span-2 justify-self-start flex gap-2 md:gap-4">
+    <div className="grid grid-cols-4 text-xs md:text-sm gap-4 border-t-[1.5px] border-slate-20 py-4 items-center">
+      <div className="col-span-2 justify-self-start flex gap-2 md:gap-4 items-center">
         <Link href={`/product/${item.id}`}>
-          <div className="relative mx-[70px] aspect-square">
-            <Image
-              src={item.selectedImage?.image}
-              alt={item.name}
-              fill
+          {/* <p>{item.selectedImage.image}</p> */}
+          <div className="relative mx-[70px] aspect-square w-[100px]">
+            <img
+              src={item.images[0].image}
+              alt={truncateText(item.name)}
               className="object-contain"
             />
           </div>
@@ -59,20 +74,27 @@ const ItemContent: React.FC<ProductContentProp> = ({ item }) => {
 
         <div className="flex flex-col justify-between">
           <Link href={`/product/${item.id}`}> {truncateText(item.name)}</Link>
-          <div>{item.selectedImage?.color}</div>
-          <div className="w-[70px] ">
-            {" "}
-            <button
-              className="text-slate-500 underline"
-              onClick={() => handleRemoveProductFromCart(item)}
-            >
-              Remove
-            </button>
-          </div>
+          {/* <div>{item.selectedImage.color}</div> */}
         </div>
       </div>
-      <div className="justify-self-center">{formatPrice(item.price)}</div>
-      <div className="justify-self-center">
+      <div className="flex gap-4 items-center text-sm sm:flex-col">
+        <Button
+          lable="view product"
+          small
+          outline
+          handleClick={() => router.push(`/product/${item.id}`)}
+        />
+        <Button
+          lable="remove from wishlist"
+          small
+          outline
+          handleClick={() => handleRemoveProductFromWish(item)}
+        />
+      </div>
+      <div className="justify-self-end font-semibold">
+        {formatPrice(item.price)}
+      </div>
+      {/* <div className="justify-self-center">
         <SetQuantity
           cartProduct={item}
           cartCounter
@@ -82,7 +104,7 @@ const ItemContent: React.FC<ProductContentProp> = ({ item }) => {
       </div>
       <div className="justify-self-end font-semibold">
         {formatPrice(item.price * item.quantity)}
-      </div>
+      </div> */}
     </div>
   );
 };

@@ -9,3 +9,9 @@
   background-size: cover;
   background-position: center center;
 }
+.featured_product {
+  background: linear-gradient(rgba(0, 0, 0, 0.655), rgba(0, 0, 0, 0.704)),
+    url("../public/hero-image.jpg");
+  background-size: cover;
+  background-position: center center;
+}

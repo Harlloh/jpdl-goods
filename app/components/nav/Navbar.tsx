@@ -6,6 +6,8 @@ import Image from "next/image";
 import CartCount from "./CartCount";
 import UserMenu from "./UserMenu";
 import getCurrentUser from "@/hooks/useGetCurrentUser";
+import WishCount from "./WishCount";
+import SearchBar from "./SearcBar";
 
 const redressFont = Redressed({ subsets: ["latin"], weight: ["400"] });
 
@@ -17,16 +19,26 @@ export default function Navbar() {
         <Container>
           <div className="flex items-center justify-between gap-3 md-gap-0">
             <span className="flex items-center gap-2">
-              <Image width={50} height={50} src="/logo.png" alt="logo" />
               <Link
                 href="/"
-                className={`${redressFont.className} font-bold text-2xl`}
+                className={`${redressFont.className} font-bold text-6xl `}
               >
-                JPL GOODS
+                <Image
+                  width={50}
+                  height={50}
+                  src="/jpdllogo.png"
+                  alt="logo"
+                  className="w-[100px]"
+                />
               </Link>
             </span>
-            <div className="hidden md:block">Search</div>
+            <div className="hidden md:block">
+              <SearchBar />
+            </div>
             <div className="flex items-center gap-8 md:gap-12">
+              <div className="cartcoutn">
+                <WishCount />
+              </div>
               <div className="cartcoutn">
                 <CartCount />
               </div>

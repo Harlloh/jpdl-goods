@@ -5,7 +5,8 @@ import { FaShoppingBag, FaShoppingCart } from "react-icons/fa";
 import { CiShoppingCart } from "react-icons/ci";
 
 function CartCount() {
-  const { cartTotalQty } = useCart();
+  const { cartTotalQty, cartTotalAmount } = useCart();
+  console.log(cartTotalQty, cartTotalAmount);
   const router = useRouter();
   return (
     <div

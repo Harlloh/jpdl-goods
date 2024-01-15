@@ -1,4 +1,5 @@
 import { cartProductType } from "@/app/product/[productId]/ProductDetails";
+import { wishProductType } from "@/app/wishlist/ItemContent";
 import {
   createContext,
   useCallback,
@@ -11,13 +12,19 @@ import { toast } from "react-hot-toast";
 //create the context and pass the value you want to be accessible to all component
 type cartContextType = {
   cartTotalQty: number;
+  wishTotalQty: number;
   cartTotalAmount: number;
+  wishTotalAmount: number;
   cartProducts: cartProductType[] | null;
+  wishProducts: cartProductType[] | null;
   handleAddProductToCart: (product: cartProductType) => void;
+  handleAddProductToWish: (product: cartProductType) => void;
   handleRemoveProductFromCart: (product: cartProductType) => void;
+  handleRemoveProductFromWish: (product: wishProductType) => void;
   handleCartQtyIncrease: (product: cartProductType) => void;
   handleCartQtyDecrease: (product: cartProductType) => void;
   handleClearCart: () => void;
+  handleClearWish: () => void;
 };
 export const cartContext = createContext<cartContextType | null>(null);
 
@@ -28,23 +35,36 @@ interface PropsType {
 
 export const CartContextProvider = (props: PropsType) => {
   const [cartTotalQty, setCartTotalQty] = useState(0);
+  const [wishTotalQty, setWishTotalQty] = useState(0);
   const [cartTotalAmount, setCartTotalAmount] = useState(0);
+  const [wishTotalAmount, setWishTotalAmount] = useState(0);
   const [cartProducts, setCartProducts] = useState<cartProductType[] | null>(
     null
   );
+  const [wishProducts, setWishProducts] = useState<cartProductType[] | null>(
+    null
+  );
 
-  console.log(cartTotalAmount, cartTotalQty);
+  console.log(cartTotalAmount, cartTotalQty, "faksdflsdkfsdk");
 
   useEffect(() => {
     const cartItems: any = localStorage.getItem("cartItems");
+    const wishItems: any = localStorage.getItem("wishItems");
     const cProducts: cartProductType[] | null = JSON.parse(cartItems);
+    const wProducts: cartProductType[] | null = JSON.parse(wishItems);
 
     setCartProducts(cProducts);
+    setWishProducts(wProducts);
   }, []);
+  console.log(wishTotalQty, "wishproduct");
+  console.log(cartTotalQty, "cartproduct");
+  console.log(cartProducts, "cartproduct");
+  console.log(wishProducts, "wishproduct");
 
   useEffect(() => {
     const getTotals = () => {
       if (cartProducts) {
+        console.log(cartProducts, "this is the cart products in useeffect");
         const { total, qty } = cartProducts?.reduce(
           (accumulator, item) => {
             const itemTotal = item.price * item.quantity;
@@ -59,6 +79,26 @@ export const CartContextProvider = (props: PropsType) => {
         );
         setCartTotalQty(qty);
         setCartTotalAmount(total);
+      }
+      if (wishProducts) {
+        const { total, qty } = wishProducts?.reduce(
+          (accumulator, item) => {
+            const itemTotal = item.price * item.quantity;
+
+            accumulator.total += itemTotal;
+
+            accumulator.qty += item.quantity;
+
+            return accumulator;
+          },
+          { total: 0, qty: 0 }
+        );
+        setWishTotalQty(qty);
+        setWishTotalAmount(total);
+      } else {
+        // If wishProducts is null or undefined, set wishTotalQty and wishTotalAmount to 0
+        setWishTotalQty(0);
+        setWishTotalAmount(0);
       }
     };
     getTotals();
@@ -78,6 +118,20 @@ export const CartContextProvider = (props: PropsType) => {
     });
   }, []);
 
+  const handleAddProductToWish = useCallback((product: cartProductType) => {
+    setWishProducts((prev) => {
+      let updateWish;
+      if (prev) {
+        updateWish = [...prev, product];
+      } else {
+        updateWish = [product];
+      }
+      toast.success("Items added to wishlist!");
+      localStorage.setItem("wishItems", JSON.stringify(updateWish));
+      return updateWish;
+    });
+  }, []);
+
   const handleRemoveProductFromCart = useCallback(
     (product: cartProductType) => {
       if (cartProducts) {
@@ -90,6 +144,19 @@ export const CartContextProvider = (props: PropsType) => {
       }
     },
     [cartProducts]
+  );
+  const handleRemoveProductFromWish = useCallback(
+    (product: wishProductType) => {
+      if (wishProducts) {
+        const filteredProduct = wishProducts.filter((item) => {
+          return item.id !== product.id;
+        });
+        setWishProducts(filteredProduct);
+        toast.success("products removed from wish!");
+        localStorage.setItem("wishItems", JSON.stringify(filteredProduct));
+      }
+    },
+    [wishProducts]
   );
 
   const handleCartQtyIncrease = useCallback(
@@ -142,15 +209,27 @@ export const CartContextProvider = (props: PropsType) => {
     localStorage.removeItem("cartItems");
   }, [cartProducts]);
 
+  const handleClearWish = useCallback(() => {
+    setWishProducts(null);
+    setWishTotalQty(0);
+    localStorage.removeItem("wishItems");
+  }, [wishProducts]);
+
   const value = {
     cartTotalQty,
+    wishTotalQty,
     cartTotalAmount,
+    wishTotalAmount,
     cartProducts,
+    wishProducts,
     handleAddProductToCart,
+    handleAddProductToWish,
     handleRemoveProductFromCart,
+    handleRemoveProductFromWish,
     handleCartQtyIncrease,
     handleCartQtyDecrease,
     handleClearCart,
+    handleClearWish,
   };
   return <cartContext.Provider value={value} {...props} />;
 };

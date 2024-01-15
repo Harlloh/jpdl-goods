@@ -29,6 +29,7 @@ function CartClient() {
       </div>
     );
   }
+  console.log(cartTotalAmount, "asdflasdfsdfjkasdfjk");
   return (
     <div>
       <Heading title="Shopping Cart" center />
