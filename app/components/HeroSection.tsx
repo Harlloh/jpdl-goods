@@ -9,7 +9,7 @@ function HeroSection() {
   return (
     <section className="herosection flex flex-col items-end justify-center text-white p-8 text-2xl  gap-3">
       <h1 className="text-3xl">Discover the Latest</h1>
-      <span className="bg-teal-700 px-4 py-2 rounded font-semibold text-5xl">
+      <span className="bg-teal-700 px-4 py-2 rounded font-semibold text-5xl text-orange-400">
         Home Appliance
       </span>
       <h1 className="text-3xl">Collections</h1>
