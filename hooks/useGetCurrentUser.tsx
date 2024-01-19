@@ -1,3 +1,5 @@
 export default function getCurrentUser() {
-  return true;
+  return {
+    role: 'ADMIN'
+  };
 }

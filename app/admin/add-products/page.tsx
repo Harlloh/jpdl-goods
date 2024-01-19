@@ -11,7 +11,7 @@ async function AddProducts() {
   //   return <NullData title="Oops access denied" />;
   // }
   return (
-    <div className="p-8">
+    <div className="px-8 py-0">
       <Container>
         <FormWrap>
           <AddProductForm />

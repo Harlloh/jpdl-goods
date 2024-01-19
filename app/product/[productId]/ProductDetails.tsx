@@ -11,6 +11,7 @@ import { useCart } from "@/hooks/useCartHook";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { truncateText } from "@/app/utils/TruncateText";
+import { formatPrice } from "@/app/utils/formatPrice";
 
 interface ProductParams {
   products: any;
@@ -150,6 +151,17 @@ const ProductDetails: React.FC<ProductParams> = ({ products }) => {
         <div>
           <span className="font-semibold">BRAND: </span>
           {products.brand}
+        </div>
+        <div>
+          <span className=" flex items-center gap-2">
+            
+          <p className="font-semibold">
+          PRICE:
+          </p>
+          <p className="font-bold text-orange-500">
+          {formatPrice(products.price)}
+          </p>
+             </span>
         </div>
 
         <div className={products.inStock ? "text-teal-400" : "text-rose-400"}>

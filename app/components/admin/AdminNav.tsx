@@ -2,7 +2,7 @@
 import Link from "next/link";
 import Container from "../Container";
 import AdminNavItem from "./AdminNavItem";
-import { FaClipboardList } from "react-icons/fa";
+import { FaClipboardList, FaUser } from "react-icons/fa";
 import { usePathname } from "next/navigation";
 import { MdLibraryAdd, MdDns, MdFormatListBulleted } from "react-icons/md";
 
@@ -38,6 +38,13 @@ function AdminNav() {
               label="Manage Orders"
               icon={MdFormatListBulleted}
               selected={pathName === "/admin/manage-orders"}
+            />
+          </Link>
+          <Link href={"/admin/manage-users"}>
+            <AdminNavItem
+              label="Manage Users"
+              icon={FaUser}
+              selected={pathName === "/admin/manage-users"}
             />
           </Link>
         </div>

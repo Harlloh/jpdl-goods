@@ -22,6 +22,8 @@ import {
 } from "firebase/storage";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import useAddCategory from "@/hooks/useCreateCategory";
+import { AiOutlinePlusCircle } from "react-icons/ai";
 
 export type ImageType = {
   color: string;
@@ -36,7 +38,10 @@ export type UploadedImageType = {
 };
 
 function AddProductForm() {
+  const [selectedImages, setSelectedImages] = useState<ImageType[]>([]);
+  const { isAddingCategory, error, addCategory, startAddingCategory, stopAddingCategory } = useAddCategory();
   const [isLoading, setIsLoading] = useState(false);
+  const [newCategory, setNewCategory] = useState('');
   const [images, setImages] = useState<ImageType[] | null>();
   const [isProductCreated, setIsProductCreated] = useState(false);
   const router = useRouter();
@@ -197,7 +202,9 @@ function AddProductForm() {
       if (!prev) {
         return [value];
       }
-      return [...prev, value];
+      const updatedImages = [...prev, value];
+      setSelectedImages(updatedImages);
+      return updatedImages;
     });
   }, []);
 
@@ -207,11 +214,16 @@ function AddProductForm() {
         const filteredImages = prev.filter((item) => {
           return item.color !== value.color;
         });
+        setSelectedImages(filteredImages);
         return filteredImages.length > 0 ? filteredImages : null;
       }
       return prev;
     });
   }, []);
+
+  const handleCreateCategory = () =>{
+    addCategory(newCategory)
+  }
 
   return (
     <>
@@ -274,6 +286,47 @@ function AddProductForm() {
             );
           })}
         </div>
+         {/* Button to add a new category */}
+      <button
+        className="flex mt-3 p-2 text-sm text-white bg-teal-900 rounded hover:bg-green-600"
+        onClick={startAddingCategory}
+      >
+        <AiOutlinePlusCircle size={20} />
+        Add New Category
+      </button>
+      {isAddingCategory && (
+        <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-700 bg-opacity-75">
+          <div className="bg-white p-4 rounded shadow-md">
+            <form
+              onSubmit={handleCreateCategory}
+            >
+              <label htmlFor="newCategory">New Category:</label>
+              <input
+                type="text"
+                id="newCategory"
+                value={newCategory}
+                onChange={(e)=> setNewCategory(e.target.value)}
+                name="newCategory"
+                required
+                className="border rounded p-1"
+              />
+              <button
+                type="submit"
+                className="bg-teal-800 text-white rounded p-2 ml-2"
+              >
+                Add Category
+              </button>
+            </form>
+            <button
+              onClick={stopAddingCategory}
+              className="text-white-600 hover:text-white-800 border p-2 bg-orange-700 text-white"
+            >
+              Cancel
+            </button>
+            {error && <p className="text-red-500">{error}</p>}
+          </div>
+        </div>
+      )}
       </div>
       <div className="w-full flex flex flex-wrap gap-4">
         <div className="font-bold">
@@ -296,6 +349,21 @@ function AddProductForm() {
               />
             );
           })}
+          {selectedImages && selectedImages.length > 0 && (
+            <div className="mb-4">
+              <div className="font-bold mb-2">Selected Images Preview:</div>
+              <div className="flex gap-2">
+                {selectedImages.map((image, index) => (
+                  <img
+                    key={index}
+                    src={URL.createObjectURL(image.image as Blob)}
+                    alt={image.color}
+                    className="w-12 h-12 object-cover rounded-full border border-gray-300"
+                  />
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
       <Button
