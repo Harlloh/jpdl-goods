@@ -6,6 +6,7 @@ import { products } from "./utils/Product";
 import HeroSection from "./components/HeroSection";
 import ShopCategories from "./components/ShopCategories";
 import getShopCategories from "@/hooks/getShopCategories";
+import FeaturedProduct from "./components/FeaturedProducts";
 
 export default async function Home() {
   let displayedProductsCache = null;
@@ -39,23 +40,16 @@ export default async function Home() {
       <HeroSection />
       <div className="p-0">
         <Container>
-          <div>
-            {/* <Homebanner /> */}
+          <div className="mb-9">
             <ShopCategories categories={categories} />
+            <Homebanner />
           </div>
+          <FeaturedProduct displayedProducts={shuffledProductsssss} type="newArrival" />
+          <FeaturedProduct displayedProducts={shuffledProductsssss} type="mostPopular" />
+          <FeaturedProduct displayedProducts={shuffledProductsssss} type="featured" />
+
         </Container>
-        <section className="mt-9 bg-teal-800 py-5 featured_product bg-opacity-40">
-          <Container>
-            <h1 className="text-start text-white font-semibold text-4xl mb-6">
-              Featured Products
-            </h1>
-            <div className=" grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-8">
-              {displayedProducts.map((product: any) => {
-                return <ProductCard key={product.id} data={product} />;
-              })}
-            </div>
-          </Container>
-        </section>
+
       </div>
     </>
   );

@@ -1,17 +1,18 @@
 // useAddCategory.js
 import { useState } from "react";
 import axios from "axios";
+import { EventType } from "react-hook-form";
 
 const useAddCategory = () => {
   const [isAddingCategory, setIsAddingCategory] = useState(false);
   const [error, setError] = useState(null);
 
-  const addCategory = async (newCategory:string) => {
+  const addCategory = async (e:React.FormEvent,newCategory:string) => {
+    e.preventDefault()
     try {
       setIsAddingCategory(true);
       console.log(newCategory)
       // Make a POST request to your server to add the new category
-      debugger
       const response = await axios.post("/api/add-category", {
         category: newCategory,
       });
