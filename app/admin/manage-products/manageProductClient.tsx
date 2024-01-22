@@ -1,6 +1,6 @@
 "use client";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { formatPrice } from "../../utils/formatPrice";
 import Heading from "@/app/components/Heading";
 import Status from "@/app/components/Status";
@@ -17,27 +17,50 @@ import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { deleteObject, getStorage, ref } from "firebase/storage";
 import firebaseApp from "@/libs/firebase";
+import { useCart } from "@/hooks/useCartHook";
+import NullData from "@/app/components/NullData";
+import getAllProducts from "@/hooks/useGetProducts";
 interface ManageProductClientProps {
   products: any[];
 }
 
-const ManageProductClient:React.FC<ManageProductClientProps> = ({products}) => {
+const ManageProductClient = () => {
+
+
+    const [products,setProducts] = useState([])
+    useEffect(()=>{
+        const fetchProduct = async()=>{
+            const product =await getAllProducts()
+            setProducts(product)
+        }
+        fetchProduct()
+    },[])
+
+
+
+
+
+
+    const {userToken} = useCart()
+    const storedisAdmin = (localStorage.getItem('isAdmin'))
+    const isAdmin = storedisAdmin ? atob(storedisAdmin) : null
+  
     const router = useRouter();
     const storage = getStorage(firebaseApp);
     let rows: any = [];
     if (products) {
-        rows = products.map((product:any) => {
-            return {
-                id: product.id,
-                name: product.name,
-                price: formatPrice(product.price),
-                category: product.category,
-                brand: product.brand,
-                inStock: product.inStock,
-                images: product.images,
-            };
+        rows = products.map((product: any) => {
+          return {
+            id: product._id,  // Use the appropriate property as the unique identifier
+            name: product.name,
+            price: formatPrice(product.price),
+            category: product.category.name,
+            brand: product.brand,
+            inStock: product.inStock,
+            images: product.images,
+          };
         });
-    }
+      }
     const columns: GridColDef[] = [
         { field: "id", headerName: "ID", width: 220 },
         { field: "name", headerName: "Name", width: 220 },
@@ -151,6 +174,12 @@ const ManageProductClient:React.FC<ManageProductClientProps> = ({products}) => {
                 console.log(error, "error");
             });
     }, []);
+
+
+    if (!isAdmin) {
+      return <NullData title="Oops access denied" />;
+    }
+
 
     return (
         <div className="max-w-[1150px] m-auto text-xl">

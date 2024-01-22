@@ -2,19 +2,24 @@
 import { useState } from "react";
 import axios from "axios";
 import { EventType } from "react-hook-form";
+import { useCart } from "./useCartHook";
 
 const useAddCategory = () => {
   const [isAddingCategory, setIsAddingCategory] = useState(false);
   const [error, setError] = useState(null);
+  const userToken = localStorage.getItem('user')
 
-  const addCategory = async (e:React.FormEvent,newCategory:string) => {
-    e.preventDefault()
+  const addCategory = async (newCategory:string) => {
     try {
       setIsAddingCategory(true);
       console.log(newCategory)
       // Make a POST request to your server to add the new category
-      const response = await axios.post("/api/add-category", {
-        category: newCategory,
+      const response = await axios.post("https://store-api-pyo1.onrender.com/category/create", {
+        name: newCategory,
+      },{
+        headers:{
+          'Authorization': userToken
+        }
       });
 
       // Handle the response as needed

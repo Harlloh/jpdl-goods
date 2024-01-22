@@ -42,7 +42,9 @@ const ProductDetails: React.FC<ProductParams> = ({ products }) => {
   const router = useRouter();
   const { handleAddProductToCart, cartProducts } = useCart();
   const [isProductInCart, setIsProductInCart] = useState(false);
-  const productRating = products.reviews.length;
+  console.log(products.reviews?.length)
+  debugger
+  const productRating = products.length > 0 ? products?.reviews?.length : null
 
   const [cartProduct, setCartProduct] = useState<cartProductType>({
     id: products.id,

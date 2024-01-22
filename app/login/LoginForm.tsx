@@ -7,13 +7,18 @@ import Button from "../components/Button";
 import Link from "next/link";
 import { AiOutlineGoogle } from "react-icons/ai";
 import { useRouter } from "next/navigation";
-interface LoginFormProps {
-  currentUser: any;
-}
+import { useCart } from "@/hooks/useCartHook";
+import toast from "react-hot-toast";
 
-const LoginForm: React.FC<LoginFormProps> = ({ currentUser }) => {
+
+const LoginForm = () => {
+  const {userToken} = useCart() 
+
+  const currentUser = userToken;
+
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const {handleSignIn,userData} = useCart()
   const {
     register,
     handleSubmit,
@@ -36,9 +41,20 @@ const LoginForm: React.FC<LoginFormProps> = ({ currentUser }) => {
     return <p className="text-center">Logged in. Redirecting</p>;
   }
 
-  const onSubmit: SubmitHandler<FieldValues> = (data: any) => {
-    setIsLoading(true);
-    console.log(data);
+  const onSubmit: SubmitHandler<FieldValues> = async (data: any) => {
+    try {
+      setIsLoading(true);
+      await handleSignIn(data);
+      console.log(data);      
+      router.push("/"); // Redirect to login after signup
+    } catch (error:any) {
+      toast.error('Something went wrong')
+      // Handle signup error, show an error message, etc.
+    } finally {
+      setIsLoading(false);
+    }
+
+    console.log(userData, 'asdfkksdfbiasdfu')
   };
 
   return (

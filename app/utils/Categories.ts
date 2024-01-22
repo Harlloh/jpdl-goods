@@ -30,4 +30,8 @@ export const Categories = [
     label: "Accessories",
     icon: MdOutlineKeyboard,
   },
+  {
+    label: "Accessories",
+    icon: MdOutlineKeyboard,
+  },
 ];

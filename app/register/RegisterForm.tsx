@@ -7,21 +7,25 @@ import Button from "../components/Button";
 import Link from "next/link";
 import { AiOutlineGoogle } from "react-icons/ai";
 import { useRouter } from "next/navigation";
+import { useCart } from "@/hooks/useCartHook";
+import toast from "react-hot-toast";
 
-interface RegisterFormProps {
-  currentUser: any;
-}
 
-const RegisterForm: React.FC<RegisterFormProps> = ({ currentUser }) => {
+
+const RegisterForm= () => {
+  const currentUser = localStorage.getItem('user');
+
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const {handleSignUp} = useCart()
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<FieldValues>({
     defaultValues: {
-      name: "",
+      first_name: "",
+      last_name: "",
       email: "",
       password: "",
     },
@@ -36,9 +40,19 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ currentUser }) => {
     return <p className="text-center">Logged in. Redirecting</p>;
   }
 
-  const onSubmit: SubmitHandler<FieldValues> = (data: any) => {
-    setIsLoading(true);
-    console.log(data);
+  const onSubmit: SubmitHandler<FieldValues> = async (data: any) => {
+    try {
+      setIsLoading(true);
+      await handleSignUp(data);
+      console.log(data);
+      // Optionally, perform any other actions upon successful signup
+      router.push("/login"); // Redirect to login after signup
+    } catch (error:any) {
+      toast.error('Something went wrong')
+      // Handle signup error, show an error message, etc.
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -52,8 +66,17 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ currentUser }) => {
       />
       <hr className="bg-slate-300 w-full h-px" />
       <Inputs
-        id="name"
-        label="Name"
+        id="first_name"
+        label="First Name"
+        disabled={isLoading}
+        register={register}
+        errors={errors}
+        required
+        type="text"
+      />
+      <Inputs
+        id="last_name"
+        label="Last Name"
         disabled={isLoading}
         register={register}
         errors={errors}

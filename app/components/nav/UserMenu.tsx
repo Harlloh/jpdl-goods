@@ -5,20 +5,27 @@ import { AiFillCaretDown } from "react-icons/ai";
 import Link from "next/link";
 import MenuItem from "./MenuItem";
 import Backdrop from "./Backdrop";
+import { useCart } from "@/hooks/useCartHook";
+import { type } from "os";
 // import { signOut } from "next-auth/react";
 
-interface UserMenuProps {
-  currentUser: any | null;
-}
 
-const UserMenu: React.FC<UserMenuProps> = ({ currentUser }) => {
+const UserMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const userToken = localStorage.getItem('user') 
+  const storedAdmin = localStorage.getItem('isAdmin')
+  const isAdmin = storedAdmin ? atob(storedAdmin) === 'true' : false
+
+
+  const currentUser = userToken;
+
   const toggleOpen = useCallback(() => {
     setIsOpen((prev) => !prev);
   }, []);
+  const {handleLogOut} = useCart()
 
   const signOut = () => {
-    console.log("signout");
+    handleLogOut()
   };
   return (
     <>
@@ -37,7 +44,7 @@ const UserMenu: React.FC<UserMenuProps> = ({ currentUser }) => {
                 <Link href="/order">
                   <MenuItem onClick={toggleOpen}>Your Orders</MenuItem>
                 </Link>
-                <Link href="/admin">
+                <Link href="/admin" className={`${isAdmin ? 'flex' : 'hidden'}`}>
                   <MenuItem onClick={toggleOpen}>Admin Dashboard</MenuItem>
                 </Link>
                 <hr />

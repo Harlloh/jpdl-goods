@@ -6,7 +6,6 @@ import { CiShoppingCart } from "react-icons/ci";
 
 function CartCount() {
   const { cartTotalQty, cartTotalAmount } = useCart();
-  console.log(cartTotalQty, cartTotalAmount);
   const router = useRouter();
   return (
     <div

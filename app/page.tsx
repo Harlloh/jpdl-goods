@@ -10,7 +10,6 @@ import FeaturedProduct from "./components/FeaturedProducts";
 
 export default async function Home() {
   let displayedProductsCache = null;
-  const categories = getShopCategories();
 
   //Fisher-Yates shuffle algorithm
   function randomize(values: any) {
@@ -41,7 +40,7 @@ export default async function Home() {
       <div className="p-0">
         <Container>
           <div className="mb-9">
-            <ShopCategories categories={categories} />
+            <ShopCategories  />
             <Homebanner />
           </div>
           <FeaturedProduct displayedProducts={shuffledProductsssss} type="newArrival" />

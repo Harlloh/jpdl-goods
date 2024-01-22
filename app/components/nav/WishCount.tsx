@@ -6,11 +6,9 @@ import { CiHeart, CiShoppingCart } from "react-icons/ci";
 
 function WishCount() {
   const { wishTotalQty, wishProducts } = useCart();
-  console.log(wishTotalQty);
 
   const router = useRouter();
   const wishCount = wishProducts?.length ?? 0;
-  console.log(wishCount, "wishCount");
   return (
     <div
       className="cursor-pointer relative"

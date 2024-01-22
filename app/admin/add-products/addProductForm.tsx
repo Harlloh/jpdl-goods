@@ -24,6 +24,9 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import useAddCategory from "@/hooks/useCreateCategory";
 import { AiOutlinePlusCircle } from "react-icons/ai";
+import { useCart } from "@/hooks/useCartHook";
+import NullData from "@/app/components/NullData";
+import getShopCategories from "@/hooks/getShopCategories";
 
 export type ImageType = {
   color: string;
@@ -38,6 +41,7 @@ export type UploadedImageType = {
 };
 
 function AddProductForm() {
+
   const [selectedImages, setSelectedImages] = useState<ImageType[]>([]);
   const { isAddingCategory, error, addCategory, startAddingCategory, stopAddingCategory } = useAddCategory();
   const [isLoading, setIsLoading] = useState(false);
@@ -45,6 +49,15 @@ function AddProductForm() {
   const [images, setImages] = useState<ImageType[] | null>();
   const [isProductCreated, setIsProductCreated] = useState(false);
   const router = useRouter();
+  const storedisAdmin = (localStorage.getItem('isAdmin'))
+  const isAdmin = storedisAdmin ? atob(storedisAdmin) : null
+  const userToken = localStorage.getItem('user')
+  const [categories,setCategories] = useState([])
+
+    if (!isAdmin) {
+      console.log(isAdmin,'ksadfkjds')
+    return <NullData title="Oops access denied" />;
+  }
 
   const {
     register,
@@ -86,6 +99,10 @@ function AddProductForm() {
 
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     console.log(data, "data");
+   data.price = parseFloat(data.price as string);
+
+
+
     //upload images to firebase
 
     //save product to mongodb
@@ -181,7 +198,11 @@ function AddProductForm() {
     //MAKE THE POST REQUEST
     //pending create product api
     axios
-      .post("/api/product", productData)
+      .post("https://store-api-pyo1.onrender.com/product/create", productData,{
+        headers:{
+          'Authorization': userToken
+        }
+      })
       .then(() => {
         toast.success("Product Added successfully");
         setIsProductCreated(true);
@@ -221,9 +242,29 @@ function AddProductForm() {
     });
   }, []);
 
-  const handleCreateCategory = () =>{
-    addCategory(newCategory)
+  const handleCreateCategory = async (e:React.FormEvent) =>{
+    e.preventDefault()
+   await addCategory(newCategory)
+   await fetchCategories();
+   setNewCategory('')
+
   }
+
+  useEffect(() => {
+    
+
+    fetchCategories();
+  }, []);
+
+  const fetchCategories = async () => {
+    try {
+      const categoriesData = await getShopCategories();
+      setCategories(categoriesData);
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+    }
+  };
+
 
   return (
     <>
@@ -270,21 +311,16 @@ function AddProductForm() {
       <div className="w-full font-medium">
         <div className="mb-2 font-semibold">Select a Category</div>
         <div className="grid grid-cols-cols md:grid-cols-3 gap-3 max-h-[50vh] overflow-y-auto">
-          {Categories.map((item) => {
-            if (item.label === "All") {
-              return null;
-            }
-            return (
-              <div key={item.label} className="col-span">
-                <CategoryInput
-                  onClick={(category) => setCustomValue("category", category)}
-                  selected={category === item.label}
-                  label={item.label}
-                  icon={item.icon}
-                />
-              </div>
-            );
-          })}
+        <select
+          {...register('category')}
+          className="w-full p-2 border rounded"
+        >
+          {categories.map((item:any) => (
+            <option key={item.id} value={item.id}>
+              {item.name}
+            </option>
+          ))}
+        </select>
         </div>
          {/* Button to add a new category */}
       <button

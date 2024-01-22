@@ -1,5 +1,6 @@
 import { cartProductType } from "@/app/product/[productId]/ProductDetails";
 import { wishProductType } from "@/app/wishlist/ItemContent";
+import axios from "axios";
 import {
   createContext,
   useCallback,
@@ -10,7 +11,25 @@ import {
 import { toast } from "react-hot-toast";
 
 //create the context and pass the value you want to be accessible to all component
+
+interface SignUpTypes{
+  first_name:string;
+  last_name:string;
+  password:string;
+  email:string
+
+}
+interface SignInTypes{
+
+  password:string;
+  email:string
+
+}
+
 type cartContextType = {
+  userData: any |null,
+  isAdmin: any |null,
+  userToken: string |null,
   cartTotalQty: number;
   wishTotalQty: number;
   cartTotalAmount: number;
@@ -25,6 +44,9 @@ type cartContextType = {
   handleCartQtyDecrease: (product: cartProductType) => void;
   handleClearCart: () => void;
   handleClearWish: () => void;
+  handleLogOut: () => void;
+  handleSignUp: (formData: SignUpTypes) => void;
+  handleSignIn: (formData: SignInTypes) => void;
 };
 export const cartContext = createContext<cartContextType | null>(null);
 
@@ -34,6 +56,12 @@ interface PropsType {
 }
 
 export const CartContextProvider = (props: PropsType) => {
+  const [userData, setUserData] = useState(null)
+  const [userToken, setUserToken] = useState(null)
+  const [isAdmin, setIsAdmin] = useState(null)
+
+
+
   const [cartTotalQty, setCartTotalQty] = useState(0);
   const [wishTotalQty, setWishTotalQty] = useState(0);
   const [cartTotalAmount, setCartTotalAmount] = useState(0);
@@ -45,7 +73,73 @@ export const CartContextProvider = (props: PropsType) => {
     null
   );
 
-  console.log(cartTotalAmount, cartTotalQty, "faksdflsdkfsdk");
+    const handleSignUp = useCallback(async(formData:SignUpTypes)=>{
+      
+      try {
+       const req= await axios.post('https://store-api-pyo1.onrender.com/onboard', formData)
+       toast.success(req.data.message)
+       const res = req.data
+       setUserData(res)
+       toast.success('Signed up succesfully')
+      } catch (error:any) {
+       toast.error('Signed up failed')
+
+        throw new Error(error)
+      }
+    },[])
+
+    const handleSignIn = useCallback(async(formData:SignInTypes)=>{
+      
+      try {
+       const req= await axios.post('https://store-api-pyo1.onrender.com/auth', formData)
+       const res = req.data
+       const Token = req?.data?.data?.token;
+       setUserToken(Token)
+       setUserData(res)
+       localStorage.setItem('user', Token)
+
+       const adminStatus = await checkAdminStatus(Token);
+       const encryptedAdminStatus = btoa(adminStatus);
+
+       localStorage.setItem('isAdmin',encryptedAdminStatus)
+       setIsAdmin(adminStatus);
+       toast.success('Logged in succefully!')
+      } catch (error:any) {
+        toast.error('Error while logging in')
+        throw new Error
+      }
+    },[])
+
+    const checkAdminStatus = async (token: string) => {
+      try {
+        const response = await axios.get('https://store-api-pyo1.onrender.com/get', {
+          headers: {
+            Authorization: token,
+          },
+        });
+        console.log(response,"jsdfksdfjasdfsadkjfksd")
+  
+        const isAdmin = response.data.data.isAdmin;
+        return isAdmin
+      } catch (error) {
+        // Handle error fetching admin status
+        console.error('Error checking admin status', error);
+      }
+    };
+
+    const handleLogOut = () =>{
+      setUserData(null);
+      setUserToken(null);
+      localStorage.removeItem('user');
+      localStorage.removeItem('isAdmin');
+      toast.success('Logged out succefully!')
+    }
+
+
+
+
+
+
 
   useEffect(() => {
     const cartItems: any = localStorage.getItem("cartItems");
@@ -56,15 +150,11 @@ export const CartContextProvider = (props: PropsType) => {
     setCartProducts(cProducts);
     setWishProducts(wProducts);
   }, []);
-  console.log(wishTotalQty, "wishproduct");
-  console.log(cartTotalQty, "cartproduct");
-  console.log(cartProducts, "cartproduct");
-  console.log(wishProducts, "wishproduct");
+
 
   useEffect(() => {
     const getTotals = () => {
       if (cartProducts) {
-        console.log(cartProducts, "this is the cart products in useeffect");
         const { total, qty } = cartProducts?.reduce(
           (accumulator, item) => {
             const itemTotal = item.price * item.quantity;
@@ -216,6 +306,10 @@ export const CartContextProvider = (props: PropsType) => {
   }, [wishProducts]);
 
   const value = {
+    userData,
+    userToken,
+    
+    isAdmin,
     cartTotalQty,
     wishTotalQty,
     cartTotalAmount,
@@ -230,6 +324,9 @@ export const CartContextProvider = (props: PropsType) => {
     handleCartQtyDecrease,
     handleClearCart,
     handleClearWish,
+    handleSignIn,
+    handleSignUp,
+    handleLogOut
   };
   return <cartContext.Provider value={value} {...props} />;
 };
