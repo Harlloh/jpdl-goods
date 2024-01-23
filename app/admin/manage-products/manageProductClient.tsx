@@ -20,21 +20,15 @@ import firebaseApp from "@/libs/firebase";
 import { useCart } from "@/hooks/useCartHook";
 import NullData from "@/app/components/NullData";
 import getAllProducts from "@/hooks/useGetProducts";
+import useGetProducts from "@/hooks/useGetProducts";
 interface ManageProductClientProps {
   products: any[];
 }
 
 const ManageProductClient = () => {
 
+    const { productss, loading, error } = useGetProducts();
 
-    const [products,setProducts] = useState([])
-    useEffect(()=>{
-        const fetchProduct = async()=>{
-            const product =await getAllProducts()
-            setProducts(product)
-        }
-        fetchProduct()
-    },[])
 
 
 
@@ -48,13 +42,13 @@ const ManageProductClient = () => {
     const router = useRouter();
     const storage = getStorage(firebaseApp);
     let rows: any = [];
-    if (products) {
-        rows = products.map((product: any) => {
+    if (productss) {
+        rows = productss.map((product: any) => {
           return {
-            id: product._id,  // Use the appropriate property as the unique identifier
+            id: product.id,  // Use the appropriate property as the unique identifier
             name: product.name,
             price: formatPrice(product.price),
-            category: product.category.name,
+            category: product.category,
             brand: product.brand,
             inStock: product.inStock,
             images: product.images,
@@ -174,6 +168,16 @@ const ManageProductClient = () => {
                 console.log(error, "error");
             });
     }, []);
+
+
+    if (loading) {
+        return <div>Loading...</div>; // You can replace this with a loading spinner or any loading UI
+      }
+    
+      if (error) {
+        return <div>Error loading products. Please try again.</div>;
+      }
+    
 
 
     if (!isAdmin) {

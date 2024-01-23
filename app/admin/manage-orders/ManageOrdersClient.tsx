@@ -17,6 +17,7 @@ import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 
 import moment from "moment";
+import NullData from "@/app/components/NullData";
 interface ManageOrdersClientProps {
   orders: ExtendedOrder[];
 }
@@ -25,6 +26,14 @@ type ExtendedOrder = any & {
 };
 
 const ManageOrdersClient: React.FC<ManageOrdersClientProps> = ({ orders }) => {
+  const storedisAdmin = (localStorage.getItem('isAdmin'))
+  const isAdmin = storedisAdmin ? atob(storedisAdmin) : null
+  if (!isAdmin) {
+    return <NullData title="Oops access denied" />;
+  }
+
+
+
   const router = useRouter();
   let rows: any = [];
   if (orders) {
