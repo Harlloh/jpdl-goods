@@ -127,7 +127,6 @@ const ManageProductClient = () => {
 
     //this is to change the status from either in stock or out of stock
     const handleToggleStock = useCallback((id: string, inStock: boolean) => {
-        debugger;
         axios
             .put(
                 `https://store-api-pyo1.onrender.com/product/instock/${id}?inStock=${!inStock}`,

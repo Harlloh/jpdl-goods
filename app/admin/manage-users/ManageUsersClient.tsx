@@ -24,14 +24,13 @@ import useGetProducts from "@/hooks/useGetProducts";
 import useGetAllUsers from "@/hooks/useGetAllUser";
 import { FaBan } from "react-icons/fa";
 interface ManageProductClientProps {
-  products: any[];
+    products: any[];
 }
 
 const ManageUsersClient = () => {
 
     // const { productss, loading, error } = useGetProducts();
-    const { users, loadings, errors } = useGetAllUsers();
-     console.log(users,'usersssssssssss')
+    const { users, loadings, errors,fetchUsers } = useGetAllUsers();
 
 
 
@@ -42,25 +41,25 @@ const ManageUsersClient = () => {
     const userToken = localStorage.getItem('user')
     const storedisAdmin = (localStorage.getItem('isAdmin'))
     const isAdmin = storedisAdmin ? atob(storedisAdmin) : null
-  
+
     const router = useRouter();
     const storage = getStorage(firebaseApp);
     let rows: any = [];
     if (users) {
         rows = users.map((product: any) => {
-          return {
-            id: product.id,  // Use the appropriate property as the unique identifier
-            name: product.profile.first_name +" "+ product.profile.last_name,
-            email: product.profile.email,
-            // price: formatPrice(product.price),
-            // category: product.category,
-            isAdmin: product.isAdmin,
+            return {
+                id: product.id,  // Use the appropriate property as the unique identifier
+                name: product.profile.first_name + " " + product.profile.last_name,
+                email: product.profile.email,
+                // price: formatPrice(product.price),
+                // category: product.category,
+                isAdmin: product.isAdmin,
 
-            // inStock: product.inStock,
-            images: product.images,
-          };
+                banned: product.banned ? product.banned: false,
+                images: product.images,
+            };
         });
-      }
+    }
     const columns: GridColDef[] = [
         { field: "id", headerName: "ID", width: 220 },
         { field: "name", headerName: "Name", width: 220 },
@@ -72,7 +71,7 @@ const ManageUsersClient = () => {
         //         return <div style={{ fontWeight: "bold" }}>{params.row.price}</div>;
         //     },
         // },
-        // { field: "category", headerName: "Category", width: 100 },
+        { field: "banned", headerName: "Banned", width: 100 },
         { field: "isAdmin", headerName: "Admin", width: 100 },
 
         { field: "email", headerName: "Email", width: 100 },
@@ -112,19 +111,19 @@ const ManageUsersClient = () => {
                         <ActionBtn
                             icon={FaBan}
                             onClick={() => {
-                                handleUserBan(params.row.id, params.row.inStock);
+                                handleUserBan(params.row.id);
                             }}
                         />
-                        <ActionBtn
+                        {/* <ActionBtn
                             icon={MdDelete}
                             onClick={() => {
                                 handleDeleteStock(params.row.id, params.row.images);
                             }}
-                        />
+                        /> */}
                         <ActionBtn
                             icon={MdRemoveRedEye}
                             onClick={() => {
-                                router.push(`/product/${params.row.id}`);
+                                router.push(`/user/${params.row.id}`);
                             }}
                         />
                     </div>
@@ -134,12 +133,16 @@ const ManageUsersClient = () => {
     ];
 
     //this is to change the status from either in stock or out of stock
-    const handleUserBan = useCallback((id: string, inStock: boolean) => {
+    const handleUserBan = useCallback((userId: string) => {
         axios
-            .put("/api/product", { id, inStock: !inStock })
+            .post(`https://store-api-pyo1.onrender.com/user/block/${userId}`, {
+                headers: {
+                    'Authorization': userToken
+                }
+            })
             .then((res) => {
                 toast.success("UserBanned");
-                
+                fetchUsers()
                 router.refresh();
             })
             .catch((error) => {
@@ -149,59 +152,59 @@ const ManageUsersClient = () => {
     }, []);
 
     //this is to delete stock
-    const handleDeleteStock = useCallback(async (id: string, images: any[]) => {
-        toast("Deleting product, please wait!...");
-        const handleImageDelete = async () => {
-            try {
-                for (const item of images) {
-                    if (item.image) {
-                        const imageRef = ref(storage, item.image);
-                        await deleteObject(imageRef);
-                        console.log("Image deleted", item.image);
-                    }
-                }
-            } catch (error) {
-                return console.log("Deleting images error", error);
-            }
-        };
+    // const handleDeleteStock = useCallback(async (id: string, images: any[]) => {
+    //     toast("Deleting product, please wait!...");
+    //     const handleImageDelete = async () => {
+    //         try {
+    //             for (const item of images) {
+    //                 if (item.image) {
+    //                     const imageRef = ref(storage, item.image);
+    //                     await deleteObject(imageRef);
+    //                     console.log("Image deleted", item.image);
+    //                 }
+    //             }
+    //         } catch (error) {
+    //             return console.log("Deleting images error", error);
+    //         }
+    //     };
 
-        axios
-            .delete(`https://store-api-pyo1.onrender.com/product/delete/${id}`,{
-                headers:{
-                    'Authorization': userToken
-                }
-            })
-            .then((res) => {
-                toast.success("Product deleted");
-                router.refresh();
-            })
-            .catch((error) => {
-                toast.error("Failed to delete product!");
-                console.log(error, "error");
-            });
-        await handleImageDelete();
+    //     axios
+    //         .delete(`https://store-api-pyo1.onrender.com/product/delete/${id}`, {
+    //             headers: {
+    //                 'Authorization': userToken
+    //             }
+    //         })
+    //         .then((res) => {
+    //             toast.success("Product deleted");
+    //             router.refresh();
+    //         })
+    //         .catch((error) => {
+    //             toast.error("Failed to delete product!");
+    //             console.log(error, "error");
+    //         });
+    //     await handleImageDelete();
 
-    }, []);
+    // }, []);
 
 
     if (loadings) {
         return <div className="flex items-center justify-center h-screen">
-        <div className="relative">
-            <div className="h-24 w-24 rounded-full border-t-8 border-b-8 border-gray-200"></div>
-            <div className="absolute top-0 left-0 h-24 w-24 rounded-full border-t-8 border-b-8 border-teal-500 animate-spin">
+            <div className="relative">
+                <div className="h-24 w-24 rounded-full border-t-8 border-b-8 border-gray-200"></div>
+                <div className="absolute top-0 left-0 h-24 w-24 rounded-full border-t-8 border-b-8 border-teal-500 animate-spin">
+                </div>
             </div>
-        </div>
-    </div>; // You can replace this with a loading spinner or any loading UI
-      }
-    
-      if (errors) {
+        </div>; // You can replace this with a loading spinner or any loading UI
+    }
+
+    if (errors) {
         return <div>Error loading products. Please try again.</div>;
-      }
-    
+    }
+
 
 
     if (!isAdmin) {
-      return <NullData title="Oops access denied" />;
+        return <NullData title="Oops access denied" />;
     }
 
 
