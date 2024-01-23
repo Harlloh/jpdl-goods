@@ -21,13 +21,17 @@ import { useCart } from "@/hooks/useCartHook";
 import NullData from "@/app/components/NullData";
 import getAllProducts from "@/hooks/useGetProducts";
 import useGetProducts from "@/hooks/useGetProducts";
+import useGetAllUsers from "@/hooks/useGetAllUser";
+import { FaBan } from "react-icons/fa";
 interface ManageProductClientProps {
   products: any[];
 }
 
-const ManageProductClient = () => {
+const ManageUsersClient = () => {
 
-    const { productss, loading, error,fetchProducts } = useGetProducts();
+    // const { productss, loading, error } = useGetProducts();
+    const { users, loadings, errors } = useGetAllUsers();
+     console.log(users,'usersssssssssss')
 
 
 
@@ -42,15 +46,17 @@ const ManageProductClient = () => {
     const router = useRouter();
     const storage = getStorage(firebaseApp);
     let rows: any = [];
-    if (productss) {
-        rows = productss.map((product: any) => {
+    if (users) {
+        rows = users.map((product: any) => {
           return {
             id: product.id,  // Use the appropriate property as the unique identifier
-            name: product.name,
-            price: formatPrice(product.price),
-            category: product.category,
-            brand: product.brand,
-            inStock: product.inStock,
+            name: product.profile.first_name +" "+ product.profile.last_name,
+            email: product.profile.email,
+            // price: formatPrice(product.price),
+            // category: product.category,
+            isAdmin: product.isAdmin,
+
+            // inStock: product.inStock,
             images: product.images,
           };
         });
@@ -58,42 +64,44 @@ const ManageProductClient = () => {
     const columns: GridColDef[] = [
         { field: "id", headerName: "ID", width: 220 },
         { field: "name", headerName: "Name", width: 220 },
-        {
-            field: "price",
-            headerName: "Price(USD)",
-            width: 100,
-            renderCell: (params) => {
-                return <div style={{ fontWeight: "bold" }}>{params.row.price}</div>;
-            },
-        },
-        { field: "category", headerName: "Category", width: 100 },
-        { field: "brand", headerName: "Brand", width: 100 },
-        {
-            field: "inStock",
-            headerName: "InStock",
-            width: 100,
-            renderCell: (params) => {
-                return (
-                    <div className="text-center items-center flex ">
-                        {params.row.inStock === true ? (
-                            <Status
-                                text="in stock"
-                                icon={MdDone}
-                                bg="bg-teal-200"
-                                color="text-teal-700"
-                            />
-                        ) : (
-                            <Status
-                                text="out of stock"
-                                icon={MdClose}
-                                bg="bg-rose-200"
-                                color="text-rose-700"
-                            />
-                        )}
-                    </div>
-                );
-            },
-        },
+        // {
+        //     field: "price",
+        //     headerName: "Price(USD)",
+        //     width: 100,
+        //     renderCell: (params) => {
+        //         return <div style={{ fontWeight: "bold" }}>{params.row.price}</div>;
+        //     },
+        // },
+        // { field: "category", headerName: "Category", width: 100 },
+        { field: "isAdmin", headerName: "Admin", width: 100 },
+
+        { field: "email", headerName: "Email", width: 100 },
+        // {
+        //     field: "inStock",
+        //     headerName: "InStock",
+        //     width: 100,
+        //     renderCell: (params) => {
+        //         return (
+        //             <div className="text-center items-center flex ">
+        //                 {params.row.inStock === true ? (
+        //                     <Status
+        //                         text="in stock"
+        //                         icon={MdDone}
+        //                         bg="bg-teal-200"
+        //                         color="text-teal-700"
+        //                     />
+        //                 ) : (
+        //                     <Status
+        //                         text="out of stock"
+        //                         icon={MdClose}
+        //                         bg="bg-rose-200"
+        //                         color="text-rose-700"
+        //                     />
+        //                 )}
+        //             </div>
+        //         );
+        //     },
+        // },
         {
             field: "action",
             headerName: "Actions",
@@ -102,9 +110,9 @@ const ManageProductClient = () => {
                 return (
                     <div className="flex justify-between gap-3 w-full">
                         <ActionBtn
-                            icon={MdCached}
+                            icon={FaBan}
                             onClick={() => {
-                                handleToggleStock(params.row.id, params.row.inStock);
+                                handleUserBan(params.row.id, params.row.inStock);
                             }}
                         />
                         <ActionBtn
@@ -126,32 +134,19 @@ const ManageProductClient = () => {
     ];
 
     //this is to change the status from either in stock or out of stock
-    const handleToggleStock = useCallback((id: string, inStock: boolean) => {
-        debugger;
+    const handleUserBan = useCallback((id: string, inStock: boolean) => {
         axios
-            .put(
-                `https://store-api-pyo1.onrender.com/product/instock/${id}?inStock=${!inStock}`,
-                null,  // pass null as the request body if not sending any data
-                {
-                    headers: {
-                        'Authorization': userToken
-                    }
-                }
-            )
+            .put("/api/product", { id, inStock: !inStock })
             .then((res) => {
-                toast.success("Product status changed");
-                fetchProducts();  // Assuming fetchProducts is a function you have defined to fetch products
+                toast.success("UserBanned");
+                
                 router.refresh();
             })
             .catch((error) => {
                 toast.error("Something went wrong");
                 console.log(error, "error");
             });
-    }, [userToken, fetchProducts, router]);
-    
-
-
-
+    }, []);
 
     //this is to delete stock
     const handleDeleteStock = useCallback(async (id: string, images: any[]) => {
@@ -169,27 +164,27 @@ const ManageProductClient = () => {
                 return console.log("Deleting images error", error);
             }
         };
-        await handleImageDelete();
 
         axios
             .delete(`https://store-api-pyo1.onrender.com/product/delete/${id}`,{
                 headers:{
-                    'Authorization':userToken
+                    'Authorization': userToken
                 }
             })
             .then((res) => {
                 toast.success("Product deleted");
-                fetchProducts()
                 router.refresh();
             })
             .catch((error) => {
                 toast.error("Failed to delete product!");
                 console.log(error, "error");
             });
+        await handleImageDelete();
+
     }, []);
 
 
-    if (loading) {
+    if (loadings) {
         return <div className="flex items-center justify-center h-screen">
         <div className="relative">
             <div className="h-24 w-24 rounded-full border-t-8 border-b-8 border-gray-200"></div>
@@ -199,7 +194,7 @@ const ManageProductClient = () => {
     </div>; // You can replace this with a loading spinner or any loading UI
       }
     
-      if (error) {
+      if (errors) {
         return <div>Error loading products. Please try again.</div>;
       }
     
@@ -213,7 +208,7 @@ const ManageProductClient = () => {
     return (
         <div className="max-w-[1150px] m-auto text-xl">
             <div className="mb-4 mt-8">
-                <Heading title="Manage Product" center />
+                <Heading title="Manage Users" center />
             </div>
             <div style={{ height: 600, width: "100%" }}>
                 <DataGrid
@@ -233,4 +228,4 @@ const ManageProductClient = () => {
     );
 };
 
-export default ManageProductClient;
+export default ManageUsersClient;

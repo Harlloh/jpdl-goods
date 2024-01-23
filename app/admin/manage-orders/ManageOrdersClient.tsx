@@ -18,6 +18,7 @@ import { useRouter } from "next/navigation";
 
 import moment from "moment";
 import NullData from "@/app/components/NullData";
+import useGetAllUsers from "@/hooks/useGetAllUser";
 interface ManageOrdersClientProps {
   orders: ExtendedOrder[];
 }
@@ -26,6 +27,23 @@ type ExtendedOrder = any & {
 };
 
 const ManageOrdersClient: React.FC<ManageOrdersClientProps> = ({ orders }) => {
+
+  const { users, loadings, errors } = useGetAllUsers();
+  console.log(users,'usersssssssssss')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   const storedisAdmin = (localStorage.getItem('isAdmin'))
   const isAdmin = storedisAdmin ? atob(storedisAdmin) : null
   if (!isAdmin) {
