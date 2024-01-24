@@ -9,6 +9,8 @@ import getShopCategories from "@/hooks/getShopCategories";
 import FeaturedProduct from "./components/FeaturedProducts";
 
 export default async function Home() {
+
+  
   let displayedProductsCache = null;
 
   //Fisher-Yates shuffle algorithm
@@ -40,7 +42,7 @@ export default async function Home() {
       <div className="p-0">
         <Container>
           <div className="mb-9">
-            <ShopCategories  />
+            {/* <ShopCategories  /> */}
             <Homebanner />
           </div>
           <FeaturedProduct displayedProducts={shuffledProductsssss} type="newArrival" />

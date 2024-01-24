@@ -21,6 +21,7 @@ import { useCart } from "@/hooks/useCartHook";
 import NullData from "@/app/components/NullData";
 import getAllProducts from "@/hooks/useGetProducts";
 import useGetProducts from "@/hooks/useGetProducts";
+import Loading from "@/app/components/Loading";
 interface ManageProductClientProps {
   products: any[];
 }
@@ -189,13 +190,7 @@ const ManageProductClient = () => {
 
 
     if (loading) {
-        return <div className="flex items-center justify-center h-screen">
-        <div className="relative">
-            <div className="h-24 w-24 rounded-full border-t-8 border-b-8 border-gray-200"></div>
-            <div className="absolute top-0 left-0 h-24 w-24 rounded-full border-t-8 border-b-8 border-teal-500 animate-spin">
-            </div>
-        </div>
-    </div>; // You can replace this with a loading spinner or any loading UI
+        return <Loading/>; 
       }
     
       if (error) {
@@ -220,7 +215,7 @@ const ManageProductClient = () => {
                     columns={columns}
                     initialState={{
                         pagination: {
-                            paginationModel: { page: 0, pageSize: 5 },
+                            paginationModel: { page: 0, pageSize: 10},
                         },
                     }}
                     pageSizeOptions={[5, 10]}

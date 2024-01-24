@@ -19,6 +19,7 @@ import { useRouter } from "next/navigation";
 import moment from "moment";
 import NullData from "@/app/components/NullData";
 import useGetAllUsers from "@/hooks/useGetAllUser";
+import Loading from "@/app/components/Loading";
 interface ManageOrdersClientProps {
   orders: ExtendedOrder[];
 }
@@ -30,6 +31,10 @@ const ManageOrdersClient: React.FC<ManageOrdersClientProps> = ({ orders }) => {
 
   const { users, loadings, errors } = useGetAllUsers();
   console.log(users,'usersssssssssss')
+
+  if(loadings){
+    return <Loading/>
+  }
 
 
 
@@ -211,7 +216,7 @@ const ManageOrdersClient: React.FC<ManageOrdersClientProps> = ({ orders }) => {
           columns={columns}
           initialState={{
             pagination: {
-              paginationModel: { page: 0, pageSize: 5 },
+              paginationModel: { page: 0, pageSize: 10},
             },
           }}
           pageSizeOptions={[5, 10]}

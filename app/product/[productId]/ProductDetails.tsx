@@ -39,6 +39,7 @@ const Horizontal = () => {
 };
 
 const ProductDetails: React.FC<ProductParams> = ({ products }) => {
+  const userToken = localStorage.getItem('user')
   const router = useRouter();
   const { handleAddProductToCart, cartProducts } = useCart();
   const [isProductInCart, setIsProductInCart] = useState(false);
@@ -209,11 +210,12 @@ const ProductDetails: React.FC<ProductParams> = ({ products }) => {
             <Horizontal />
             <div className="max-w-[300px]">
               <Button
+                disabled={!products.inStock}
                 lable={"Add to cart"}
-                handleClick={() => handleAddProductToCart(cartProduct)}
+                handleClick={() => handleAddProductToCart(cartProduct,userToken)}
               />
               <Link
-                href={"/"}
+                href={"/shop"}
                 className="text-slate-500 flex items-center gap-1 mt-2"
               >
                 <FaArrowLeft />

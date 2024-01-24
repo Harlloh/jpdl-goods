@@ -57,7 +57,7 @@ const ItemContent: React.FC<ProductContentProp> = ({ item }) => {
   // }, [cartProduct]);
   const router = useRouter();
   console.log(item.images[0].image, "ZZZZZZZZZ");
-
+  const token = localStorage.getItem('user')
   return (
     <div className="grid grid-cols-4 text-xs md:text-sm gap-4 border-t-[1.5px] border-slate-20 py-4 items-center">
       <div className="col-span-2 justify-self-start flex gap-2 md:gap-4 items-center">
@@ -88,7 +88,7 @@ const ItemContent: React.FC<ProductContentProp> = ({ item }) => {
           lable="remove from wishlist"
           small
           outline
-          handleClick={() => handleRemoveProductFromWish(item)}
+          handleClick={() => handleRemoveProductFromWish(item,token)}
         />
       </div>
       <div className="justify-self-end font-semibold">

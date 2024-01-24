@@ -30,9 +30,9 @@ export default function Navbar() {
                 />
               </Link>
             </span>
-            <div className="hidden md:block">
+            {/* <div className="hidden md:block">
               <SearchBar />
-            </div>
+            </div> */}
             <div className="flex items-center gap-8 md:gap-12">
               <div className="cartcoutn">
                 <WishCount />

@@ -23,6 +23,7 @@ import getAllProducts from "@/hooks/useGetProducts";
 import useGetProducts from "@/hooks/useGetProducts";
 import useGetAllUsers from "@/hooks/useGetAllUser";
 import { FaBan } from "react-icons/fa";
+import Loading from "@/app/components/Loading";
 interface ManageProductClientProps {
     products: any[];
 }
@@ -46,22 +47,22 @@ const ManageUsersClient = () => {
     const storage = getStorage(firebaseApp);
     let rows: any = [];
     if (users) {
-        rows = users.map((product: any) => {
+        rows = users.map((product: any,index) => {
             return {
-                id: product.id,  // Use the appropriate property as the unique identifier
+                id: index + 1,  // Use the appropriate property as the unique identifier
                 name: product.profile.first_name + " " + product.profile.last_name,
                 email: product.profile.email,
                 // price: formatPrice(product.price),
                 // category: product.category,
                 isAdmin: product.isAdmin,
 
-                banned: product.banned ? product.banned: false,
+                banned: product.isBlocked ? true: false,
                 images: product.images,
             };
         });
     }
     const columns: GridColDef[] = [
-        { field: "id", headerName: "ID", width: 220 },
+        { field: "id", headerName: "S/N", width: 50 },
         { field: "name", headerName: "Name", width: 220 },
         // {
         //     field: "price",
@@ -71,10 +72,30 @@ const ManageUsersClient = () => {
         //         return <div style={{ fontWeight: "bold" }}>{params.row.price}</div>;
         //     },
         // },
-        { field: "banned", headerName: "Banned", width: 100 },
-        { field: "isAdmin", headerName: "Admin", width: 100 },
+        {
+            field: "banned",
+            headerName: "Banned",
+            width: 150,
+            renderCell: (params) => {
+                const isBanned = params.row.banned;
+    
+                return (
+                    <div
+                        style={{
+                            backgroundColor: isBanned ? "red" : "green",
+                            color: "white",
+                            padding: "8px",
+                            borderRadius: "4px",
+                            textAlign: "center",
+                        }}
+                    >
+                        {isBanned ? "Banned" : "Not Banned"}
+                    </div>
+                );
+            },
+        },        { field: "isAdmin", headerName: "Admin", width: 100 },
 
-        { field: "email", headerName: "Email", width: 100 },
+        { field: "email", headerName: "Email", width: 250 },
         // {
         //     field: "inStock",
         //     headerName: "InStock",
@@ -134,8 +155,9 @@ const ManageUsersClient = () => {
 
     //this is to change the status from either in stock or out of stock
     const handleUserBan = useCallback((userId: string) => {
+        debugger
         axios
-            .post(`https://store-api-pyo1.onrender.com/user/block/${userId}`, {
+            .post(`https://store-api-pyo1.onrender.com/user/block/${userId}`,{}, {
                 headers: {
                     'Authorization': userToken
                 }
@@ -188,13 +210,7 @@ const ManageUsersClient = () => {
 
 
     if (loadings) {
-        return <div className="flex items-center justify-center h-screen">
-            <div className="relative">
-                <div className="h-24 w-24 rounded-full border-t-8 border-b-8 border-gray-200"></div>
-                <div className="absolute top-0 left-0 h-24 w-24 rounded-full border-t-8 border-b-8 border-teal-500 animate-spin">
-                </div>
-            </div>
-        </div>; // You can replace this with a loading spinner or any loading UI
+        return<Loading/> // You can replace this with a loading spinner or any loading UI
     }
 
     if (errors) {
@@ -219,7 +235,7 @@ const ManageUsersClient = () => {
                     columns={columns}
                     initialState={{
                         pagination: {
-                            paginationModel: { page: 0, pageSize: 5 },
+                            paginationModel: { page: 0, pageSize: 10 },
                         },
                     }}
                     pageSizeOptions={[5, 10]}

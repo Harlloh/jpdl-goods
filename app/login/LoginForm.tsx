@@ -86,7 +86,7 @@ const LoginForm = () => {
         type="password"
       />
       <Button
-        lable={`${isLoading ? "Loading" : "Login"}`}
+        lable={`${isLoading ? "Logging in" : "Login"}`}
         handleClick={handleSubmit(onSubmit)}
       />
       <p className="text-sm">
