@@ -3,8 +3,8 @@ import useGetProducts from "@/hooks/useGetProducts";
 import React, { useState } from "react";
 import ProductCard from "../components/Products/ProductCard";
 import Container from "../components/Container";
-import SearchBar from "../components/nav/SearcBar";
 import Loading from "../components/Loading";
+import { FaTimes } from "react-icons/fa";
 
 interface Product {
   id: number;
@@ -13,9 +13,8 @@ interface Product {
 }
 
 const Page: React.FC = () => {
-  const {loading, productss,fetchProducts } = useGetProducts();
-
- 
+  const { loading, productss, fetchProducts } = useGetProducts();
+  const [searchTerm, setSearchTerm] = useState('');
 
   // Group products by category
   const groupedProducts: { [key: string]: Product[] } = productss.reduce(
@@ -33,12 +32,11 @@ const Page: React.FC = () => {
   const [initialDisplayCount, setInitialDisplayCount] = useState<number>(7);
   const [seeMoreClicked, setSeeMoreClicked] = useState<boolean>(false);
 
-
   // Function to handle "See More" button click
   const handleSeeMore = (category: string) => {
     // Set the initial display count to a larger number to show all items
     setInitialDisplayCount(groupedProducts[category].length);
-    setSeeMoreClicked(true)
+    setSeeMoreClicked(true);
   };
 
   const handleSeeLess = () => {
@@ -56,22 +54,58 @@ const Page: React.FC = () => {
     return <Loading />;
   }
 
+  const handleSearch = (e: any) => {
+    setSearchTerm(e.target.value);
+  };
+
+  // Filter products based on the search term
+  const searchedProducts = Object.keys(groupedProducts).reduce((acc: any, category: any) => {
+    const filteredProducts = groupedProducts[category].filter((product: any) => {
+      const productName = product.name.toLowerCase();
+      return productName.includes(searchTerm.toLowerCase());
+    });
+
+    if (filteredProducts.length > 0) {
+      acc[category] = filteredProducts;
+    }
+
+    return acc;
+  }, {});
+  const handleClearSearchTerm = () => {
+    setSearchTerm('')
+  }
+
   return (
     <Container>
-      <div className="w-100 items-center">
+      <div className="w-100 items-center flex flex-col relative">
         <h1>Welcome to our store</h1>
-        <SearchBar />
-        {Object.keys(groupedProducts).map((category) => (
+        <span
+          className="sticky w-75 p-2 border border-gray-300 rounded focus:outline-none focus:border-[0.5px] focus:border-teal-500 w-80 flex items-center justify-between"
+
+        >
+          <input
+            type="text"
+            name="searchTerm"
+            placeholder="Search for a product or category...."
+            value={searchTerm}
+            onChange={handleSearch}
+            className="grow"
+
+          />
+          <FaTimes onClick={handleClearSearchTerm} className="cursor-pointer"/>
+
+        </span>
+        {Object.keys(searchedProducts).map((category) => (
           <div key={category} className="my-9 mx-auto w-100" id={`${category}`}>
             <h2 className="text-2xl font-semibold text-black">{category}</h2>
             <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-8">
               {/* Display only the initial number of items */}
-              {groupedProducts[category].slice(0, initialDisplayCount).map((product) => (
+              {searchedProducts[category].slice(0, initialDisplayCount).map((product: any) => (
                 <ProductCard key={product.id} data={product} />
               ))}
             </div>
             {/* Render "See More" button if there are more items to display */}
-            {initialDisplayCount < groupedProducts[category].length && (
+            {initialDisplayCount < searchedProducts[category].length && (
               <button
                 className="mt-4 p-2 bg-teal-600 text-white rounded"
                 onClick={() => handleSeeMore(category)}
