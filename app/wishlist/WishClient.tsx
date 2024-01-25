@@ -29,6 +29,7 @@ function WishClient() {
       </div>
     );
   }
+  const token = localStorage.getItem('user')
   return (
     <div>
       <Heading title="Your Wishlist" center />
@@ -49,7 +50,7 @@ function WishClient() {
             lable="Clear wishList"
             outline
             small
-            handleClick={() => handleClearWish()}
+            handleClick={() => handleClearWish(token)}
           />
         </div>
       </div>

@@ -29,7 +29,19 @@ function CartClient() {
       </div>
     );
   }
-  console.log(cartTotalAmount, "asdflasdfsdfjkasdfjk");
+  const handleCheckout = ()=>{
+   // Log cart details when Checkout button is clicked
+   console.log("Cart Products:", cartProducts);
+   console.log("Cart Total Quantity:", cartTotalQty);
+   console.log("Cart Total Amount:", cartTotalAmount);
+
+   // Add logic for Stripe Checkout integration here
+   // ...
+
+   // For now, you can just log a message indicating that checkout is initiated
+   console.log("Initiating Checkout...");
+  }
+  const token = localStorage.getItem('user')
   return (
     <div>
       <Heading title="Shopping Cart" center />
@@ -39,7 +51,7 @@ function CartClient() {
         <div className="justify-self-center"> Quantity</div>
         <div className="justify-self-end"> Total</div>
       </div>
-      <div>
+      <div className="overflow-x-auto">
         {cartProducts &&
           cartProducts.map((product: cartProductType) => {
             return <ItemContent key={product.id} item={product} />;
@@ -51,7 +63,7 @@ function CartClient() {
             lable="Clear cart"
             outline
             small
-            handleClick={() => handleClearCart()}
+            handleClick={() => handleClearCart(token)}
           />
         </div>
         <div className="text-sm flex flex-col gap-1 items-start">
@@ -62,7 +74,7 @@ function CartClient() {
           <p className="text-slate-500">
             Taxes and Shipping calcaulated at checkout
           </p>
-          <Button lable="Checkout" handleClick={() => {}} />
+          <Button lable="Checkout" handleClick={handleCheckout} />
           <Link
             href={"/"}
             className="text-slate-500 flex items-center gap-1 mt-2"

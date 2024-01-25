@@ -1,26 +1,27 @@
+"use client"
 import React from "react";
 import ProductCard from "./Products/ProductCard";
 import { cartProductType } from "../product/[productId]/ProductDetails";
 import { wishProductType } from "../wishlist/ItemContent";
 import Link from "next/link";
+import useGetProducts from "@/hooks/useGetProducts";
 
-const FeaturedProduct: React.FC<any> = ({ displayedProducts, type }) => {
+const FeaturedProduct: React.FC<any> = ({  type }) => {
+  const {productss} = useGetProducts()
+  const displayedProducts = productss
   // Define functions to filter products based on type
   const filterNewArrival = (products: any) => {
-    // You can implement your logic for new arrival here
-    // For example, sort by the product's creation date
+  
     return products.slice(0, 6);
   };
 
   const filterMostPopular = (products: any) => {
-    // You can implement your logic for most popular here
-    // For example, sort by the product's review, orders, or price
-    return products.slice(0, 6);
+    const sortedProducts = products.sort((a: any, b: any) => b.price - a.price);
+    
+    return sortedProducts.slice(0, 6);
   };
 
   const filterFeatured = (products: any) => {
-    // You can implement your logic for featured here
-    // For example, pick random products
     const shuffledProducts = products.sort(() => 0.5 - Math.random());
     return shuffledProducts.slice(0, 6);
   };

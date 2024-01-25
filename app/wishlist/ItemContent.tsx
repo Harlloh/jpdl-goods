@@ -56,11 +56,13 @@ const ItemContent: React.FC<ProductContentProp> = ({ item }) => {
   //   });
   // }, [cartProduct]);
   const router = useRouter();
-  console.log(item.images[0].image, "ZZZZZZZZZ");
+  // console.log(item.images[0].image, "ZZZZZZZZZ");
   const token = localStorage.getItem('user')
   return (
     <div className="grid grid-cols-4 text-xs md:text-sm gap-4 border-t-[1.5px] border-slate-20 py-4 items-center">
-      <div className="col-span-2 justify-self-start flex gap-2 md:gap-4 items-center">
+      {/* <div className="col-span-2 justify-self-start flex gap-2 md:gap-4 items-center"> */}
+      <div className="col-span-2 justify-self-start flex gap-2 md:gap-4 flex-col md:flex-row items-center">
+
         <Link href={`/product/${item.id}`}>
           {/* <p>{item.selectedImage.image}</p> */}
           <div className="relative mx-[70px] aspect-square w-[100px]">
@@ -77,7 +79,7 @@ const ItemContent: React.FC<ProductContentProp> = ({ item }) => {
           {/* <div>{item.selectedImage.color}</div> */}
         </div>
       </div>
-      <div className="flex gap-4 items-center text-sm sm:flex-col">
+      <div className="flex gap-4 items-center text-sm flex-col md:flex-col">
         <Button
           lable="view product"
           small

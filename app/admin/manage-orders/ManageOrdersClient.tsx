@@ -29,24 +29,12 @@ type ExtendedOrder = any & {
 
 const ManageOrdersClient: React.FC<ManageOrdersClientProps> = ({ orders }) => {
 
-  const { users, loadings, errors } = useGetAllUsers();
-  console.log(users,'usersssssssssss')
+  // const { users, loadings, errors } = useGetAllUsers();
+  // console.log(users,'usersssssssssss')
 
-  if(loadings){
-    return <Loading/>
-  }
-
-
-
-
-
-
-
-
-
-
-
-
+  // if(loadings){
+  //   return <Loading/>
+  // }
 
 
   const storedisAdmin = (localStorage.getItem('isAdmin'))
@@ -178,7 +166,7 @@ const ManageOrdersClient: React.FC<ManageOrdersClientProps> = ({ orders }) => {
   ];
 
   //this is to change the status from either in stock or out of stock
-  const handleDispatch = useCallback((id: string) => {
+  const handleDispatch = useCallback((id: any) => {
     axios
       .put("/api/order", { id, deliveryStatus: "dispatched" })
       .then((res) => {
@@ -190,6 +178,8 @@ const ManageOrdersClient: React.FC<ManageOrdersClientProps> = ({ orders }) => {
         console.log(error, "error");
       });
   }, []);
+
+
 
   //this is to change the status from either in stock or out of stock
   const handleDelevered = useCallback((id: string) => {

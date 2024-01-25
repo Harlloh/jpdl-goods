@@ -52,7 +52,7 @@ function AddProductForm() {
   const storedisAdmin = (localStorage.getItem('isAdmin'))
   const isAdmin = storedisAdmin ? atob(storedisAdmin) : null
   const userToken = localStorage.getItem('user')
-  const [categories,setCategories] = useState([])
+  // const [categories,setCategories] = useState([])
 
     if (!isAdmin) {
       console.log(isAdmin,'ksadfkjds')
@@ -256,14 +256,14 @@ function AddProductForm() {
     fetchCategories();
   }, []);
 
-  const fetchCategories = async () => {
+  const fetchCategories =  () => {
     try {
-      const categoriesData = await getShopCategories();
-      setCategories(categoriesData);
     } catch (error) {
       console.error("Error fetching categories:", error);
     }
   };
+  const {categories} = getShopCategories();
+
 
 
   return (

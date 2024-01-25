@@ -38,12 +38,12 @@ type cartContextType = {
   wishProducts: cartProductType[] | null;
   handleAddProductToCart: (product: cartProductType,token:any) => void;
   handleAddProductToWish: (product: cartProductType,token:any) => void;
-  handleRemoveProductFromCart: (product: cartProductType) => void;
+  handleRemoveProductFromCart: (product: cartProductType,token:any) => void;
   handleRemoveProductFromWish: (product: wishProductType,token:any) => void;
   handleCartQtyIncrease: (product: cartProductType) => void;
   handleCartQtyDecrease: (product: cartProductType) => void;
-  handleClearCart: () => void;
-  handleClearWish: () => void;
+  handleClearCart: (token:any) => void;
+  handleClearWish: (token:any) => void;
   handleLogOut: () => void;
   handleSignUp: (formData: SignUpTypes) => void;
   handleSignIn: (formData: SignInTypes) => void;
@@ -290,11 +290,13 @@ export const CartContextProvider = (props: PropsType) => {
 
 
   const handleRemoveProductFromCart = useCallback(
-   async (product: cartProductType) => {
+   async (product: cartProductType, token:any) => {
+    debugger
+
       try {
-        await axios.put(`https://store-api-pyo1.onrender.com/product/cart/remove?productID=${product.id}`,{
+        await axios.put(`https://store-api-pyo1.onrender.com/product/cart/remove?productID=${product.id}`,{},{
           headers:{
-            'Authorization':userToken
+            'Authorization':token
           }
         });
       } catch (error:any) {
@@ -382,9 +384,13 @@ export const CartContextProvider = (props: PropsType) => {
     [cartProducts]
   );
 
-  const handleClearCart = useCallback(async() => {
+  const handleClearCart = useCallback(async(token:any) => {
    try {
-   const res = await axios.put(`https://store-api-pyo1.onrender.com/product/cart/remove?clearAll=${true}`)
+   const res = await axios.put(`https://store-api-pyo1.onrender.com/product/cart/remove?clearAll=${true}`,{},{
+    headers:{
+      'Authorization':token
+    }
+   })
    if(res.status){
      setCartProducts(null);
      setCartTotalQty(0);
@@ -398,11 +404,31 @@ export const CartContextProvider = (props: PropsType) => {
    }
   }, [cartProducts]);
 
-  const handleClearWish = useCallback(() => {
+
+  const handleClearWish = useCallback(async(token:any) => {
+   try {
+   const res = await axios.put(`https://store-api-pyo1.onrender.com/product/wish-list/remove?clearAll=${true}`,{},{
+    headers:{
+      'Authorization':token
+    }
+   })
+   if(res.status){
     setWishProducts(null);
     setWishTotalQty(0);
     localStorage.removeItem("wishItems");
+   }else {
+    toast.error('Failed to clear wishlist. Please try again.');
+  }
+   } catch (error:any) {
+    console.error('Error clearing wish list', error);
+    toast.error('An error occurred while clearing the wish list.');
+   }
   }, [wishProducts]);
+
+
+
+
+
 
   const value = {
     userData,

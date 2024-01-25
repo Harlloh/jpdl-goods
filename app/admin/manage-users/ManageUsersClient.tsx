@@ -214,7 +214,7 @@ const ManageUsersClient = () => {
     }
 
     if (errors) {
-        return <div>Error loading products. Please try again.</div>;
+        return <div>Error loading users. Please try again.</div>;
     }
 
 

@@ -45,9 +45,9 @@ export default async function Home() {
             {/* <ShopCategories  /> */}
             <Homebanner />
           </div>
-          <FeaturedProduct displayedProducts={shuffledProductsssss} type="newArrival" />
-          <FeaturedProduct displayedProducts={shuffledProductsssss} type="mostPopular" />
-          <FeaturedProduct displayedProducts={shuffledProductsssss} type="featured" />
+          <FeaturedProduct type="newArrival" />
+          <FeaturedProduct type="mostPopular" />
+          <FeaturedProduct type="featured" />
 
         </Container>
 

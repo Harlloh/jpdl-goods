@@ -65,7 +65,7 @@ const Summary = () => {
           console.error("Error fetching data:", error);
         });
     }
-  }, [ orders, users, productss]);
+  }, [ ]);
 
   const [summaryData, setSummaryData] = useState<SummaryDataType>({
     sale: {
