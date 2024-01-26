@@ -5,9 +5,28 @@ import Link from "next/link";
 import { FaArrowLeft } from "react-icons/fa";
 import Heading from "../components/Heading";
 import { cartProductType } from "../product/[productId]/ProductDetails";
+import { checkOutService } from "@/hooks/stripe.js"
 import Button from "../components/Button";
 import ItemContent from "./ItemContent";
 import { formatPrice } from "../utils/formatPrice";
+
+
+export type checkOutProductType = {
+  id: string;
+  name: string;
+  description: string;
+  category: string;
+  brand: string;
+  selectedImage: selectedImg;
+  quantity: number;
+  price: number;
+};
+
+export type selectedImg = {
+  color: string;
+  colorCode: string;
+  image: string;
+};
 
 function CartClient() {
   const { cartProducts, handleClearCart, cartTotalQty, cartTotalAmount } =
@@ -32,14 +51,15 @@ function CartClient() {
   const handleCheckout = ()=>{
    // Log cart details when Checkout button is clicked
    console.log("Cart Products:", cartProducts);
-   console.log("Cart Total Quantity:", cartTotalQty);
-   console.log("Cart Total Amount:", cartTotalAmount);
+  //  console.log("Cart Total Quantity:", cartTotalQty);
+  //  console.log("Cart Total Amount:", cartTotalAmount);
 
    // Add logic for Stripe Checkout integration here
    // ...
+    checkOutService(cartProducts);
+
 
    // For now, you can just log a message indicating that checkout is initiated
-   console.log("Initiating Checkout...");
   }
   const token = localStorage.getItem('user')
   return (

@@ -11,8 +11,10 @@ import { useCart } from "@/hooks/useCartHook";
 import toast from "react-hot-toast";
 
 
+
+
 const LoginForm = () => {
-  const {userToken} = useCart() 
+  const {userToken} = useCart()
 
   const currentUser = userToken;
 
@@ -45,7 +47,7 @@ const LoginForm = () => {
     try {
       setIsLoading(true);
       await handleSignIn(data);
-      console.log(data);      
+      console.log(data);
       router.push("/"); // Redirect to login after signup
     } catch (error:any) {
       toast.error('Something went wrong')

@@ -74,7 +74,7 @@ export const CartContextProvider = (props: PropsType) => {
   );
 
     const handleSignUp = useCallback(async(formData:SignUpTypes)=>{
-      
+
       try {
        const req= await axios.post('https://store-api-pyo1.onrender.com/onboard', formData)
        toast.success(req.data.message)
@@ -119,7 +119,7 @@ export const CartContextProvider = (props: PropsType) => {
           },
         });
         console.log(response,"jsdfksdfjasdfsadkjfksd")
-  
+
         const isAdmin = response.data.data.isAdmin;
         return isAdmin
       } catch (error) {
@@ -148,7 +148,7 @@ export const CartContextProvider = (props: PropsType) => {
     },[])
 
 
- 
+
 
 
     const fetchUserProducts = async (Token:any) => {
@@ -179,7 +179,7 @@ export const CartContextProvider = (props: PropsType) => {
       }
     };
 
-    
+
 
 
   useEffect(() => {
@@ -224,7 +224,7 @@ export const CartContextProvider = (props: PropsType) => {
     getTotals();
   }, [cartProducts]);
 
-  
+
 
   const handleAddProductToCart = useCallback(async (product: cartProductType,token:any) => {
     try {
@@ -281,9 +281,9 @@ export const CartContextProvider = (props: PropsType) => {
       console.error('Error adding product to wish list', error);
       toast.error("Please log in to add items to wish list");
     }
-  
+
   }, []);
-  
+
 
 
 
@@ -300,7 +300,7 @@ export const CartContextProvider = (props: PropsType) => {
           }
         });
       } catch (error:any) {
-        
+
       }
       if (cartProducts) {
         const filteredProduct = cartProducts.filter((item) => {
@@ -326,7 +326,7 @@ export const CartContextProvider = (props: PropsType) => {
           }
         });
       } catch (error:any) {
-        
+
       }
       if (wishProducts) {
         const filteredProduct = wishProducts.filter((item) => {
@@ -433,7 +433,7 @@ export const CartContextProvider = (props: PropsType) => {
   const value = {
     userData,
     userToken,
-    
+
     isAdmin,
     cartTotalQty,
     wishTotalQty,
