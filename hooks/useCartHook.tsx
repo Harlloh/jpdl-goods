@@ -106,7 +106,7 @@ export const CartContextProvider = (props: PropsType) => {
        setIsAdmin(adminStatus);
        toast.success('Logged in succefully!')
       } catch (error:any) {
-        toast.error('Error while logging in')
+        toast.error(error.response.data.message)
         throw new Error
       }
     },[])
@@ -279,7 +279,7 @@ export const CartContextProvider = (props: PropsType) => {
     } catch (error: any) {
       debugger
       console.error('Error adding product to wish list', error);
-      toast.error("Please log in to add items to wish list");
+      toast.error(error.response.data.message);
     }
 
   }, []);
@@ -400,7 +400,7 @@ export const CartContextProvider = (props: PropsType) => {
   }
    } catch (error:any) {
     console.error('Error clearing cart', error);
-    toast.error('An error occurred while clearing the cart.');
+    toast.error(error.response.data.message);
    }
   }, [cartProducts]);
 
@@ -421,7 +421,7 @@ export const CartContextProvider = (props: PropsType) => {
   }
    } catch (error:any) {
     console.error('Error clearing wish list', error);
-    toast.error('An error occurred while clearing the wish list.');
+    toast.error(error.response.data.message);
    }
   }, [wishProducts]);
 
