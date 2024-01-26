@@ -1,29 +1,33 @@
-"use client"
-import React from "react";
+"use client";
+import React, { useEffect, useState } from "react";
 import ProductCard from "./Products/ProductCard";
 import { cartProductType } from "../product/[productId]/ProductDetails";
 import { wishProductType } from "../wishlist/ItemContent";
 import Link from "next/link";
 import useGetProducts from "@/hooks/useGetProducts";
 
-const FeaturedProduct: React.FC<any> = ({  type }) => {
-  const {productss} = useGetProducts()
-  const displayedProducts = productss
+const FeaturedProduct: React.FC<any> = ({ type }) => {
+  const { productss } = useGetProducts();
+  const [displayedProducts, setDisplayedProducts] = useState(productss);
+
+  useEffect(() => {
+    // Shuffle the products when the component mounts or when productss changes
+    const shuffledProducts = [...productss].sort(() => 0.5 - Math.random());
+    setDisplayedProducts(shuffledProducts);
+  }, [productss]);
+
   // Define functions to filter products based on type
   const filterNewArrival = (products: any) => {
-  
     return products.slice(0, 6);
   };
 
   const filterMostPopular = (products: any) => {
     const sortedProducts = products.sort((a: any, b: any) => b.price - a.price);
-    
     return sortedProducts.slice(0, 6);
   };
 
   const filterFeatured = (products: any) => {
-    const shuffledProducts = products.sort(() => 0.5 - Math.random());
-    return shuffledProducts.slice(0, 6);
+    return products.slice(0, 6);
   };
 
   // Select the appropriate filter function based on the type
@@ -37,7 +41,7 @@ const FeaturedProduct: React.FC<any> = ({  type }) => {
   const filteredProducts = filterFunction(displayedProducts);
 
   return (
-    <section className="mt-9 py-5  ">
+    <section className="mt-9 py-5 ">
       <span className="flex justify-between items-center gap-4">
         <h1 className="text-start text-black font-semibold text-4xl mb-6 text-nowrap">
           {type === "newArrival"

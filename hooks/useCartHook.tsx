@@ -1,6 +1,7 @@
 import { cartProductType } from "@/app/product/[productId]/ProductDetails";
 import { wishProductType } from "@/app/wishlist/ItemContent";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 import {
   createContext,
   useCallback,
@@ -59,6 +60,8 @@ export const CartContextProvider = (props: PropsType) => {
   const [userData, setUserData] = useState(null)
   const [userToken, setUserToken] = useState(null)
   const [isAdmin, setIsAdmin] = useState(null)
+
+  const router = useRouter()
 
 
 
@@ -134,6 +137,7 @@ export const CartContextProvider = (props: PropsType) => {
       localStorage.removeItem('user');
       localStorage.removeItem('isAdmin');
       toast.success('Logged out succefully!')
+      router.push('/')
     }
 
 

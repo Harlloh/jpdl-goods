@@ -43,10 +43,14 @@ export default async function Home() {
         <Container>
           <div className="mb-9">
             {/* <ShopCategories  /> */}
-            <Homebanner />
+            <Homebanner head1={'Summer Sale!'} p1={'Enjoy discounts on selected items'} p2={' GET 50% OFF'} />
           </div>
           <FeaturedProduct type="newArrival" />
+          <Homebanner head1={'Summer Sale!'} p1={'Enjoy discounts on selected items'} p2={' GET 50% OFF'} left/>
+
           <FeaturedProduct type="mostPopular" />
+          <Homebanner head1={'Summer Sale!'} p1={'Enjoy discounts on selected items'} p2={' GET 50% OFF'}/>
+
           <FeaturedProduct type="featured" />
 
         </Container>

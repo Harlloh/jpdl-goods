@@ -81,6 +81,7 @@ function CartClient() {
         <div className="w-[90px]">
           <Button
             lable="Clear cart"
+            disabled={!token}
             outline
             small
             handleClick={() => handleClearCart(token)}
@@ -94,7 +95,7 @@ function CartClient() {
           <p className="text-slate-500">
             Taxes and Shipping calcaulated at checkout
           </p>
-          <Button lable="Checkout" handleClick={handleCheckout} />
+          <Button disabled={!token} lable={`${token ? "Checkout" : "Log in to checkout"}`} handleClick={handleCheckout} />
           <Link
             href={"/"}
             className="text-slate-500 flex items-center gap-1 mt-2"

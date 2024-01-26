@@ -24,10 +24,7 @@ const Summary = () => {
 
   useEffect(() => {
     if (!isLoading) {
-      // Fetch data and update state after both calls are completed
-      Promise.all([fetchProducts(), fetchUsers()])
-        .then(() => {
-          // Data has been fetched, update the state
+      
           setSummaryData((prev) => {
             let tempData = { ...prev };
             const totalSale = orders.reduce((accumulator, item) => {
@@ -59,13 +56,9 @@ const Summary = () => {
 
             return tempData;
           });
-        })
-        .catch((error) => {
-          // Handle errors if necessary
-          console.error("Error fetching data:", error);
-        });
+       
     }
-  }, [ ]);
+  }, [fetchProducts, fetchUsers, isLoading, orders, productss, users]);
 
   const [summaryData, setSummaryData] = useState<SummaryDataType>({
     sale: {

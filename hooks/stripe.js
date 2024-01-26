@@ -12,8 +12,9 @@ export const checkOutService = async (product) => {
         },
       }
     );
-    return window.open(responseURL.data.data, "_blank");
+    return window.location.href = responseURL.data.data;
   } catch (error) {
     return false;
   }
 };
+ 
