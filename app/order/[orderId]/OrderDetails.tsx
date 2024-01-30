@@ -13,16 +13,24 @@ interface OrderDetailsProps {
 }
 
 const OrderDetails: React.FC<OrderDetailsProps> = ({ order }) => {
+  console.log(order,'>>>>>>>>>>>')
+  const storedisAdmin = (localStorage.getItem('isAdmin'))
+  const isAdmin = storedisAdmin ? atob(storedisAdmin) : null
+
+
+
   return (
     <div className="max-w-[1150px] m-auto flex flex-col gap-2 ">
       <div className="mt-8">
         <Heading title="Order Details" />
       </div>
       <div>Order Id: {order.id}</div>
-      <div>
+      {isAdmin&&<div>Name: {order.user.name}</div>}
+      {isAdmin&&<div>Email: {order.user.email}</div>}
+      {/* <div>
         Total Amount:{" "}
         <span className="font-bold">{formatPrice(order.amount)}</span>
-      </div>
+      </div> */}
       <div className="flex gap-2 items-center">
         <div>Payment Status:</div>
         <div>
@@ -45,10 +53,14 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order }) => {
           )}
         </div>
       </div>
+
+
+
+
       <div className="flex gap-2 items-center">
         <div>Delivery Status:</div>
         <div>
-          {order.deliveryStatus === "pending" ? (
+          {order.status === "Pending Delivery" ? (
             <Status
               text="pending"
               icon={MdAccessTime}
@@ -83,8 +95,8 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order }) => {
           <div className=" justify-self-center">QTY</div>
           <div className=" justify-self-end">TOTAL</div>
         </div>
-        {order.products &&
-          order.products.map((item: any) => {
+        {order.orderCart &&
+          order.orderCart.map((item: any) => {
             return <OrderItem key={item.id} item={item}></OrderItem>;
           })}
       </div>

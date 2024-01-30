@@ -20,20 +20,19 @@ import moment from "moment";
 import NullData from "@/app/components/NullData";
 import useGetAllUsers from "@/hooks/useGetAllUser";
 import Loading from "@/app/components/Loading";
-interface ManageOrdersClientProps {
-  orders: ExtendedOrder[];
-}
-type ExtendedOrder = any & {
-  user: any;
-};
+import useGetAllOrders from "@/hooks/getOrders";
 
-const ManageOrdersClient: React.FC<ManageOrdersClientProps> = ({ orders }) => {
 
-  // const { users, loadings, errors } = useGetAllUsers();
+const ManageOrdersClient = () => {
+
+  const { orders, loadings, errors } = useGetAllOrders();
   // console.log(users,'usersssssssssss')
 
   // if(loadings){
   //   return <Loading/>
+  // }
+  // if(errors){
+  //   return <NullData title="Error loading orders, refresh!"/>
   // }
 
 
@@ -48,14 +47,14 @@ const ManageOrdersClient: React.FC<ManageOrdersClientProps> = ({ orders }) => {
   const router = useRouter();
   let rows: any = [];
   if (orders) {
-    rows = orders.map((order) => {
+    rows = orders.map((order:any) => {
       return {
         id: order.id,
         customer: order.user.name,
         amount: formatPrice(order.amount / 100),
         paymentStatus: order.status,
         date: moment(order.createdDate).fromNow(),
-        deliveryStatus: order.deliveryStatus,
+        deliveryStatus: order.status,
       };
     });
   }
@@ -105,7 +104,7 @@ const ManageOrdersClient: React.FC<ManageOrdersClientProps> = ({ orders }) => {
       renderCell: (params) => {
         return (
           <div className="text-center items-center flex ">
-            {params.row.deliveryStatus === "pending" ? (
+            {params.row.deliveryStatus === "Pending Delivery" ? (
               <Status
                 text="pending"
                 icon={MdAccessTime}

@@ -37,6 +37,7 @@ type cartContextType = {
   wishTotalAmount: number;
   cartProducts: cartProductType[] | null;
   wishProducts: cartProductType[] | null;
+  userOrders: any[] | null;
   handleAddProductToCart: (product: cartProductType,token:any) => void;
   handleAddProductToWish: (product: cartProductType,token:any) => void;
   handleRemoveProductFromCart: (product: cartProductType,token:any) => void;
@@ -73,6 +74,9 @@ export const CartContextProvider = (props: PropsType) => {
     null
   );
   const [wishProducts, setWishProducts] = useState<cartProductType[] | null>(
+    null
+  );
+  const [userOrders, setUserOrders] = useState<any | null>(
     null
   );
 
@@ -170,10 +174,12 @@ export const CartContextProvider = (props: PropsType) => {
         // });
         const cartItems: cartProductType[] | null =  await res.data.data.cart_items;
         const wishItems: cartProductType[] | null = await res.data.data.favourites;
+        const orders: any[] | null = await res.data.data.orders;
 
 
         setCartProducts(cartItems);
         setWishProducts(wishItems);
+        setUserOrders(orders)
 
         localStorage.setItem("cartItems", JSON.stringify(cartItems));
         localStorage.setItem("wishItems", JSON.stringify(wishItems));
@@ -445,6 +451,7 @@ export const CartContextProvider = (props: PropsType) => {
     wishTotalAmount,
     cartProducts,
     wishProducts,
+    userOrders,
     handleAddProductToCart,
     handleAddProductToWish,
     handleRemoveProductFromCart,

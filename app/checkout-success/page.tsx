@@ -1,11 +1,20 @@
+"use client"
+import { useRouter } from "next/navigation"
 import Button from "../components/Button"
+import NullData from "../components/NullData"
+import Container from "../components/Container"
+import { FaCheckCircle } from "react-icons/fa"
 
 const CheckoutSuccess = () => {
-  
+  const router = useRouter()
     return (
-        <div className="w-full h-[50vh] flex items-center justify-center text-xl md:text-2xl">
-            <p className="font-medium">Order succefully</p>
-            <button >Click here to view order</button>
-        </div>)
+        <Container>
+        <div className="w-25 flex justify-between items-center flex-col m-auto mt-11 gap-2" style={{width:'25%'}}>
+            <FaCheckCircle color="teal" size={250}/>
+        <h1>Order placed succesfully</h1>
+        <Button lable="view your order" handleClick={()=> router.push('/your-order')} />
+        </div>
+        </Container>
+        )
 }
 export default CheckoutSuccess

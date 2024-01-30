@@ -41,7 +41,7 @@ const UserMenu = () => {
           <div className="absolute rounded-md shadow-md w-[170px] bg-white overflow-hidden right-0 top-12 text-sm flex flex-col cursor-pointer">
             {currentUser ? (
               <div>
-                <Link href="/order">
+                <Link href="/orders" className={`${!isAdmin ? 'flex' : 'hidden'}`}>
                   <MenuItem onClick={toggleOpen}>Your Orders</MenuItem>
                 </Link>
                 <Link href="/admin" className={`${isAdmin ? 'flex' : 'hidden'}`}>
