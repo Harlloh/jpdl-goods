@@ -1,9 +1,12 @@
 import axios from "axios";
+import { useState } from "react";
 
 export const checkOutService = async (product) => {
   const token = localStorage.getItem("user");
-  debugger
+let loading = false
+  let redirectUrl
   try {
+    loading = true
     const responseURL = await axios.post(
       "https://store-api-pyo1.onrender.com/payment/cart/check-out",
       product,
@@ -12,10 +15,14 @@ export const checkOutService = async (product) => {
           Authorization: token,
         },
       }
-    );
-    return window.location.href = responseURL.data.data;
+      );
+     redirectUrl = responseURL.data.data;
+     return {redirectUrl,loading}
   } catch (error) {
-    return false;
+    loading = false
+    return { redirectUrl: false, loading }
+  }finally{
+    loading = false
   }
 };
  

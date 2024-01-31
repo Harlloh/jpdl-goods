@@ -1,6 +1,6 @@
 "use client";
 import { useCart } from "@/hooks/useCartHook";
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { FaArrowLeft } from "react-icons/fa";
 import Heading from "../components/Heading";
@@ -31,6 +31,7 @@ export type selectedImg = {
 function CartClient() {
   const { cartProducts, handleClearCart, cartTotalQty, cartTotalAmount } =
     useCart();
+    const [isCheckoutLoading,setCheckoutLoading] = useState(false)
 
   if (!cartProducts || cartProducts.length === 0) {
     return (
@@ -38,7 +39,7 @@ function CartClient() {
         <div className="text-2xl">Your cart is empty</div>
         <div>
           <Link
-            href={"/"}
+            href={"/shop"}
             className="text-slate-500 flex items-center gap-1 mt-2"
           >
             <FaArrowLeft />
@@ -48,7 +49,7 @@ function CartClient() {
       </div>
     );
   }
-  const handleCheckout = ()=>{
+  const handleCheckout = async ()=>{
    // Log cart details when Checkout button is clicked
    console.log("Cart Products:", cartProducts);
   //  console.log("Cart Total Quantity:", cartTotalQty);
@@ -56,7 +57,16 @@ function CartClient() {
 
    // Add logic for Stripe Checkout integration here
    // ...
-    checkOutService(cartProducts);
+   const { redirectUrl, loading } = await checkOutService(cartProducts);
+   setCheckoutLoading(loading)
+   if(redirectUrl){
+    window.location.href= redirectUrl
+   }
+
+
+
+
+
 
 
    // For now, you can just log a message indicating that checkout is initiated
@@ -95,7 +105,7 @@ function CartClient() {
           <p className="text-slate-500">
             Taxes and Shipping calcaulated at checkout
           </p>
-          <Button disabled={!token} lable={`${token ? "Checkout" : "Log in to checkout"}`} handleClick={handleCheckout} />
+          <Button disabled={!token || isCheckoutLoading} lable={`${token ? "Checkout" : "Log in to checkout"}`} handleClick={handleCheckout} />
           <Link
             href={"/"}
             className="text-slate-500 flex items-center gap-1 mt-2"

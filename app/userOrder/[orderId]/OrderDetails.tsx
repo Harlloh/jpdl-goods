@@ -23,8 +23,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order }) => {
         <Heading title="Order Details" />
       </div>
       <div>Order Id: {order.id}</div>
-      {isAdmin && <div>Name: {order.user.name}</div>}
-      {isAdmin && <div>Email: {order.user.email}</div>}
+
       {/* <div>
         Total Amount:{" "}
         <span className="font-bold">{formatPrice(order.amount)}</span>
@@ -90,8 +89,8 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order }) => {
           <div className=" justify-self-center">QTY</div>
           <div className=" justify-self-end">TOTAL</div>
         </div>
-        {order.orderCart &&
-          order.orderCart.map((item: any) => {
+        {order.orderDetails &&
+          order.orderDetails.map((item: any) => {
             return <OrderItem key={item.id} item={item}></OrderItem>;
           })}
       </div>

@@ -26,7 +26,7 @@ import useGetAllOrders from "@/hooks/getOrders";
 const ManageOrdersClient = () => {
 
   const { orders, loadings, errors } = useGetAllOrders();
-  // console.log(users,'usersssssssssss')
+  console.log(orders,'usersssssssssss')
 
   // if(loadings){
   //   return <Loading/>
@@ -48,10 +48,14 @@ const ManageOrdersClient = () => {
   let rows: any = [];
   if (orders) {
     rows = orders.map((order:any) => {
+      const totalAmount = order.orderCart.reduce(
+        (acc: number, item: any) => acc + (item.price * item.quantity),
+        0
+      );
       return {
         id: order.id,
         customer: order.user.name,
-        amount: formatPrice(order.amount / 100),
+        amount: formatPrice(totalAmount),
         paymentStatus: order.status,
         date: moment(order.createdDate).fromNow(),
         deliveryStatus: order.status,

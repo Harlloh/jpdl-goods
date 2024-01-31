@@ -5,7 +5,7 @@ import { formatPrice } from "../utils/formatPrice";
 import { formatNumber } from "../utils/formatNumber";
 import { wishProductType } from "../wishlist/ItemContent";
 import useGetProducts from "@/hooks/useGetProducts";
-import { getOrders } from "@/hooks/getOrders";
+import useGetAllOrders from "@/hooks/getOrders";
 import useGetAllUsers from "@/hooks/useGetAllUser";
 
 type SummaryDataType = {
@@ -17,49 +17,8 @@ type SummaryDataType = {
 
 const Summary = () => {
   const { productss, loading, error, fetchProducts } = useGetProducts();
-  const orders = getOrders();
+  const {orders} = useGetAllOrders();
   const { users, loadings, errors, fetchUsers } = useGetAllUsers();
-
-  const isLoading = loading || loadings;
-
-  useEffect(() => {
-    if (!isLoading) {
-      
-          setSummaryData((prev) => {
-            let tempData = { ...prev };
-            const totalSale = orders.reduce((accumulator, item) => {
-              if (item.status === "complete") {
-                return accumulator + item.amount;
-              } else return accumulator;
-            }, 0);
-
-            const paidOrders = orders.filter((order) => {
-              return order.status === "complete";
-            });
-
-            const unPaidOrders = orders.filter((order) => {
-              return order.status === "pending";
-            });
-            const totalProducts = productss.length;
-            const inStockProducts = productss.filter((product:any) => product.inStock).length;
-            const outOfStockProducts = totalProducts - inStockProducts;
-
-
-            tempData.sale.digit = totalSale;
-            tempData.orders.digit = orders.length;
-            tempData.paidOrders.digit = paidOrders.length;
-            tempData.unPaidOrders.digit = unPaidOrders.length;
-            tempData.products.digit = productss.length;
-            tempData.inStockProducts.digit = inStockProducts;
-            tempData.outOfStockProducts.digit = outOfStockProducts;
-            tempData.users.digit = users.length;
-
-            return tempData;
-          });
-       
-    }
-  }, [fetchProducts, fetchUsers, isLoading, orders, productss, users]);
-
   const [summaryData, setSummaryData] = useState<SummaryDataType>({
     sale: {
       label: "Total Sale",
@@ -94,6 +53,47 @@ const Summary = () => {
       digit: 0,
     },
   });
+
+  const isLoading = loading || loadings;
+
+      useEffect(()=>{
+
+        setSummaryData((prev) => {
+          let tempData = { ...prev };
+          const totalSale = orders.reduce((accumulator, item:any) => {
+            if (item.status === "complete") {
+              return accumulator + item.amount;
+            } else return accumulator;
+          }, 0);
+
+          const paidOrders = orders.filter((order:any) => {
+            return order.status === "complete";
+          });
+
+          const unPaidOrders = orders.filter((order:any) => {
+            return order.status === "pending";
+          });
+          const totalProducts = productss.length;
+          const inStockProducts = productss.filter((product:any) => product.inStock).length;
+          const outOfStockProducts = totalProducts - inStockProducts;
+
+
+          tempData.sale.digit = totalSale;
+          tempData.orders.digit = orders.length;
+          tempData.paidOrders.digit = paidOrders.length;
+          tempData.unPaidOrders.digit = unPaidOrders.length;
+          tempData.products.digit = productss.length;
+          tempData.inStockProducts.digit = inStockProducts;
+          tempData.outOfStockProducts.digit = outOfStockProducts;
+          tempData.users.digit = users.length;
+
+          return tempData;
+        });
+     
+      },[orders, productss, users])
+    
+
+
 
   const summaryKeys = Object.keys(summaryData);
   return (

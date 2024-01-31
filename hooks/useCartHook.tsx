@@ -13,39 +13,36 @@ import { toast } from "react-hot-toast";
 
 //create the context and pass the value you want to be accessible to all component
 
-interface SignUpTypes{
-  first_name:string;
-  last_name:string;
-  password:string;
-  email:string
-
+interface SignUpTypes {
+  first_name: string;
+  last_name: string;
+  password: string;
+  email: string;
 }
-interface SignInTypes{
-
-  password:string;
-  email:string
-
+interface SignInTypes {
+  password: string;
+  email: string;
 }
 
 type cartContextType = {
-  userData: any |null,
-  isAdmin: any |null,
-  userToken: string |null,
+  userData: any | null;
+  isAdmin: any | null;
+  userToken: string | null;
   cartTotalQty: number;
   wishTotalQty: number;
   cartTotalAmount: number;
   wishTotalAmount: number;
   cartProducts: cartProductType[] | null;
   wishProducts: cartProductType[] | null;
-  userOrders: any[] | null;
-  handleAddProductToCart: (product: cartProductType,token:any) => void;
-  handleAddProductToWish: (product: cartProductType,token:any) => void;
-  handleRemoveProductFromCart: (product: cartProductType,token:any) => void;
-  handleRemoveProductFromWish: (product: wishProductType,token:any) => void;
+  userOrders: any[];
+  handleAddProductToCart: (product: cartProductType, token: any) => void;
+  handleAddProductToWish: (product: cartProductType, token: any) => void;
+  handleRemoveProductFromCart: (product: cartProductType, token: any) => void;
+  handleRemoveProductFromWish: (product: wishProductType, token: any) => void;
   handleCartQtyIncrease: (product: cartProductType) => void;
   handleCartQtyDecrease: (product: cartProductType) => void;
-  handleClearCart: (token:any) => void;
-  handleClearWish: (token:any) => void;
+  handleClearCart: (token: any) => void;
+  handleClearWish: (token: any) => void;
   handleLogOut: () => void;
   handleSignUp: (formData: SignUpTypes) => void;
   handleSignIn: (formData: SignInTypes) => void;
@@ -58,13 +55,11 @@ interface PropsType {
 }
 
 export const CartContextProvider = (props: PropsType) => {
-  const [userData, setUserData] = useState(null)
-  const [userToken, setUserToken] = useState(null)
-  const [isAdmin, setIsAdmin] = useState(null)
+  const [userData, setUserData] = useState(null);
+  const [userToken, setUserToken] = useState(null);
+  const [isAdmin, setIsAdmin] = useState(null);
 
-  const router = useRouter()
-
-
+  const router = useRouter();
 
   const [cartTotalQty, setCartTotalQty] = useState(0);
   const [wishTotalQty, setWishTotalQty] = useState(0);
@@ -76,121 +71,117 @@ export const CartContextProvider = (props: PropsType) => {
   const [wishProducts, setWishProducts] = useState<cartProductType[] | null>(
     null
   );
-  const [userOrders, setUserOrders] = useState<any | null>(
-    null
-  );
+  const [userOrders, setUserOrders] = useState<any | null>(null);
 
-    const handleSignUp = useCallback(async(formData:SignUpTypes)=>{
+  const handleSignUp = useCallback(async (formData: SignUpTypes) => {
+    try {
+      const req = await axios.post(
+        "https://store-api-pyo1.onrender.com/onboard",
+        formData
+      );
+      toast.success(req.data.message);
+      const res = req.data;
+      setUserData(res);
+      toast.success("Signed up succesfully");
+    } catch (error: any) {
+      toast.error("Signed up failed");
 
-      try {
-       const req= await axios.post('https://store-api-pyo1.onrender.com/onboard', formData)
-       toast.success(req.data.message)
-       const res = req.data
-       setUserData(res)
-       toast.success('Signed up succesfully')
-      } catch (error:any) {
-       toast.error('Signed up failed')
+      throw new Error(error);
+    }
+  }, []);
 
-        throw new Error(error)
-      }
-    },[])
+  const handleSignIn = useCallback(async (formData: SignInTypes) => {
+    try {
+      const req = await axios.post(
+        "https://store-api-pyo1.onrender.com/auth",
+        formData
+      );
+      const res = req.data;
+      const Token = req?.data?.data?.token;
+      setUserToken(Token);
+      setUserData(res);
+      localStorage.setItem("user", Token);
+      fetchUserProducts(Token);
 
-    const handleSignIn = useCallback(async(formData:SignInTypes)=>{
-      try {
-       const req= await axios.post('https://store-api-pyo1.onrender.com/auth', formData)
-       const res = req.data
-       const Token = req?.data?.data?.token;
-       setUserToken(Token)
-       setUserData(res)
-       localStorage.setItem('user', Token)
-       fetchUserProducts(Token);
+      const adminStatus = await checkAdminStatus(Token);
+      const encryptedAdminStatus = btoa(adminStatus);
 
+      localStorage.setItem("isAdmin", encryptedAdminStatus);
+      setIsAdmin(adminStatus);
+      toast.success("Logged in succefully!");
+    } catch (error: any) {
+      toast.error(error.response.data.message);
+      throw new Error();
+    }
+  }, []);
 
-       const adminStatus = await checkAdminStatus(Token);
-       const encryptedAdminStatus = btoa(adminStatus);
-
-       localStorage.setItem('isAdmin',encryptedAdminStatus)
-       setIsAdmin(adminStatus);
-       toast.success('Logged in succefully!')
-      } catch (error:any) {
-        toast.error(error.response.data.message)
-        throw new Error
-      }
-    },[])
-
-    const checkAdminStatus = async (token: string) => {
-      try {
-        const response = await axios.get('https://store-api-pyo1.onrender.com/get', {
+  const checkAdminStatus = async (token: string) => {
+    try {
+      const response = await axios.get(
+        "https://store-api-pyo1.onrender.com/get",
+        {
           headers: {
             Authorization: token,
           },
-        });
-        console.log(response,"jsdfksdfjasdfsadkjfksd")
+        }
+      );
+      console.log(response, "jsdfksdfjasdfsadkjfksd");
 
-        const isAdmin = response.data.data.isAdmin;
-        return isAdmin
-      } catch (error) {
-        // Handle error fetching admin status
-        console.error('Error checking admin status', error);
-      }
-    };
-
-    const handleLogOut = () =>{
-      setUserData(null);
-      setUserToken(null);
-      localStorage.removeItem('user');
-      localStorage.removeItem('isAdmin');
-      toast.success('Logged out succefully!')
-      router.push('/')
+      const isAdmin = response.data.data.isAdmin;
+      return isAdmin;
+    } catch (error) {
+      // Handle error fetching admin status
+      console.error("Error checking admin status", error);
     }
+  };
 
+  const handleLogOut = () => {
+    setUserData(null);
+    setUserToken(null);
+    localStorage.removeItem("user");
+    localStorage.removeItem("isAdmin");
+    toast.success("Logged out succefully!");
+    router.push("/");
+  };
 
+  useEffect(() => {
+    const storedToken = localStorage.getItem("user");
 
+    if (storedToken) {
+      fetchUserProducts(storedToken);
+    }
+  }, []);
 
-    useEffect(()=>{
-      const storedToken = localStorage.getItem('user');
+  const fetchUserProducts = async (Token: any) => {
+    try {
+      const res = await axios.get("https://store-api-pyo1.onrender.com/get", {
+        headers: {
+          Authorization: Token,
+        },
+      });
 
-      if(storedToken){
-       fetchUserProducts(storedToken)
-      }
-    },[])
+      // const wishResponse = await axios.get('https://store-api-pyo1.onrender.com/wishlist', {
+      //   headers: {
+      //     'Authorization': userToken,
+      //   },
+      // });
+      const cartItems: cartProductType[] | null = await res.data.data
+        .cart_items;
+      const wishItems: cartProductType[] | null = await res.data.data
+        .favourites;
+      const orders: any[] | null = await res.data.data.orders;
 
+      setCartProducts(cartItems);
+      setWishProducts(wishItems);
+      setUserOrders(orders);
 
-
-
-
-    const fetchUserProducts = async (Token:any) => {
-      try {
-        const res = await axios.get('https://store-api-pyo1.onrender.com/get', {
-          headers: {
-            'Authorization': Token,
-          },
-        });
-
-        // const wishResponse = await axios.get('https://store-api-pyo1.onrender.com/wishlist', {
-        //   headers: {
-        //     'Authorization': userToken,
-        //   },
-        // });
-        const cartItems: cartProductType[] | null =  await res.data.data.cart_items;
-        const wishItems: cartProductType[] | null = await res.data.data.favourites;
-        const orders: any[] | null = await res.data.data.orders;
-
-
-        setCartProducts(cartItems);
-        setWishProducts(wishItems);
-        setUserOrders(orders)
-
-        localStorage.setItem("cartItems", JSON.stringify(cartItems));
-        localStorage.setItem("wishItems", JSON.stringify(wishItems));
-      } catch (error) {
-        console.error('Error fetching cart items', error);
-        toast.error('Error fetching cart items');
-      }
-    };
-
-
-
+      localStorage.setItem("cartItems", JSON.stringify(cartItems));
+      localStorage.setItem("wishItems", JSON.stringify(wishItems));
+    } catch (error) {
+      console.error("Error fetching cart items", error);
+      toast.error("Error fetching cart items");
+    }
+  };
 
   useEffect(() => {
     const getTotals = () => {
@@ -234,84 +225,83 @@ export const CartContextProvider = (props: PropsType) => {
     getTotals();
   }, [cartProducts]);
 
+  const handleAddProductToCart = useCallback(
+    async (product: cartProductType, token: any) => {
+      try {
+        // Make a request to your server API to add the product to the user's cart
+        await axios.put(
+          `https://store-api-pyo1.onrender.com/product/cart/add`,
+          [product],
+          {
+            headers: {
+              Authorization: token,
+            },
+          }
+        );
+        // Update the local state and storage
+        setCartProducts((prev) => {
+          let updatedCart;
+          if (prev) {
+            updatedCart = [...prev, product];
+          } else {
+            updatedCart = [product];
+          }
+          toast.success("Items added to cart!");
+          localStorage.setItem("cartItems", JSON.stringify(updatedCart));
+          return updatedCart;
+        });
+      } catch (error) {
+        console.error("Error adding product to cart", error);
+        toast.error("Please log in to add items to cart");
+      }
+    },
+    []
+  );
 
-
-  const handleAddProductToCart = useCallback(async (product: cartProductType,token:any) => {
-    try {
-      // Make a request to your server API to add the product to the user's cart
-      await axios.put(`https://store-api-pyo1.onrender.com/product/cart/add`,[product],{
-        headers:{
-          'Authorization':token
-        }
-      });
-      debugger
-      // Update the local state and storage
-      setCartProducts((prev) => {
-        let updatedCart;
-        if (prev) {
-          updatedCart = [...prev, product];
-        } else {
-          updatedCart = [product];
-        }
-        toast.success("Items added to cart!");
-        localStorage.setItem("cartItems", JSON.stringify(updatedCart));
-        return updatedCart;
-      });
-    } catch (error) {
-      debugger
-      console.error('Error adding product to cart', error);
-      toast.error("Please log in to add items to cart");
-    }
-  }, []);
-
-
-
-
-
-  const handleAddProductToWish = useCallback(async (product: cartProductType, token: any) => {
-    try {
-      await axios.put(`https://store-api-pyo1.onrender.com/product/wish-list/add/${product.id}`, {}, {
-        headers: {
-          'Authorization': token
-        }
-      });
-      setWishProducts((prev) => {
-        let updateWish;
-        if (prev) {
-          updateWish = [...prev, product];
-        } else {
-          updateWish = [product];
-        }
-        toast.success("Items added to wishlist!");
-        localStorage.setItem("wishItems", JSON.stringify(updateWish));
-        return updateWish;
-      });
-    } catch (error: any) {
-      debugger
-      console.error('Error adding product to wish list', error);
-      toast.error(error.response.data.message);
-    }
-
-  }, []);
-
-
-
-
-
+  const handleAddProductToWish = useCallback(
+    async (product: cartProductType, token: any) => {
+      try {
+        await axios.put(
+          `https://store-api-pyo1.onrender.com/product/wish-list/add/${product.id}`,
+          {},
+          {
+            headers: {
+              Authorization: token,
+            },
+          }
+        );
+        setWishProducts((prev) => {
+          let updateWish;
+          if (prev) {
+            updateWish = [...prev, product];
+          } else {
+            updateWish = [product];
+          }
+          toast.success("Items added to wishlist!");
+          localStorage.setItem("wishItems", JSON.stringify(updateWish));
+          return updateWish;
+        });
+      } catch (error: any) {
+        console.error("Error adding product to wish list", error);
+        toast.error(error.response.data.message);
+      }
+    },
+    []
+  );
 
   const handleRemoveProductFromCart = useCallback(
-   async (product: cartProductType, token:any) => {
-    debugger
-
+    async (product: cartProductType, token: any) => {
       try {
-        await axios.put(`https://store-api-pyo1.onrender.com/product/cart/remove?productID=${product.id}`,{},{
-          headers:{
-            'Authorization':token
+        await axios.put(
+          `https://store-api-pyo1.onrender.com/product/cart/remove?productID=${product.id}`,
+          {},
+          {
+            headers: {
+              Authorization: token,
+            },
           }
-        });
-      } catch (error:any) {
-
-      }
+        );
+      } catch (error: any) {}
       if (cartProducts) {
         const filteredProduct = cartProducts.filter((item) => {
           return item.id !== product.id;
@@ -324,20 +314,19 @@ export const CartContextProvider = (props: PropsType) => {
     [cartProducts]
   );
 
-
-
   const handleRemoveProductFromWish = useCallback(
-   async (product: wishProductType,token:any) => {
-    debugger
+    async (product: wishProductType, token: any) => {
       try {
-        await axios.put(`https://store-api-pyo1.onrender.com/product/wish-list/remove/${product.id}`,{},{
-          headers:{
-            'Authorization':token
+        await axios.put(
+          `https://store-api-pyo1.onrender.com/product/wish-list/remove/${product.id}`,
+          {},
+          {
+            headers: {
+              Authorization: token,
+            },
           }
-        });
-      } catch (error:any) {
-
-      }
+        );
+      } catch (error: any) {}
       if (wishProducts) {
         const filteredProduct = wishProducts.filter((item) => {
           return item.id !== product.id;
@@ -394,51 +383,60 @@ export const CartContextProvider = (props: PropsType) => {
     [cartProducts]
   );
 
-  const handleClearCart = useCallback(async(token:any) => {
-   try {
-   const res = await axios.put(`https://store-api-pyo1.onrender.com/product/cart/remove?clearAll=${true}`,{},{
-    headers:{
-      'Authorization':token
-    }
-   })
-   if(res.status){
-     setCartProducts(null);
-     setCartTotalQty(0);
-     localStorage.removeItem("cartItems");
-   }else {
-    toast.error('Failed to clear cart. Please try again.');
-  }
-   } catch (error:any) {
-    console.error('Error clearing cart', error);
-    toast.error(error.response.data.message);
-   }
-  }, [cartProducts]);
+  const handleClearCart = useCallback(
+    async (token: any) => {
+      debugger;
+      try {
+        const res = await axios.put(
+          `https://store-api-pyo1.onrender.com/product/cart/remove?clearAll=${true}`,
+          {},
+          {
+            headers: {
+              Authorization: token,
+            },
+          }
+        );
+        if (res.status) {
+          setCartProducts(null);
+          setCartTotalQty(0);
+          localStorage.removeItem("cartItems");
+        } else {
+          toast.error("Failed to clear cart. Please try again.");
+        }
+      } catch (error: any) {
+        console.error("Error clearing cart", error);
+        toast.error(error.response.data.message);
+      }
+    },
+    [cartProducts]
+  );
 
-
-  const handleClearWish = useCallback(async(token:any) => {
-   try {
-   const res = await axios.put(`https://store-api-pyo1.onrender.com/product/wish-list/remove?clearAll=${true}`,{},{
-    headers:{
-      'Authorization':token
-    }
-   })
-   if(res.status){
-    setWishProducts(null);
-    setWishTotalQty(0);
-    localStorage.removeItem("wishItems");
-   }else {
-    toast.error('Failed to clear wishlist. Please try again.');
-  }
-   } catch (error:any) {
-    console.error('Error clearing wish list', error);
-    toast.error(error.response.data.message);
-   }
-  }, [wishProducts]);
-
-
-
-
-
+  const handleClearWish = useCallback(
+    async (token: any) => {
+      try {
+        const res = await axios.put(
+          `https://store-api-pyo1.onrender.com/product/wish-list/remove?clearAll=${true}`,
+          {},
+          {
+            headers: {
+              Authorization: token,
+            },
+          }
+        );
+        if (res.status) {
+          setWishProducts(null);
+          setWishTotalQty(0);
+          localStorage.removeItem("wishItems");
+        } else {
+          toast.error("Failed to clear wishlist. Please try again.");
+        }
+      } catch (error: any) {
+        console.error("Error clearing wish list", error);
+        toast.error(error.response.data.message);
+      }
+    },
+    [wishProducts]
+  );
 
   const value = {
     userData,
@@ -462,7 +460,7 @@ export const CartContextProvider = (props: PropsType) => {
     handleClearWish,
     handleSignIn,
     handleSignUp,
-    handleLogOut
+    handleLogOut,
   };
   return <cartContext.Provider value={value} {...props} />;
 };

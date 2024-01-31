@@ -4,8 +4,15 @@ import Button from "../components/Button"
 import NullData from "../components/NullData"
 import Container from "../components/Container"
 import { FaCheckCircle } from "react-icons/fa"
+import { useCart } from "@/hooks/useCartHook"
+import { useEffect } from "react"
 
 const CheckoutSuccess = () => {
+  const {handleClearCart} = useCart()
+  const token = localStorage.getItem('user')
+  useEffect(()=>{
+    handleClearCart(token)
+  },[])
   const router = useRouter()
     return (
         <Container>
