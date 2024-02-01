@@ -42,7 +42,8 @@ const ManageUsersClient = () => {
   if (users) {
     rows = users.map((product: any, index) => {
       return {
-        id: index + 1, // Use the appropriate property as the unique identifier
+        sn: index + 1,
+        id: product.id, // Use the appropriate property as the unique identifier
         name: product.profile.first_name + " " + product.profile.last_name,
         email: product.profile.email,
         // price: formatPrice(product.price),
@@ -55,7 +56,7 @@ const ManageUsersClient = () => {
     });
   }
   const columns: GridColDef[] = [
-    { field: "id", headerName: "S/N", width: 50 },
+    { field: "sn", headerName: "S/N", width: 50 },
     { field: "name", headerName: "Name", width: 220 },
     // {
     //     field: "price",
@@ -150,7 +151,7 @@ const ManageUsersClient = () => {
   //this is to change the status from either in stock or out of stock
   const handleUserBan = useCallback((userId: string) => {
     axios
-      .post(
+      .put(
         `https://store-api-pyo1.onrender.com/user/block/${userId}`,
         {},
         {
@@ -222,7 +223,7 @@ const ManageUsersClient = () => {
       <div className="mb-4 mt-8">
         <Heading title="Manage Users" center />
       </div>
-      <div style={{ height: 600, width: "100%" }}>
+      <div style={{ height: 800, width: "100%" }}>
         <DataGrid
           rows={rows}
           columns={columns}

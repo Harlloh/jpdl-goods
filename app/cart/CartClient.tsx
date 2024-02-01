@@ -97,7 +97,7 @@ function CartClient() {
             handleClick={handleCheckout}
           />
           <Link
-            href={"/"}
+            href={"/shop"}
             className="text-slate-500 flex items-center gap-1 mt-2"
           >
             <FaArrowLeft />

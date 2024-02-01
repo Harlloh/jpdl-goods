@@ -11,6 +11,8 @@ import {
   MdDone,
   MdRemoveRedEye,
 } from "react-icons/md";
+import { BiTimeFive } from "react-icons/bi";
+
 import ActionBtn from "@/app/components/ActionBtn";
 import axios from "axios";
 import toast from "react-hot-toast";
@@ -22,11 +24,9 @@ import useGetAllUsers from "@/hooks/useGetAllUser";
 import Loading from "@/app/components/Loading";
 import useGetAllOrders from "@/hooks/getOrders";
 
-
 const ManageOrdersClient = () => {
-
   const { orders, loadings, errors } = useGetAllOrders();
-  console.log(orders,'usersssssssssss')
+  console.log(orders, "usersssssssssss");
 
   // if(loadings){
   //   return <Loading/>
@@ -35,36 +35,34 @@ const ManageOrdersClient = () => {
   //   return <NullData title="Error loading orders, refresh!"/>
   // }
 
-
-  const storedisAdmin = (localStorage.getItem('isAdmin'))
-  const isAdmin = storedisAdmin ? atob(storedisAdmin) : null
+  const storedisAdmin = localStorage.getItem("isAdmin");
+  const isAdmin = storedisAdmin ? atob(storedisAdmin) : null;
   if (!isAdmin) {
     return <NullData title="Oops access denied" />;
   }
 
-
-
   const router = useRouter();
   let rows: any = [];
   if (orders) {
-    rows = orders.map((order:any) => {
+    rows = orders.map((order: any, index) => {
       const totalAmount = order.orderCart.reduce(
-        (acc: number, item: any) => acc + (item.price * item.quantity),
+        (acc: number, item: any) => acc + item.price * item.quantity,
         0
       );
       return {
         id: order.id,
+        sn: index + 1,
         customer: order.user.name,
         amount: formatPrice(totalAmount),
-        paymentStatus: order.status,
+        paymentStatus: order.payment_status,
         date: moment(order.createdDate).fromNow(),
-        deliveryStatus: order.status,
+        deliveryStatus: order.delivery_status,
       };
     });
   }
   const columns: GridColDef[] = [
-    { field: "id", headerName: "ID", width: 220 },
-    { field: "customer", headerName: "Customer Name", width: 130 },
+    { field: "sn", headerName: "S/N", width: 70 },
+    { field: "customer", headerName: "Customer Name", width: 150 },
     {
       field: "amount",
       headerName: "Amount(USD)",
@@ -76,11 +74,11 @@ const ManageOrdersClient = () => {
     {
       field: "paymentStatus",
       headerName: "Payment Status",
-      width: 130,
+      width: 150,
       renderCell: (params) => {
         return (
           <div className="text-center items-center flex ">
-            {params.row.paymentStatus === "pending" ? (
+            {params.row.paymentStatus === "open" ? (
               <Status
                 text="pending"
                 icon={MdAccessTime}
@@ -92,6 +90,13 @@ const ManageOrdersClient = () => {
                 text="Completed"
                 icon={MdDone}
                 bg="bg-green-200"
+                color="text-green-700"
+              />
+            ) : params.row.paymentStatus === "expired" ? (
+              <Status
+                text="Expired"
+                icon={BiTimeFive}
+                bg="bg-red-200"
                 color="text-green-700"
               />
             ) : (
@@ -182,8 +187,6 @@ const ManageOrdersClient = () => {
       });
   }, []);
 
-
-
   //this is to change the status from either in stock or out of stock
   const handleDelevered = useCallback((id: string) => {
     axios
@@ -203,13 +206,13 @@ const ManageOrdersClient = () => {
       <div className="mb-4 mt-8">
         <Heading title="Manage Orders" center />
       </div>
-      <div style={{ height: 600, width: "100%" }}>
+      <div style={{ height: 800, width: "100%" }}>
         <DataGrid
           rows={rows}
           columns={columns}
           initialState={{
             pagination: {
-              paginationModel: { page: 0, pageSize: 10},
+              paginationModel: { page: 0, pageSize: 10 },
             },
           }}
           pageSizeOptions={[5, 10]}
