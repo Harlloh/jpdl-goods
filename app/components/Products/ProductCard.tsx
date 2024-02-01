@@ -36,22 +36,28 @@ const ProductCard: React.FC<ProductCardProps> = ({ data }) => {
     }
   }, [wishProducts]);
 
-  const userToken = localStorage.getItem('user')
+  const userToken = localStorage.getItem("user");
 
   return (
     <div className="col-span-1 shadow-sm cursor-pointer border-[1.2px] border-slate-200 bg-slate-50 rounded-md p-2 transition hover:scale-105 text-center text-sm">
       <div className=" flex flex-col items-center w-full gap-1 ">
         <div className="aspect-square overflow-hidden relative w-full">
-          <p className={`absolute top-0 left-0 py-1 px-2 bg-orange-700 text-white rounded ${data.inStock && 'hidden'}`}>{!data.inStock && 'Out of Stock'}</p>
+          <p
+            className={`absolute top-0 left-0 py-1 px-2 bg-orange-700 text-white rounded ${
+              data.inStock && "hidden"
+            }`}
+          >
+            {!data.inStock && "Out of Stock"}
+          </p>
           {isProductInWishlist ? (
             <FaHeart
-              onClick={() => handleRemoveProductFromWish(data,userToken)}
+              onClick={() => handleRemoveProductFromWish(data, userToken)}
               size={35}
               className="cursor-pointer absolute top-0 right-0 color-red"
             />
           ) : (
             <CiHeart
-              onClick={() => handleAddProductToWish(data,userToken)}
+              onClick={() => handleAddProductToWish(data, userToken)}
               size={35}
               className="cursor-pointer absolute top-0 right-0 color-red"
             />

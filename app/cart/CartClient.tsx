@@ -5,11 +5,10 @@ import Link from "next/link";
 import { FaArrowLeft } from "react-icons/fa";
 import Heading from "../components/Heading";
 import { cartProductType } from "../product/[productId]/ProductDetails";
-import { checkOutService } from "@/hooks/stripe.js"
+import { checkOutService } from "@/hooks/stripe.js";
 import Button from "../components/Button";
 import ItemContent from "./ItemContent";
 import { formatPrice } from "../utils/formatPrice";
-
 
 export type checkOutProductType = {
   id: string;
@@ -31,8 +30,7 @@ export type selectedImg = {
 function CartClient() {
   const { cartProducts, handleClearCart, cartTotalQty, cartTotalAmount } =
     useCart();
-    const [isCheckoutLoading,setCheckoutLoading] = useState(false)
-
+  const [isCheckoutLoading, setCheckoutLoading] = useState(false);
   if (!cartProducts || cartProducts.length === 0) {
     return (
       <div className="flex flex-col items-center ">
@@ -49,29 +47,17 @@ function CartClient() {
       </div>
     );
   }
-  const handleCheckout = async ()=>{
-   // Log cart details when Checkout button is clicked
-   console.log("Cart Products:", cartProducts);
-  //  console.log("Cart Total Quantity:", cartTotalQty);
-  //  console.log("Cart Total Amount:", cartTotalAmount);
+  const handleCheckout = async () => {
+    console.log("Cart Products:", cartProducts);
+    const { redirectUrl, loading } = await checkOutService(cartProducts);
+    setCheckoutLoading(loading);
+    if (redirectUrl) {
+      window.location.href = redirectUrl;
+    }
 
-   // Add logic for Stripe Checkout integration here
-   // ...
-   const { redirectUrl, loading } = await checkOutService(cartProducts);
-   setCheckoutLoading(loading)
-   if(redirectUrl){
-    window.location.href= redirectUrl
-   }
-
-
-
-
-
-
-
-   // For now, you can just log a message indicating that checkout is initiated
-  }
-  const token = localStorage.getItem('user')
+    // For now, you can just log a message indicating that checkout is initiated
+  };
+  const token = localStorage.getItem("user");
   return (
     <div>
       <Heading title="Shopping Cart" center />
@@ -105,7 +91,11 @@ function CartClient() {
           <p className="text-slate-500">
             Taxes and Shipping calcaulated at checkout
           </p>
-          <Button disabled={!token || isCheckoutLoading} lable={`${token ? "Checkout" : "Log in to checkout"}`} handleClick={handleCheckout} />
+          <Button
+            disabled={!token || isCheckoutLoading}
+            lable={`${token ? "Checkout" : "Log in to checkout"}`}
+            handleClick={handleCheckout}
+          />
           <Link
             href={"/"}
             className="text-slate-500 flex items-center gap-1 mt-2"

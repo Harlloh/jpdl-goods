@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import React from "react";
 import ProductDetails from "./ProductDetails";
 import Container from "@/app/components/Container";
@@ -14,14 +14,15 @@ function Product({ params }: { params: IParams }) {
   const { productss, loading, error } = useGetProducts();
 
   if (loading) {
-    return <Loading/>
+    return <Loading />;
   }
 
   if (error) {
     return <p>Error: {error}</p>;
   }
-  const product = productss.find((item:any) =>{
-    return item.id === params.productId});
+  const product = productss.find((item: any) => {
+    return item.id === params.productId;
+  });
   return (
     <Container>
       <div>

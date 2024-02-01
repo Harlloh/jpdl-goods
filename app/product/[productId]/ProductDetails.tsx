@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { truncateText } from "@/app/utils/TruncateText";
 import { formatPrice } from "@/app/utils/formatPrice";
+import ListRating from "./ListRating";
 
 interface ProductParams {
   products: any;
@@ -26,6 +27,7 @@ export type cartProductType = {
   selectedImage: selectedImg;
   quantity: number;
   price: number;
+  reviews: any[];
 };
 
 export type selectedImg = {
@@ -39,12 +41,16 @@ const Horizontal = () => {
 };
 
 const ProductDetails: React.FC<ProductParams> = ({ products }) => {
-  const userToken = localStorage.getItem('user')
+  const userToken = localStorage.getItem("user");
   const router = useRouter();
+
   const { handleAddProductToCart, cartProducts } = useCart();
+
   const [isProductInCart, setIsProductInCart] = useState(false);
-  console.log(products.reviews?.length)
-  const productRating = products.length > 0 ? products?.reviews?.length : null
+  console.log(products, ">>>>>>>>>>>>>>>>>>>>>>>>");
+
+  console.log(products.reviews?.length);
+  const productRating = products.length > 0 ? products?.reviews?.length : null;
 
   const [cartProduct, setCartProduct] = useState<cartProductType>({
     id: products.id,
@@ -55,9 +61,8 @@ const ProductDetails: React.FC<ProductParams> = ({ products }) => {
     selectedImage: { ...products.images[0] },
     quantity: 1,
     price: products.price,
+    reviews: products.reviews,
   });
-
-  console.log(cartProducts);
 
   const handleColorSelect = useCallback(
     (value: selectedImg) => {
@@ -129,7 +134,7 @@ const ProductDetails: React.FC<ProductParams> = ({ products }) => {
       />
 
       <div className="flex flex-col gap-1 text-slate-500 text-sm">
-        <h2 className="text-3xl font-medium text-slate-700 text-3xl ">
+        <h2 className=" font-medium text-slate-700 text-3xl ">
           {truncateText(products?.name)}
         </h2>
 
@@ -156,14 +161,11 @@ const ProductDetails: React.FC<ProductParams> = ({ products }) => {
         </div>
         <div>
           <span className=" flex items-center gap-2">
-            
-          <p className="font-semibold">
-          PRICE:
-          </p>
-          <p className="font-bold text-orange-500">
-          {formatPrice(products.price)}
-          </p>
-             </span>
+            <p className="font-semibold">PRICE:</p>
+            <p className="font-bold text-orange-500">
+              {formatPrice(products.price)}
+            </p>
+          </span>
         </div>
 
         <div className={products.inStock ? "text-teal-400" : "text-rose-400"}>
@@ -212,7 +214,9 @@ const ProductDetails: React.FC<ProductParams> = ({ products }) => {
               <Button
                 disabled={!products.inStock}
                 lable={"Add to cart"}
-                handleClick={() => handleAddProductToCart(cartProduct,userToken)}
+                handleClick={() => {
+                  handleAddProductToCart(cartProduct, userToken);
+                }}
               />
               <Link
                 href={"/shop"}

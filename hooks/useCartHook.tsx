@@ -385,7 +385,6 @@ export const CartContextProvider = (props: PropsType) => {
 
   const handleClearCart = useCallback(
     async (token: any) => {
-      debugger;
       try {
         const res = await axios.put(
           `https://store-api-pyo1.onrender.com/product/cart/remove?clearAll=${true}`,

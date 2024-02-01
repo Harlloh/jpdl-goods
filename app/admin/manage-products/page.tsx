@@ -5,12 +5,10 @@ import Container from "@/app/components/Container";
 import { products } from "@/app/utils/Product";
 
 async function ManageProducts() {
-
-  debugger;
   return (
     <div>
       <Container>
-        <ManageProductClient/>
+        <ManageProductClient />
       </Container>
     </div>
   );
