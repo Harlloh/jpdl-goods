@@ -132,12 +132,12 @@ const ManageProductClient = () => {
                 router.push(`/product/${params.row.id}`);
               }}
             />
-            <ActionBtn
+            {/* <ActionBtn
               icon={MdEdit}
               onClick={() => {
-                router.push(`/edit/${params.row.id}`);
+                router.push(`/admin/edit/${params.row.id}`);
               }}
-            />
+            /> */}
           </div>
         );
       },

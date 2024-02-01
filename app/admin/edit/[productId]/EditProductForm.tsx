@@ -28,6 +28,7 @@ import { useCart } from "@/hooks/useCartHook";
 import NullData from "@/app/components/NullData";
 import getShopCategories from "@/hooks/getShopCategories";
 
+// ... (existing imports)
 export type ImageType = {
   color: string;
   colorCode: string;
@@ -40,7 +41,11 @@ export type UploadedImageType = {
   image: string;
 };
 
-function AddProductForm() {
+interface EditProductFormProps {
+  product: any;
+}
+
+const EditProductForm: React.FC<EditProductFormProps> = ({ product }) => {
   const [selectedImages, setSelectedImages] = useState<ImageType[]>([]);
   const {
     isAddingCategory,
@@ -57,10 +62,8 @@ function AddProductForm() {
   const storedisAdmin = localStorage.getItem("isAdmin");
   const isAdmin = storedisAdmin ? atob(storedisAdmin) : null;
   const userToken = localStorage.getItem("user");
-  // const [categories,setCategories] = useState([])
 
   if (!isAdmin) {
-    console.log(isAdmin, "ksadfkjds");
     return <NullData title="Oops access denied" />;
   }
 
@@ -73,13 +76,13 @@ function AddProductForm() {
     formState: { errors },
   } = useForm<FieldValues>({
     defaultValues: {
-      name: "",
-      description: "",
-      price: "",
-      brand: "",
-      category: "",
-      inStock: false,
-      images: [],
+      name: product.name,
+      description: product.description,
+      price: product.price.toString(),
+      brand: product.brand,
+      category: product.category,
+      inStock: product.inStock,
+      images: product.images,
     },
   });
   const setCustomValue = (id: string, value: any) => {
@@ -103,7 +106,6 @@ function AddProductForm() {
   }, [isProductCreated]);
 
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
-    console.log(data, "data");
     data.price = parseFloat(data.price as string);
 
     //upload images to firebase
@@ -122,13 +124,11 @@ function AddProductForm() {
     }
 
     const handleImageUpload = async () => {
-      toast("Creating product, please wait...");
+      toast("Updating product, please wait...");
       try {
         for (const item of data.images) {
           if (item.image) {
-            //start working with firebase
             const fileName = new Date().getTime() + "-" + item.image.name;
-            // declare firebase storage
             const storage = getStorage(firebaseApp);
             const storageRef = ref(storage, `products/${fileName}`);
             const uploadTask = uploadBytesResumable(storageRef, item.image);
@@ -140,37 +140,12 @@ function AddProductForm() {
                   const progress =
                     (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
                   console.log("Upload is " + progress + "% done");
-                  switch (snapshot.state) {
-                    case "paused":
-                      console.log("Upload is paused");
-                      break;
-                    case "running":
-                      console.log("Upload is running");
-                      break;
-                  }
                 },
                 (error) => {
                   console.log("error uploading image");
                   reject(error);
-                  // A full list of error codes is available at
-                  // https://firebase.google.com/docs/storage/web/handle-errors
-                  switch (error.code) {
-                    case "storage/unauthorized":
-                      // User doesn't have permission to access the object
-                      break;
-                    case "storage/canceled":
-                      // User canceled the upload
-                      break;
-
-                    // ...
-
-                    case "storage/unknown":
-                      // Unknown error occurred, inspect error.serverResponse
-                      break;
-                  }
                 },
                 () => {
-                  // Upload completed successfully, now we can get the download URL
                   getDownloadURL(uploadTask.snapshot.ref)
                     .then((downloadURL) => {
                       uploadedImages.push({
@@ -193,26 +168,30 @@ function AddProductForm() {
         setIsLoading(false);
         console.log("Error handling image uploads", error);
         return toast.error("Error handling image upload");
-        // rejects(error)
       }
     };
+
     await handleImageUpload();
     const productData = { ...data, images: uploadedImages };
-    //MAKE THE POST REQUEST
-    //pending create product api
+
+    // Use PUT request for updating an existing product
     axios
-      .post("https://store-api-pyo1.onrender.com/product/create", productData, {
-        headers: {
-          Authorization: userToken,
-        },
-      })
+      .put(
+        `https://store-api-pyo1.onrender.com/product/update/${product.id}`,
+        productData,
+        {
+          headers: {
+            Authorization: userToken,
+          },
+        }
+      )
       .then(() => {
-        toast.success("Product Added successfully");
+        toast.success("Product Updated successfully");
         setIsProductCreated(true);
         router.refresh();
       })
-      .catch((error) => {
-        toast.error("Something went wrong with the product creation");
+      .catch(() => {
+        toast.error("Failed to update product");
       })
       .finally(() => {
         setIsLoading(false);
@@ -235,9 +214,9 @@ function AddProductForm() {
   const removeImageFromState = useCallback((value: ImageType) => {
     setImages((prev) => {
       if (prev) {
-        const filteredImages = prev.filter((item) => {
-          return item.color !== value.color;
-        });
+        const filteredImages = prev.filter(
+          (item) => item.color !== value.color
+        );
         setSelectedImages(filteredImages);
         return filteredImages.length > 0 ? filteredImages : null;
       }
@@ -248,7 +227,7 @@ function AddProductForm() {
   const handleCreateCategory = async (e: React.FormEvent) => {
     e.preventDefault();
     await addCategory(newCategory);
-    fetchCategories();
+    await fetchCategories();
     setNewCategory("");
   };
 
@@ -258,16 +237,17 @@ function AddProductForm() {
 
   const fetchCategories = () => {
     try {
-      fetchProducts();
+      // Fetch categories if needed
     } catch (error) {
       console.error("Error fetching categories:", error);
     }
   };
-  const { categories, fetchProducts } = getShopCategories();
+
+  const { categories } = getShopCategories();
 
   return (
     <>
-      <Heading title="Add a Product" center />
+      <Heading title="Edit Product" center />
       <Inputs
         id="name"
         label="Name"
@@ -371,17 +351,15 @@ function AddProductForm() {
         </div>
 
         <div className="grid grid-cols-2 gap-3">
-          {Colors.map((item, index) => {
-            return (
-              <SelectColor
-                key={index}
-                item={item}
-                addImageToState={addImageToState}
-                removeImageFromState={removeImageFromState}
-                isProductCreated={isProductCreated}
-              />
-            );
-          })}
+          {Colors.map((item, index) => (
+            <SelectColor
+              key={index}
+              item={item}
+              addImageToState={addImageToState}
+              removeImageFromState={removeImageFromState}
+              isProductCreated={isProductCreated}
+            />
+          ))}
           {selectedImages && selectedImages.length > 0 && (
             <div className="mb-4">
               <div className="font-bold mb-2">Selected Images Preview:</div>
@@ -400,11 +378,11 @@ function AddProductForm() {
         </div>
       </div>
       <Button
-        lable={isLoading ? "Loading..." : "Add Product"}
+        lable={isLoading ? "Loading..." : "Update Product"}
         handleClick={handleSubmit(onSubmit)}
       />
     </>
   );
-}
+};
 
-export default AddProductForm;
+export default EditProductForm;
