@@ -64,11 +64,11 @@ const ProductCard: React.FC<ProductCardProps> = ({ data }) => {
           )}
 
           <img
-            src={data.images[0].image}
+            src={data.images[0]?.image}
             alt="kasdfsdklf"
             className="w-full h-full object-contain"
           />
-          <h1 className="hidden">{data.images[0].image}</h1>
+          <h1 className="hidden">{data.images[0]?.image}</h1>
         </div>
         <div onClick={() => router.push(`/product/${data.id}`)}>
           <div className="mt-4">{truncateText(data.name)}</div>
