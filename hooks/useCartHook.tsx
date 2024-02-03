@@ -250,9 +250,8 @@ export const CartContextProvider = (props: PropsType) => {
           localStorage.setItem("cartItems", JSON.stringify(updatedCart));
           return updatedCart;
         });
-      } catch (error) {
-        console.error("Error adding product to cart", error);
-        toast.error("Please log in to add items to cart");
+      } catch (error: any) {
+        toast.error(error.response.data.message);
       }
     },
     []

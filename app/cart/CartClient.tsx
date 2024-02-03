@@ -58,6 +58,7 @@ function CartClient() {
     // For now, you can just log a message indicating that checkout is initiated
   };
   const token = localStorage.getItem("user");
+  console.log(cartProducts);
   return (
     <div>
       <Heading title="Shopping Cart" center />

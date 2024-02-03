@@ -1,15 +1,18 @@
-"use client";
+import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
+import { Rating } from "@mui/material";
+import axios from "axios";
+import toast from "react-hot-toast";
 import Button from "@/app/components/Button";
 import Heading from "@/app/components/Heading";
 import Inputs from "@/app/components/inputs/inputs";
-import { Rating } from "@mui/material";
-import axios from "axios";
-import { useRouter } from "next/navigation";
-import React, { useState } from "react";
-import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
-import toast from "react-hot-toast";
 
-const AddRating = () => {
+interface AddRatingProps {
+  product: any;
+}
+
+const AddRating: React.FC<AddRatingProps> = ({ product }) => {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
@@ -35,46 +38,42 @@ const AddRating = () => {
   };
 
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
-    //     console.log(data);
-    //     setIsLoading(true);
-    //     if (data.rating === 0) {
-    //       setIsLoading(false);
-    //       return toast.error("No rating is selected");
-    //     }
-    //     const ratingData = { ...data, userId: user?.id, product: product };
-    //     axios
-    //       .post("/api/rating", ratingData)
-    //       .then(() => {
-    //         toast.success("Rating submitted");
-    //         router.refresh();
-    //         reset();
-    //       })
-    //       .catch((error) => {
-    //         toast.error("Something went wrong with rating this product");
-    //       })
-    //       .finally(() => {
-    //         setIsLoading(false);
-    //       });
+    setIsLoading(true);
+
+    if (data.rating === 0) {
+      setIsLoading(false);
+      return toast.error("No rating is selected");
+    }
+
+    const userToken = localStorage.getItem("user");
+
+    if (!userToken) {
+      setIsLoading(false);
+      return null;
+    }
+
+    axios
+      .post(
+        `https://store-api-pyo1.onrender.com/product/review/${product.id}`,
+        { starCount: data.rating, body: data.comment },
+        {
+          headers: {
+            Authorization: userToken,
+          },
+        }
+      )
+      .then((res) => {
+        toast.success(res.data.message);
+        router.refresh();
+        reset();
+      })
+      .catch((err: any) => {
+        toast.error(err.data.message);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   };
-
-  const userToken = localStorage.getItem("user");
-  if (
-    !userToken
-    // || !product
-  )
-    return null;
-
-  //   const deliveredOrder = user?.orders.some(
-  //     (order) =>
-  //       order.products.find((item) => item.id === product.id) &&
-  //       order.deliveryStatus === "delivered"
-  //   );
-
-  //   const userReview = product?.reviews.find(
-  //     (review: Review) => review.userId === user.id
-  //   );
-
-  //   if (userReview || !deliveredOrder) return null;
 
   return (
     <div className="flex flex-col gap-2 max-w-[500px]">
@@ -96,7 +95,6 @@ const AddRating = () => {
         lable={isLoading ? "Loading..." : "Rate this Product"}
         handleClick={handleSubmit(onSubmit)}
       />
-      .
     </div>
   );
 };

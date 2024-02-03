@@ -13,6 +13,7 @@ import Link from "next/link";
 import { truncateText } from "@/app/utils/TruncateText";
 import { formatPrice } from "@/app/utils/formatPrice";
 import ListRating from "./ListRating";
+import UserOrder from "../../userOrder/[orderId]/page";
 
 interface ProductParams {
   products: any;
@@ -47,7 +48,7 @@ const ProductDetails: React.FC<ProductParams> = ({ products }) => {
   const { handleAddProductToCart, cartProducts } = useCart();
 
   const [isProductInCart, setIsProductInCart] = useState(false);
-  console.log(products, ">>>>>>>>>>>>>>>>>>>>>>>>");
+  // console.log(products, ">>>>>>>>>>>>>>>>>>>>>>>>");
 
   console.log(products.reviews?.length);
   const productRating = products.length > 0 ? products?.reviews?.length : null;
@@ -124,6 +125,8 @@ const ProductDetails: React.FC<ProductParams> = ({ products }) => {
       }
     }
   }, [cartProducts]);
+
+  console.log(products, "from product details page");
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-12 py-6">
@@ -215,6 +218,7 @@ const ProductDetails: React.FC<ProductParams> = ({ products }) => {
                 disabled={!products.inStock}
                 lable={"Add to cart"}
                 handleClick={() => {
+                  debugger;
                   handleAddProductToCart(cartProduct, userToken);
                 }}
               />

@@ -35,7 +35,7 @@ const ManageProductClient = () => {
   const storedisAdmin = localStorage.getItem("isAdmin");
   const isAdmin = storedisAdmin ? atob(storedisAdmin) : null;
 
-  const filteredRows = productss.filter((product: any) =>
+  const filteredRows = productss?.filter((product: any) =>
     product.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -63,7 +63,7 @@ const ManageProductClient = () => {
       headerName: "Images",
       width: 170,
       renderCell: (params) => {
-        return <img src={params.row.images[0].image} alt="" />;
+        return <img src={params.row.images[0]?.image} alt="" />;
       },
     },
     { field: "name", headerName: "Name", width: 220 },

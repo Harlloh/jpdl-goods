@@ -12,7 +12,7 @@ interface RatingProps {
 
 const ListRating: React.FC<RatingProps> = ({ product }) => {
   return (
-    <div>
+    <div className="mt-5">
       <Heading title="Product Review" />
       <div className="text-sm mt-2">
         {product.reviews &&
@@ -25,12 +25,12 @@ const ListRating: React.FC<RatingProps> = ({ product }) => {
                   </div>
                   <div className="font-semibold">{review?.user.name}</div>
                   <div className="font-light">
-                    {moment(review.createdAt).fromNow()}
+                    {moment(review.createdDate).fromNow()}
                   </div>
                 </div>
                 <div className="mt-2">
-                  <Rating value={review.rating} readOnly />
-                  <div className="ml-2">{review.comment}</div>
+                  <Rating value={review.starCount} readOnly />
+                  <div className="ml-2">{review.body}</div>
                   <hr className="mb-4 mt-4" />
                 </div>
               </div>

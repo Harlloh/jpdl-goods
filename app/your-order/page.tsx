@@ -4,26 +4,32 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import Heading from "../components/Heading";
 import Status from "../components/Status";
-import { MdAccessTime, MdClose, MdDeliveryDining, MdDone } from "react-icons/md";
+import {
+  MdAccessTime,
+  MdClose,
+  MdDeliveryDining,
+  MdDone,
+} from "react-icons/md";
 import moment from "moment";
 import OrderItem from "../order/[orderId]/OrderItem";
 
 const YourOrder = () => {
-    const [order, setOrder] = useState<any>([])
-    const [paymentStatus, setPaymentStatus] = useState('')
+  const [order, setOrder] = useState<any>([]);
+  const [paymentStatus, setPaymentStatus] = useState("");
   useEffect(() => {
     const fetchData = async () => {
       try {
         const userToken = localStorage.getItem("user");
         const res = await axios.get(
-          "https://store-api-pyo1.onrender.com/order/my/order/1",{
-            headers:{
-                Authorization: userToken
-            }
+          "https://store-api-pyo1.onrender.com/order/my/order/1",
+          {
+            headers: {
+              Authorization: userToken,
+            },
           }
         );
-        setOrder(res.data.data.order)
-        setPaymentStatus(res.data.data.status)
+        setOrder(res.data.data.order);
+        setPaymentStatus(res.data.data.payment_status);
         console.log(res.data.data); // Assuming you want to log the response data
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -38,7 +44,7 @@ const YourOrder = () => {
       <div className="mt-8">
         <Heading title="Order Details" />
       </div>
-      <div>Order Id: {order?._id}</div>
+      <div>Order Id: {order?.id}</div>
       {/* <div>Name: {order.user.name}</div>
       <div>Email: {order.user.email}</div> */}
       {/* <div>
@@ -48,54 +54,51 @@ const YourOrder = () => {
       <div className="flex gap-2 items-center">
         <div>Payment Status:</div>
         <div>
-  {paymentStatus === "open" ? (
-    <Status
-      text="Open"
-      icon={MdAccessTime}
-      bg="bg-slate-200"
-      color="text-slate-700"
-    />
-  ) : paymentStatus === "complete" ? (
-    <Status
-      text="Completed"
-      icon={MdDone}
-      bg="bg-green-200"
-      color="text-green-700"
-    />
-  ) : paymentStatus === "close" ? (
-    <Status
-      text="Closed"
-      icon={MdClose}
-      bg="bg-red-200"  // Adjust the background color accordingly
-      color="text-red-700"  // Adjust the text color accordingly
-    />
-  ) : (
-    <></>
-  )}
-</div>
+          {paymentStatus === "open" ? (
+            <Status
+              text="Open"
+              icon={MdAccessTime}
+              bg="bg-slate-200"
+              color="text-slate-700"
+            />
+          ) : paymentStatus === "complete" ? (
+            <Status
+              text="Completed"
+              icon={MdDone}
+              bg="bg-green-200"
+              color="text-green-700"
+            />
+          ) : paymentStatus === "close" ? (
+            <Status
+              text="Closed"
+              icon={MdClose}
+              bg="bg-red-200" // Adjust the background color accordingly
+              color="text-red-700" // Adjust the text color accordingly
+            />
+          ) : (
+            <></>
+          )}
+        </div>
       </div>
-
-
-
 
       <div className="flex gap-2 items-center">
         <div>Delivery Status:</div>
         <div>
-          {order.status === "Pending Delivery" ? (
+          {order.delivery_status === "Pending Delivery" ? (
             <Status
               text="pending"
               icon={MdAccessTime}
               bg="bg-slate-200"
               color="text-slate-700"
             />
-          ) : order.status === "dispatched" ? (
+          ) : order.delivery_status === "Package Enroute" ? (
             <Status
               text="Dispatched"
               icon={MdDeliveryDining}
               bg="bg-purple-200"
               color="text-purple-700"
             />
-          ) : order.status === "delivered" ? (
+          ) : order.delivery_status === "Package Delivered" ? (
             <Status
               text="Delivered"
               icon={MdDone}
@@ -107,7 +110,7 @@ const YourOrder = () => {
           )}
         </div>
       </div>
-      <div>Date: {moment(order.createdAt).fromNow()}</div>
+      <div>Date: {moment(order.createdDate).fromNow()}</div>
       <div>
         <h2 className="font-semibold mt-4 mb-2">Product ordered</h2>
         <div className="grid grid-cols-5 text-xs gap-4 pb-2 items-center">

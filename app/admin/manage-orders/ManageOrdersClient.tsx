@@ -2,7 +2,7 @@
 "use client";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 // import { Order, User } from "@prisma/client";
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import { formatPrice } from "../../utils/formatPrice";
 import Heading from "@/app/components/Heading";
 import Status from "@/app/components/Status";
@@ -27,17 +27,16 @@ import useGetAllOrders from "@/hooks/getOrders";
 
 const ManageOrdersClient = () => {
   const { orders, loadings, errors, fetchOrders } = useGetAllOrders();
-  console.log(orders, "usersssssssssss");
-
-  // if(loadings){
-  //   return <Loading/>
-  // }
-  // if(errors){
-  //   return <NullData title="Error loading orders, refresh!"/>
-  // }
 
   const storedisAdmin = localStorage.getItem("isAdmin");
   const isAdmin = storedisAdmin ? atob(storedisAdmin) : null;
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const filteredRows = orders?.filter((order: any) =>
+    order.user.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+  console.log(filteredRows, "usersssssssssss");
+
   if (!isAdmin) {
     return <NullData title="Oops access denied" />;
   }
@@ -46,7 +45,7 @@ const ManageOrdersClient = () => {
   const userToken = localStorage.getItem("user");
   let rows: any = [];
   if (orders) {
-    rows = orders.map((order: any, index) => {
+    rows = filteredRows.map((order: any, index) => {
       const totalAmount = order.orderCart.reduce(
         (acc: number, item: any) => acc + item.price * item.quantity,
         0
@@ -174,6 +173,7 @@ const ManageOrdersClient = () => {
       },
     },
   ];
+  console.log(rows, "orederrrrrrr");
 
   //this is to change the status from either in stock or out of stock
   // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -221,10 +221,23 @@ const ManageOrdersClient = () => {
       });
   }, []);
 
+  const handleInputChange = (e: any) => {
+    setSearchTerm(e.target.value);
+  };
+
   return (
     <div className="max-w-[1150px] m-auto text-xl">
       <div className="mb-4 mt-8">
         <Heading title="Manage Orders" center />
+      </div>
+      <div>
+        <input
+          type="text"
+          value={searchTerm}
+          onChange={handleInputChange}
+          placeholder="search for a ORDER..."
+          className="mb-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-half p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+        />
       </div>
       <div style={{ height: 800, width: "100%" }}>
         <DataGrid

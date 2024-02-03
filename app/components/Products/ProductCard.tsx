@@ -37,6 +37,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ data }) => {
   }, [wishProducts]);
 
   const userToken = localStorage.getItem("user");
+  console.log(data, "from product card");
 
   return (
     <div className="col-span-1 shadow-sm cursor-pointer border-[1.2px] border-slate-200 bg-slate-50 rounded-md p-2 transition hover:scale-105 text-center text-sm">
