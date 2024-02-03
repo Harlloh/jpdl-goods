@@ -17,6 +17,8 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order }) => {
   const storedisAdmin = localStorage.getItem("isAdmin");
   const isAdmin = storedisAdmin ? atob(storedisAdmin) : null;
 
+  console.log(order);
+
   return (
     <div className="max-w-[1150px] m-auto flex flex-col gap-2 ">
       <div className="mt-8">
@@ -69,14 +71,14 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order }) => {
               bg="bg-slate-200"
               color="text-slate-700"
             />
-          ) : order.delivery_status === "dispatched" ? (
+          ) : order.delivery_status === "Package Enroute" ? (
             <Status
               text="Dispatched"
               icon={MdDeliveryDining}
               bg="bg-purple-200"
               color="text-purple-700"
             />
-          ) : order.delivery_status === "delivered" ? (
+          ) : order.delivery_status === "Package Delivered" ? (
             <Status
               text="Delivered"
               icon={MdDone}
@@ -89,6 +91,16 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order }) => {
         </div>
       </div>
       <div>Date: {moment(order.createdDate).fromNow()}</div>
+      <div>
+        <h2>Shipping Details</h2>
+        <p className="font-semibold">Address</p>
+        <p>Country: {order.shipping_details?.address.country}</p>
+        <p>State: {order.shipping_details?.address.state}</p>
+        <p>city: {order.shipping_details?.address.city}</p>
+        <p>Line1: {order.shipping_details?.address.line1}</p>
+        <p>Line2: {order.shipping_details?.address.line2}</p>
+        <p>Postal Code: {order.shipping_details?.address.postal_code}</p>
+      </div>
       <div>
         <h2 className="font-semibold mt-4 mb-2">Product ordered</h2>
         <div className="grid grid-cols-5 text-xs gap-4 pb-2 items-center">

@@ -6,6 +6,7 @@ import ListRating from "./ListRating";
 import { products } from "../../utils/Product";
 import useGetProducts from "@/hooks/useGetProducts";
 import Loading from "@/app/components/Loading";
+import AddRating from "./AddRating";
 interface IParams {
   productId?: string;
 }
@@ -30,6 +31,7 @@ function Product({ params }: { params: IParams }) {
         <div className="flex flex-col gap-4 mt-20">
           <div>RATING</div>
           <div>
+            <AddRating />
             <ListRating product={product} />
           </div>
         </div>

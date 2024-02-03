@@ -228,6 +228,13 @@ const ProductDetails: React.FC<ProductParams> = ({ products }) => {
             </div>
           </>
         )}
+        <Button
+          lable="Subscribe to this Product"
+          outline
+          handleClick={() => {
+            router.push("/cart");
+          }}
+        />
       </div>
     </div>
   );

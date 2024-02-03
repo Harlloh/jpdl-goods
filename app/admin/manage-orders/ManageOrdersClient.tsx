@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 "use client";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 // import { Order, User } from "@prisma/client";
@@ -25,7 +26,7 @@ import Loading from "@/app/components/Loading";
 import useGetAllOrders from "@/hooks/getOrders";
 
 const ManageOrdersClient = () => {
-  const { orders, loadings, errors } = useGetAllOrders();
+  const { orders, loadings, errors, fetchOrders } = useGetAllOrders();
   console.log(orders, "usersssssssssss");
 
   // if(loadings){
@@ -42,6 +43,7 @@ const ManageOrdersClient = () => {
   }
 
   const router = useRouter();
+  const userToken = localStorage.getItem("user");
   let rows: any = [];
   if (orders) {
     rows = orders.map((order: any, index) => {
@@ -120,14 +122,14 @@ const ManageOrdersClient = () => {
                 bg="bg-slate-200"
                 color="text-slate-700"
               />
-            ) : params.row.deliveryStatus === "dispatched" ? (
+            ) : params.row.deliveryStatus === "Package Enroute" ? (
               <Status
                 text="Dispatched"
                 icon={MdDeliveryDining}
                 bg="bg-purple-200"
                 color="text-purple-700"
               />
-            ) : params.row.deliveryStatus === "delivered" ? (
+            ) : params.row.deliveryStatus === "Package Delivered" ? (
               <Status
                 text="delivered"
                 icon={MdDone}
@@ -174,11 +176,21 @@ const ManageOrdersClient = () => {
   ];
 
   //this is to change the status from either in stock or out of stock
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const handleDispatch = useCallback((id: any) => {
     axios
-      .put("/api/order", { id, deliveryStatus: "dispatched" })
+      .put(
+        `https://store-api-pyo1.onrender.com/order/update/${id}?status=1`,
+        {},
+        {
+          headers: {
+            Authorization: userToken,
+          },
+        }
+      )
       .then((res) => {
-        toast.success("Order Dispatched");
+        toast.success(res.data.data.delivery_status);
+        fetchOrders();
         router.refresh();
       })
       .catch((error) => {
@@ -190,10 +202,18 @@ const ManageOrdersClient = () => {
   //this is to change the status from either in stock or out of stock
   const handleDelevered = useCallback((id: string) => {
     axios
-      .put("/api/order", { id, deliveryStatus: "delivered" })
+      .put(
+        `https://store-api-pyo1.onrender.com/order/update/${id}?status=2`,
+        {},
+        {
+          headers: {
+            Authorization: userToken,
+          },
+        }
+      )
       .then((res) => {
-        toast.success("Order Delivered");
-        router.refresh();
+        toast.success(res.data.data.delivery_status);
+        fetchOrders();
       })
       .catch((error) => {
         toast.error("Something went wrong");

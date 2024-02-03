@@ -48,7 +48,7 @@ const useGetAllOrders = () => {
   const [loadings, setLoading] = useState(true);
   const [errors, setError] = useState(null);
   const userToken = localStorage.getItem("user");
-  const fetchUsers = async () => {
+  const fetchOrders = async () => {
     try {
       setLoading(true);
       const res = await axios.get(
@@ -72,10 +72,10 @@ const useGetAllOrders = () => {
     }
   };
   useEffect(() => {
-    fetchUsers();
+    fetchOrders();
   }, []);
 
-  return { orders, loadings, errors, fetchUsers };
+  return { orders, loadings, errors, fetchOrders };
 };
 
 export default useGetAllOrders;

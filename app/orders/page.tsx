@@ -37,12 +37,12 @@ const Orders = () => {
         amount: formatPrice(totalAmount),
         paymentStatus: order.status,
         date: moment(order.createdDate).fromNow(),
-        deliveryStatus: order.status,
+        deliveryStatus: order.delivery_status,
       };
     });
   }
   const columns: GridColDef[] = [
-    { field: "id", headerName: "ID", width: 220 },
+    // { field: "id", headerName: "ID", width: 220 },
     // { field: "customer", headerName: "Customer Name", width: 130 },
     {
       field: "amount",
@@ -94,14 +94,14 @@ const Orders = () => {
                 bg="bg-slate-200"
                 color="text-slate-700"
               />
-            ) : params.row.deliveryStatus === "dispatched" ? (
+            ) : params.row.deliveryStatus === "Package Enroute" ? (
               <Status
                 text="Dispatched"
                 icon={MdDeliveryDining}
                 bg="bg-purple-200"
                 color="text-purple-700"
               />
-            ) : params.row.deliveryStatus === "delivered" ? (
+            ) : params.row.deliveryStatus === "Package Delivered" ? (
               <Status
                 text="delivered"
                 icon={MdDone}
@@ -135,40 +135,12 @@ const Orders = () => {
     },
   ];
 
-  //this is to change the status from either in stock or out of stock
-  const handleDispatch = useCallback((id: any) => {
-    axios
-      .put("/api/order", { id, deliveryStatus: "dispatched" })
-      .then((res) => {
-        toast.success("Order Dispatched");
-        router.refresh();
-      })
-      .catch((error) => {
-        toast.error("Something went wrong");
-        console.log(error, "error");
-      });
-  }, []);
-
-  //this is to change the status from either in stock or out of stock
-  const handleDelevered = useCallback((id: string) => {
-    axios
-      .put("/api/order", { id, deliveryStatus: "delivered" })
-      .then((res) => {
-        toast.success("Order Delivered");
-        router.refresh();
-      })
-      .catch((error) => {
-        toast.error("Something went wrong");
-        console.log(error, "error");
-      });
-  }, []);
-
   return (
     <div className="max-w-[1150px] m-auto text-xl">
       <div className="mb-4 mt-8">
         <Heading title="Your Orders" center />
       </div>
-      <div style={{ height: 600, width: "100%" }}>
+      <div style={{ height: 600, width: "80%" }}>
         <DataGrid
           rows={rows}
           columns={columns}

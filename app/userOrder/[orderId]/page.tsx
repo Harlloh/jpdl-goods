@@ -17,7 +17,7 @@ function UserOrder({ params }: { params: IParams }) {
   const { userOrders } = useCart();
   const orders = userOrders;
 
-  const order = orders.find((item: any) => {
+  const order = orders?.find((item: any) => {
     console.log(item, "************");
     return item.id === params.orderId;
   });
