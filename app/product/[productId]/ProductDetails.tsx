@@ -51,7 +51,15 @@ const ProductDetails: React.FC<ProductParams> = ({ products }) => {
   // console.log(products, ">>>>>>>>>>>>>>>>>>>>>>>>");
 
   console.log(products.reviews?.length);
-  const productRating = products.length > 0 ? products?.reviews?.length : null;
+  const productRating =
+    products.reviews.length > 0
+      ? products.reviews.reduce(
+          (acc: any, review: any) => acc + review.starCount,
+          0
+        ) / products.reviews.length
+      : null;
+
+  console.log(products);
 
   const [cartProduct, setCartProduct] = useState<cartProductType>({
     id: products.id,
@@ -126,7 +134,7 @@ const ProductDetails: React.FC<ProductParams> = ({ products }) => {
     }
   }, [cartProducts]);
 
-  console.log(products, "from product details page");
+  console.log(productRating, "from product details page");
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-12 py-6">

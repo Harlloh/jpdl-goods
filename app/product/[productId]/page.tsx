@@ -44,11 +44,6 @@ function Product({ params }: { params: IParams }) {
   });
   console.log(product, ">.");
 
-  const dliveryStatus = userOrders?.find((item: any) => {
-    return item.id === params.productId;
-  });
-  console.log(deliveryStatus);
-
   return (
     <Container>
       <div>

@@ -202,15 +202,11 @@ const ManageOrdersClient = () => {
   //this is to change the status from either in stock or out of stock
   const handleDelevered = useCallback((id: string) => {
     axios
-      .put(
-        `https://store-api-pyo1.onrender.com/order/update/${id}?status=2`,
-        {},
-        {
-          headers: {
-            Authorization: userToken,
-          },
-        }
-      )
+      .put(`https://store-api-pyo1.onrender.com/order/update/${id}?status=2`, {
+        headers: {
+          Authorization: userToken,
+        },
+      })
       .then((res) => {
         toast.success(res.data.data.delivery_status);
         fetchOrders();
