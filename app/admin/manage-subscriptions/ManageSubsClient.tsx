@@ -24,34 +24,30 @@ import NullData from "@/app/components/NullData";
 import useGetAllUsers from "@/hooks/useGetAllUser";
 import Loading from "@/app/components/Loading";
 import useGetAllOrders from "@/hooks/getOrders";
-import useOrderActions from "@/hooks/useOrderAction";
-import Orders from "../../subscriptions/page";
+import useGetAllSubs from "@/hooks/useGetSubs";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 
-const ManageOrdersClient = () => {
-  const { orders, loadings, errors, fetchOrders } = useGetAllOrders();
-  const { handleDispatch, handleDelivered } = useOrderActions();
-  let [currentPage, setCurrentPage] = useState(0);
+const ManageSubClient = () => {
+  const { subs, loadings, errors, fetchSubs } = useGetAllSubs();
 
   const storedisAdmin = localStorage.getItem("isAdmin");
   const isAdmin = storedisAdmin ? atob(storedisAdmin) : null;
   const [searchTerm, setSearchTerm] = useState("");
+  let [currentPage, setCurrentPage] = useState(0);
 
-  const filteredRows = orders?.filter(
-    (order: any) =>
-      order.user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      order.user.email.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredRows = subs?.filter((order: any) =>
+    order.user.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
   console.log(filteredRows, "usersssssssssss");
-  console.log(orders, "usersssssssssss");
 
   if (!isAdmin) {
     return <NullData title="Oops access denied" />;
   }
 
   const router = useRouter();
+  const userToken = localStorage.getItem("user");
   let rows: any = [];
-  if (orders) {
+  if (subs) {
     rows = filteredRows.map((order: any, index) => {
       const totalAmount = order.orderCart.reduce(
         (acc: number, item: any) => acc + item.price * item.quantity,
@@ -166,7 +162,7 @@ const ManageOrdersClient = () => {
             <ActionBtn
               icon={MdDone}
               onClick={() => {
-                handleDelivered(params.row.id);
+                handleDelevered(params.row.id);
               }}
             />
             <ActionBtn
@@ -197,7 +193,7 @@ const ManageOrdersClient = () => {
   //     )
   //     .then((res) => {
   //       toast.success(res.data.data.delivery_status);
-  //       fetchOrders();
+  //       fetchSubs();
   //       router.refresh();
   //     })
   //     .catch((error) => {
@@ -216,7 +212,7 @@ const ManageOrdersClient = () => {
   //     })
   //     .then((res) => {
   //       toast.success(res.data.data.delivery_status);
-  //       fetchOrders();
+  //       fetchSubs();
   //     })
   //     .catch((error) => {
   //       toast.error("Something went wrong");
@@ -229,11 +225,11 @@ const ManageOrdersClient = () => {
   };
   const handlePageChange = (params: any) => {
     setCurrentPage(++currentPage);
-    fetchOrders(currentPage);
+    fetchSubs(currentPage);
   };
   const handlePageChangeBack = (params: any) => {
     setCurrentPage((prev) => (prev -= 1));
-    fetchOrders(currentPage);
+    fetchSubs(currentPage);
   };
 
   return (
@@ -246,7 +242,7 @@ const ManageOrdersClient = () => {
           type="text"
           value={searchTerm}
           onChange={handleInputChange}
-          placeholder="search user by name or email..."
+          placeholder="search for a ORDER..."
           className="mb-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-half p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
         />
       </div>
@@ -260,8 +256,7 @@ const ManageOrdersClient = () => {
             },
           }}
           pageSizeOptions={[5, 10]}
-          // pageChange={handlePageChange}
-          // checkboxSelection
+          checkboxSelection
           disableRowSelectionOnClick
         />
       </div>
@@ -280,4 +275,4 @@ const ManageOrdersClient = () => {
   );
 };
 
-export default ManageOrdersClient;
+export default ManageSubClient;

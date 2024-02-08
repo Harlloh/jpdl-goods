@@ -40,6 +40,13 @@ function AdminNav() {
               selected={pathName === "/admin/manage-orders"}
             />
           </Link>
+          <Link href={"/admin/manage-subscriptions"}>
+            <AdminNavItem
+              label="Manage Subscriptions"
+              icon={MdFormatListBulleted}
+              selected={pathName === "/admin/manage-subscriptions"}
+            />
+          </Link>
           <Link href={"/admin/manage-users"}>
             <AdminNavItem
               label="Manage Users"

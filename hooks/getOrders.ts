@@ -48,18 +48,19 @@ const useGetAllOrders = () => {
   const [loadings, setLoading] = useState(true);
   const [errors, setError] = useState(null);
   const userToken = localStorage.getItem("user");
-  const fetchOrders = async () => {
+  const fetchOrders = async (pagenumber: number) => {
     try {
       setLoading(true);
       const res = await axios.get(
-        "https://store-api-pyo1.onrender.com/order/get/all",
+        `https://store-api-pyo1.onrender.com/order/get/all?page=${pagenumber}`,
         {
           headers: {
             Authorization: userToken,
           },
         }
       );
-      const productsData = res.data.data.map((product: any) => {
+      console.log(res, "hellloooo");
+      const productsData = res.data.data.orders.map((product: any) => {
         // Rename _id to id
         const { _id, ...rest } = product;
         return { id: _id, ...rest };
@@ -72,7 +73,7 @@ const useGetAllOrders = () => {
     }
   };
   useEffect(() => {
-    fetchOrders();
+    fetchOrders(0);
   }, []);
 
   return { orders, loadings, errors, fetchOrders };

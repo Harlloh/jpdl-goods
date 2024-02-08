@@ -9,6 +9,8 @@ import Loading from "@/app/components/Loading";
 import AddRating from "./AddRating";
 import axios from "axios";
 import { useCart } from "@/hooks/useCartHook";
+import reviews from "./reviews";
+import { useRouter } from "next/navigation";
 interface IParams {
   productId?: string;
 }
@@ -18,6 +20,7 @@ function Product({ params }: { params: IParams }) {
   const [deliveryStatus, setDeliveryStatus] = useState(false);
   const userToken = localStorage.getItem("user");
   const { userOrders } = useCart();
+  const router = useRouter();
 
   useEffect(() => {
     const orderedProduct = userOrders?.find((order: any) => {
@@ -39,10 +42,15 @@ function Product({ params }: { params: IParams }) {
   if (error) {
     return <p>Error: {error}</p>;
   }
-  const product = productss?.find((item: any) => {
+  const product = (productss as any)?.find((item: any) => {
     return item.id === params.productId;
   });
   console.log(product, ">.");
+
+  const shortReview =
+    product?.reviews?.length > 3
+      ? product?.reviews.slice(0, 3)
+      : product?.reviews;
 
   return (
     <Container>
@@ -53,7 +61,12 @@ function Product({ params }: { params: IParams }) {
           <div>
             {deliveryStatus && <AddRating product={product} />}
 
-            <ListRating product={product} />
+            <ListRating product={shortReview} />
+            {product?.reviews?.length > 3 && (
+              <button onClick={() => router.push(`/reviews/${product.id}`)}>
+                see more
+              </button>
+            )}
           </div>
         </div>
       </div>
