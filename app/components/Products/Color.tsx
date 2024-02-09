@@ -19,23 +19,22 @@ const SetColor: React.FC<SetColorPropsType> = ({
   return (
     <div>
       <div className="flex gap-4 items-center ">
-        <span className="font-semibold">COLOR:</span>
+        <span className="font-semibold">IMAGES:</span>
         <div className="flex gap-1">
           {images.map((image, index) => {
             return (
               <div
                 key={index}
                 onClick={() => handleColorSelect(image)}
-                className={`h-7 w-7 rounded-full border-teal-300 flex items-center justify-center ${
+                className={`h-7 w-7 rounded border-teal-300 flex items-center justify-center ${
                   cartProduct.selectedImage.color === image.color
                     ? "border-[1.5px]"
                     : "border-none"
                 }`}
               >
-                <div
-                  style={{ background: image.colorCode }}
-                  className="h-5 w-5 rounded-full border-[1.2px] border-slate-300 cursor-pointer"
-                ></div>
+                <div className="flex items-center font-semibold h-5 w-5 rounded border-[1.2px] border-slate-300 cursor-pointer">
+                  {image.colorCode}
+                </div>
               </div>
             );
           })}

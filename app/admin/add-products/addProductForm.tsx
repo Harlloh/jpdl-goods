@@ -50,6 +50,7 @@ function AddProductForm() {
     startAddingCategory,
     stopAddingCategory,
   } = useAddCategory();
+
   const [isLoading, setIsLoading] = useState(false);
   const [newCategory, setNewCategory] = useState("");
   const [images, setImages] = useState<ImageType[] | null>();
@@ -59,11 +60,6 @@ function AddProductForm() {
   const isAdmin = storedisAdmin ? atob(storedisAdmin) : null;
   const userToken = localStorage.getItem("user");
   // const [categories,setCategories] = useState([])
-
-  if (!isAdmin) {
-    console.log(isAdmin, "ksadfkjds");
-    return <NullData title="Oops access denied" />;
-  }
 
   const {
     register,
@@ -76,6 +72,7 @@ function AddProductForm() {
     defaultValues: {
       name: "",
       description: "",
+      sku: "",
       price: "",
       brand: "",
       category: "",
@@ -83,6 +80,7 @@ function AddProductForm() {
       images: [],
     },
   });
+
   const setCustomValue = (id: string, value: any) => {
     setValue(id, value, {
       shouldValidate: true,
@@ -265,7 +263,10 @@ function AddProductForm() {
     }
   };
   const { categories, fetchProducts } = getShopCategories();
-
+  if (!isAdmin) {
+    console.log(isAdmin, "ksadfkjds");
+    return <NullData title="Oops access denied" />;
+  }
   return (
     <>
       <Heading title="Add a Product" center />
@@ -286,6 +287,29 @@ function AddProductForm() {
         required
         type="number"
       />
+      {/* <Inputs
+        id="sku"
+        label="SKU"
+        disabled={isLoading}
+        register={register}
+        errors={errors}
+        required
+        type="text"
+      /> */}
+      <div className="w-full relative">
+        <input
+          autoComplete="off"
+          id="sku"
+          className={`peer w-full p-4 pt-6 outline-none bg-white font-light border-2 rounded-md transition disabled:opacity-70 disabled:cursor-not-allowed`}
+          type={"text"}
+        />
+        <label
+          className={`absolute cursor-text text-md duration-150 transform -translate-y-3 top-5 z-10 origin-[0] left-4 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4`}
+          htmlFor="sku"
+        >
+          SKU
+        </label>
+      </div>
       <Inputs
         id="brand"
         label="Brand"
