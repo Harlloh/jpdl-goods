@@ -27,6 +27,7 @@ import { AiOutlinePlusCircle } from "react-icons/ai";
 import { useCart } from "@/hooks/useCartHook";
 import NullData from "@/app/components/NullData";
 import getShopCategories from "@/hooks/getShopCategories";
+import { BASE_URL } from "@/api/auth/apis";
 
 // ... (existing imports)
 export type ImageType = {
@@ -176,15 +177,11 @@ const EditProductForm: React.FC<EditProductFormProps> = ({ product }) => {
 
     // Use PUT request for updating an existing product
     axios
-      .put(
-        `https://store-api-pyo1.onrender.com/product/update/${product.id}`,
-        productData,
-        {
-          headers: {
-            Authorization: userToken,
-          },
-        }
-      )
+      .put(`${BASE_URL}/product/update/${product.id}`, productData, {
+        headers: {
+          Authorization: userToken,
+        },
+      })
       .then(() => {
         toast.success("Product Updated successfully");
         setIsProductCreated(true);

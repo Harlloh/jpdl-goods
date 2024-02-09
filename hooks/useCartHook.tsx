@@ -1,3 +1,4 @@
+import { BASE_URL } from "@/api/auth/apis";
 import { cartProductType } from "@/app/product/[productId]/ProductDetails";
 import { wishProductType } from "@/app/wishlist/ItemContent";
 import axios from "axios";
@@ -75,27 +76,19 @@ export const CartContextProvider = (props: PropsType) => {
 
   const handleSignUp = useCallback(async (formData: SignUpTypes) => {
     try {
-      const req = await axios.post(
-        "https://store-api-pyo1.onrender.com/onboard",
-        formData
-      );
+      const req = await axios.post(`${BASE_URL}/onboard`, formData);
       toast.success(req.data.message);
       const res = req.data;
       setUserData(res);
       toast.success("Signed up succesfully");
     } catch (error: any) {
       toast.error("Signed up failed");
-
-      throw new Error(error);
     }
   }, []);
 
   const handleSignIn = useCallback(async (formData: SignInTypes) => {
     try {
-      const req = await axios.post(
-        "https://store-api-pyo1.onrender.com/auth",
-        formData
-      );
+      const req = await axios.post(`${BASE_URL}/auth`, formData);
       const res = req.data;
       const Token = req?.data?.data?.token;
       setUserToken(Token);
@@ -117,14 +110,11 @@ export const CartContextProvider = (props: PropsType) => {
 
   const checkAdminStatus = async (token: string) => {
     try {
-      const response = await axios.get(
-        "https://store-api-pyo1.onrender.com/get",
-        {
-          headers: {
-            Authorization: token,
-          },
-        }
-      );
+      const response = await axios.get(`${BASE_URL}/get`, {
+        headers: {
+          Authorization: token,
+        },
+      });
       console.log(response, "jsdfksdfjasdfsadkjfksd");
 
       const isAdmin = response.data.data.isAdmin;
@@ -154,13 +144,13 @@ export const CartContextProvider = (props: PropsType) => {
 
   const fetchUserProducts = async (Token: any) => {
     try {
-      const res = await axios.get("https://store-api-pyo1.onrender.com/get", {
+      const res = await axios.get(`${BASE_URL}/get`, {
         headers: {
           Authorization: Token,
         },
       });
 
-      // const wishResponse = await axios.get('https://store-api-pyo1.onrender.com/wishlist', {
+      // const wishResponse = await axios.get('${BASE_URL}/wishlist', {
       //   headers: {
       //     'Authorization': userToken,
       //   },
@@ -229,15 +219,11 @@ export const CartContextProvider = (props: PropsType) => {
     async (product: cartProductType, token: any) => {
       try {
         // Make a request to your server API to add the product to the user's cart
-        await axios.put(
-          `https://store-api-pyo1.onrender.com/product/cart/add`,
-          [product],
-          {
-            headers: {
-              Authorization: token,
-            },
-          }
-        );
+        await axios.put(`${BASE_URL}/product/cart/add`, [product], {
+          headers: {
+            Authorization: token,
+          },
+        });
         // Update the local state and storage
         setCartProducts((prev) => {
           let updatedCart;
@@ -261,7 +247,7 @@ export const CartContextProvider = (props: PropsType) => {
     async (product: cartProductType, token: any) => {
       try {
         await axios.put(
-          `https://store-api-pyo1.onrender.com/product/wish-list/add/${product.id}`,
+          `${BASE_URL}/product/wish-list/add/${product.id}`,
           {},
           {
             headers: {
@@ -292,7 +278,7 @@ export const CartContextProvider = (props: PropsType) => {
     async (product: cartProductType, token: any) => {
       try {
         await axios.put(
-          `https://store-api-pyo1.onrender.com/product/cart/remove?productID=${product.id}`,
+          `${BASE_URL}/product/cart/remove?productID=${product.id}`,
           {},
           {
             headers: {
@@ -317,7 +303,7 @@ export const CartContextProvider = (props: PropsType) => {
     async (product: wishProductType, token: any) => {
       try {
         await axios.put(
-          `https://store-api-pyo1.onrender.com/product/wish-list/remove/${product.id}`,
+          `${BASE_URL}/product/wish-list/remove/${product.id}`,
           {},
           {
             headers: {
@@ -386,7 +372,7 @@ export const CartContextProvider = (props: PropsType) => {
     async (token: any) => {
       try {
         const res = await axios.put(
-          `https://store-api-pyo1.onrender.com/product/cart/remove?clearAll=${true}`,
+          `${BASE_URL}/product/cart/remove?clearAll=${true}`,
           {},
           {
             headers: {
@@ -413,7 +399,7 @@ export const CartContextProvider = (props: PropsType) => {
     async (token: any) => {
       try {
         const res = await axios.put(
-          `https://store-api-pyo1.onrender.com/product/wish-list/remove?clearAll=${true}`,
+          `${BASE_URL}/product/wish-list/remove?clearAll=${true}`,
           {},
           {
             headers: {

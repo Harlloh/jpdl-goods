@@ -12,6 +12,7 @@ import {
 } from "react-icons/md";
 import moment from "moment";
 import OrderItem from "../order/[orderId]/OrderItem";
+import { BASE_URL } from "@/api/auth/apis";
 
 const YourOrder = () => {
   const [order, setOrder] = useState<any>([]);
@@ -20,14 +21,11 @@ const YourOrder = () => {
     const fetchData = async () => {
       try {
         const userToken = localStorage.getItem("user");
-        const res = await axios.get(
-          "https://store-api-pyo1.onrender.com/order/my/order/1",
-          {
-            headers: {
-              Authorization: userToken,
-            },
-          }
-        );
+        const res = await axios.get(`${BASE_URL}/order/my/order/1`, {
+          headers: {
+            Authorization: userToken,
+          },
+        });
         setOrder(res.data.data.order);
         setPaymentStatus(res.data.data.payment_status);
         console.log(res.data.data); // Assuming you want to log the response data

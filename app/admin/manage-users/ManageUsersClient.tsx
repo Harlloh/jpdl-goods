@@ -24,6 +24,7 @@ import useGetProducts from "@/hooks/useGetProducts";
 import useGetAllUsers from "@/hooks/useGetAllUser";
 import { FaBan } from "react-icons/fa";
 import Loading from "@/app/components/Loading";
+import { BASE_URL } from "@/api/auth/apis";
 interface ManageProductClientProps {
   products: any[];
 }
@@ -152,7 +153,7 @@ const ManageUsersClient = () => {
   const handleUserBan = useCallback((userId: string) => {
     axios
       .put(
-        `https://store-api-pyo1.onrender.com/user/block/${userId}`,
+        `${BASE_URL}/user/block/${userId}`,
         {},
         {
           headers: {

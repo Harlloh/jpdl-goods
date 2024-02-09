@@ -10,17 +10,14 @@ import { useRouter } from "next/navigation";
 import { useCart } from "@/hooks/useCartHook";
 import toast from "react-hot-toast";
 
-
-
-
 const LoginForm = () => {
-  const {userToken} = useCart()
+  const { userToken } = useCart();
 
   const currentUser = userToken;
 
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const {handleSignIn,userData} = useCart()
+  const { handleSignIn, userData } = useCart();
   const {
     register,
     handleSubmit,
@@ -49,25 +46,25 @@ const LoginForm = () => {
       await handleSignIn(data);
       console.log(data);
       router.push("/"); // Redirect to login after signup
-    } catch (error:any) {
-      toast.error('Something went wrong')
+    } catch (error: any) {
+      toast.error("Something went wrong");
       // Handle signup error, show an error message, etc.
     } finally {
       setIsLoading(false);
     }
-
-    console.log(userData, 'asdfkksdfbiasdfu')
+    debugger;
+    console.log(userData, "asdfkksdfbiasdfu");
   };
 
   return (
     <>
       <Heading title="Sign in for E-shop" />
-      <Button
+      {/* <Button
         outline
         lable="Cotinue with Google"
         icon={AiOutlineGoogle}
         handleClick={() => {}}
-      />
+      /> */}
       <hr className="bg-slate-300 w-full h-px" />
       <Inputs
         id="email"

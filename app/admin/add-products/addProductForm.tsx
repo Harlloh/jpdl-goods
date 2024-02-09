@@ -27,6 +27,7 @@ import { AiOutlinePlusCircle } from "react-icons/ai";
 import { useCart } from "@/hooks/useCartHook";
 import NullData from "@/app/components/NullData";
 import getShopCategories from "@/hooks/getShopCategories";
+import { BASE_URL } from "@/api/auth/apis";
 
 export type ImageType = {
   color: string;
@@ -201,7 +202,7 @@ function AddProductForm() {
     //MAKE THE POST REQUEST
     //pending create product api
     axios
-      .post("https://store-api-pyo1.onrender.com/product/create", productData, {
+      .post(`${BASE_URL}/product/create`, productData, {
         headers: {
           Authorization: userToken,
         },

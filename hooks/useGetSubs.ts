@@ -1,3 +1,4 @@
+import { BASE_URL } from "@/api/auth/apis";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
@@ -10,7 +11,7 @@ const useGetAllSubs = () => {
     try {
       setLoading(true);
       const res = await axios.get(
-        `https://store-api-pyo1.onrender.com/order/get/all?page=${pagenumber}`,
+        `${BASE_URL}/order/get/all?page=${pagenumber}`,
         {
           headers: {
             Authorization: userToken,

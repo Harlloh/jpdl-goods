@@ -4,6 +4,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import useGetAllOrders from "./getOrders";
+import { BASE_URL } from "@/api/auth/apis";
 
 const useOrderActions = () => {
   const { fetchOrders } = useGetAllOrders();
@@ -11,10 +12,10 @@ const useOrderActions = () => {
   const userToken = localStorage.getItem("user");
 
   const handleDelivered = useCallback(
-    (id: string) => {
+    (id: string, currentPage: any) => {
       axios
         .put(
-          `https://store-api-pyo1.onrender.com/order/update/${id}?status=2`,
+          `${BASE_URL}/order/update/${id}?status=2`,
           {},
           {
             headers: {
@@ -24,7 +25,7 @@ const useOrderActions = () => {
         )
         .then((res) => {
           toast.success(res.data.data.delivery_status);
-          fetchOrders();
+          fetchOrders(0);
         })
         .catch((error) => {
           toast.error("Something went wrong");
@@ -34,10 +35,10 @@ const useOrderActions = () => {
     [userToken, fetchOrders]
   );
 
-  const handleDispatch = useCallback((id: any) => {
+  const handleDispatch = useCallback((id: any, currentPage: any) => {
     axios
       .put(
-        `https://store-api-pyo1.onrender.com/order/update/${id}?status=1`,
+        `${BASE_URL}/order/update/${id}?status=1`,
         {},
         {
           headers: {
@@ -47,7 +48,7 @@ const useOrderActions = () => {
       )
       .then((res) => {
         toast.success(res.data.data.delivery_status);
-        fetchOrders();
+        fetchOrders(0);
       })
       .catch((error) => {
         toast.error("Something went wrong");

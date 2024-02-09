@@ -11,6 +11,7 @@ import axios from "axios";
 import { useCart } from "@/hooks/useCartHook";
 import reviews from "./reviews";
 import { useRouter } from "next/navigation";
+import YouMightLike from "./YoumightLike";
 interface IParams {
   productId?: string;
 }
@@ -56,6 +57,7 @@ function Product({ params }: { params: IParams }) {
     <Container>
       <div>
         <ProductDetails products={product} />
+        <YouMightLike />
         <div className="flex flex-col gap-4 mt-20">
           <div>RATING</div>
           <div>

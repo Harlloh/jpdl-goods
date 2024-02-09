@@ -160,13 +160,13 @@ const ManageOrdersClient = () => {
             <ActionBtn
               icon={MdDeliveryDining}
               onClick={() => {
-                handleDispatch(params.row.id);
+                handleDispatch(params.row.id, currentPage);
               }}
             />
             <ActionBtn
               icon={MdDone}
               onClick={() => {
-                handleDelivered(params.row.id);
+                handleDelivered(params.row.id, currentPage);
               }}
             />
             <ActionBtn

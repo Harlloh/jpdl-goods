@@ -6,8 +6,8 @@
 //   return categories
 // }
 
-
 // useGetProducts.js
+import { BASE_URL } from "@/api/auth/apis";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
@@ -18,23 +18,20 @@ const getShopCategories = () => {
   const fetchProducts = async () => {
     try {
       setLoading(true);
-      const res = await axios.get('https://store-api-pyo1.onrender.com/category/get')
-      
+      const res = await axios.get(`${BASE_URL}/category/get`);
+
       setCategories(res.data.data);
-    } catch (error:any) {
+    } catch (error: any) {
       setError(error);
     } finally {
       setLoading(false);
     }
   };
   useEffect(() => {
-  
-
     fetchProducts();
   }, []);
-  
 
-  return { categories, loading, error,fetchProducts };
+  return { categories, loading, error, fetchProducts };
 };
 
 export default getShopCategories;

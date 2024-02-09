@@ -23,6 +23,7 @@ import NullData from "@/app/components/NullData";
 import getAllProducts from "@/hooks/useGetProducts";
 import useGetProducts from "@/hooks/useGetProducts";
 import Loading from "@/app/components/Loading";
+import { BASE_URL } from "@/api/auth/apis";
 interface ManageProductClientProps {
   products: any[];
 }
@@ -149,7 +150,7 @@ const ManageProductClient = () => {
     (id: string, inStock: boolean) => {
       axios
         .put(
-          `https://store-api-pyo1.onrender.com/product/instock/${id}?inStock=${!inStock}`,
+          `${BASE_URL}/product/instock/${id}?inStock=${!inStock}`,
           null, // pass null as the request body if not sending any data
           {
             headers: {
@@ -190,7 +191,7 @@ const ManageProductClient = () => {
     await handleImageDelete();
 
     axios
-      .delete(`https://store-api-pyo1.onrender.com/product/delete/${id}`, {
+      .delete(`${BASE_URL}/product/delete/${id}`, {
         headers: {
           Authorization: userToken,
         },
