@@ -180,45 +180,45 @@ const ManageSubClient = () => {
 
   //this is to change the status from either in stock or out of stock
   // eslint-disable-next-line react-hooks/rules-of-hooks
-  // const handleDispatch = useCallback((id: any) => {
-  //   axios
-  //     .put(
-  //       `https://store-api-pyo1.onrender.com/order/update/${id}?status=1`,
-  //       {},
-  //       {
-  //         headers: {
-  //           Authorization: userToken,
-  //         },
-  //       }
-  //     )
-  //     .then((res) => {
-  //       toast.success(res.data.data.delivery_status);
-  //       fetchSubs();
-  //       router.refresh();
-  //     })
-  //     .catch((error) => {
-  //       toast.error("Something went wrong");
-  //       console.log(error, "error");
-  //     });
-  // }, []);
-
+  const handleDispatch = useCallback((id: any) => {
+    axios
+      .put(
+        `https://store-api-pyo1.onrender.com/order/update/${id}?status=1`,
+        {},
+        {
+          headers: {
+            Authorization: userToken,
+          },
+        }
+      )
+      .then((res) => {
+        toast.success(res.data.data.delivery_status);
+        fetchSubs(currentPage);
+        router.refresh();
+      })
+      .catch((error) => {
+        toast.error("Something went wrong");
+        console.log(error, "error");
+      });
+  }, []);
+  //sdfsd
   // //this is to change the status from either in stock or out of stock
-  // const handleDelevered = useCallback((id: string) => {
-  //   axios
-  //     .put(`https://store-api-pyo1.onrender.com/order/update/${id}?status=2`, {
-  //       headers: {
-  //         Authorization: userToken,
-  //       },
-  //     })
-  //     .then((res) => {
-  //       toast.success(res.data.data.delivery_status);
-  //       fetchSubs();
-  //     })
-  //     .catch((error) => {
-  //       toast.error("Something went wrong");
-  //       console.log(error, "error");
-  //     });
-  // }, []);
+  const handleDelevered = useCallback((id: string) => {
+    axios
+      .put(`https://store-api-pyo1.onrender.com/order/update/${id}?status=2`, {
+        headers: {
+          Authorization: userToken,
+        },
+      })
+      .then((res) => {
+        toast.success(res.data.data.delivery_status);
+        fetchSubs(currentPage);
+      })
+      .catch((error) => {
+        toast.error("Something went wrong");
+        console.log(error, "error");
+      });
+  }, []);
 
   const handleInputChange = (e: any) => {
     setSearchTerm(e.target.value);
