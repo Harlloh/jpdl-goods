@@ -9,15 +9,14 @@ import { AiOutlineGoogle } from "react-icons/ai";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/hooks/useCartHook";
 import toast from "react-hot-toast";
+import { getToken } from "@/api/auth/apis";
 
-
-
-const RegisterForm= () => {
-  const currentUser = localStorage.getItem('user');
+const RegisterForm = () => {
+  const currentUser = getToken();
 
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const {handleSignUp} = useCart()
+  const { handleSignUp } = useCart();
   const {
     register,
     handleSubmit,
@@ -47,8 +46,8 @@ const RegisterForm= () => {
       console.log(data);
       // Optionally, perform any other actions upon successful signup
       router.push("/login"); // Redirect to login after signup
-    } catch (error:any) {
-      toast.error('Something went wrong')
+    } catch (error: any) {
+      toast.error("Something went wrong");
       // Handle signup error, show an error message, etc.
     } finally {
       setIsLoading(false);

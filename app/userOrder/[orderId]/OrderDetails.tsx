@@ -14,13 +14,14 @@ import {
 } from "react-icons/md";
 import OrderItem from "./OrderItem";
 import OrderItemDetail from "./OrderItemDetails";
+import { getIsAdmin } from "@/api/auth/apis";
 interface OrderDetailsProps {
   order: any;
 }
 
 const OrderDetails: React.FC<OrderDetailsProps> = ({ order }) => {
   console.log(order, ">>>>>>>>>>>");
-  const storedisAdmin = localStorage.getItem("isAdmin");
+  const storedisAdmin = getIsAdmin();
   const isAdmin = storedisAdmin ? atob(storedisAdmin) : null;
 
   return (

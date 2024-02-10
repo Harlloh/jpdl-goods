@@ -9,6 +9,7 @@ import { checkOutService } from "@/hooks/stripe.js";
 import Button from "../components/Button";
 import ItemContent from "./ItemContent";
 import { formatPrice } from "../utils/formatPrice";
+import { getToken } from "@/api/auth/apis";
 
 export type checkOutProductType = {
   id: string;
@@ -57,7 +58,7 @@ function CartClient() {
 
     // For now, you can just log a message indicating that checkout is initiated
   };
-  const token = localStorage.getItem("user");
+  const token = getToken();
   console.log(cartProducts);
   return (
     <div>

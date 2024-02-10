@@ -12,6 +12,7 @@ import { useCart } from "@/hooks/useCartHook";
 import reviews from "./reviews";
 import { useRouter } from "next/navigation";
 import YouMightLike from "./YoumightLike";
+import { getToken } from "@/api/auth/apis";
 interface IParams {
   productId?: string;
 }
@@ -19,7 +20,7 @@ interface IParams {
 function Product({ params }: { params: IParams }) {
   const { productss, loading, error } = useGetProducts();
   const [deliveryStatus, setDeliveryStatus] = useState(false);
-  const userToken = localStorage.getItem("user");
+  const userToken = getToken();
   const { userOrders } = useCart();
   const router = useRouter();
 

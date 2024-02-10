@@ -12,7 +12,7 @@ import {
 } from "react-icons/md";
 import moment from "moment";
 import OrderItem from "../order/[orderId]/OrderItem";
-import { BASE_URL } from "@/api/auth/apis";
+import { BASE_URL, getToken } from "@/api/auth/apis";
 
 const YourOrder = () => {
   const [order, setOrder] = useState<any>([]);
@@ -20,7 +20,7 @@ const YourOrder = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const userToken = localStorage.getItem("user");
+        const userToken = getToken();
         const res = await axios.get(`${BASE_URL}/order/my/order/1`, {
           headers: {
             Authorization: userToken,

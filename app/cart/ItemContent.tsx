@@ -8,6 +8,7 @@ import SetQuantity from "../components/Products/SetQuantity";
 import Image from "next/image";
 import { useCart } from "@/hooks/useCartHook";
 import { useRouter } from "next/navigation";
+import { getToken } from "@/api/auth/apis";
 
 interface ProductContentProp {
   item: cartProductType;
@@ -42,7 +43,7 @@ const ItemContent: React.FC<ProductContentProp> = ({ item }) => {
   //     };
   //   });
   // }, [cartProduct]);
-  const token = localStorage.getItem("user");
+  const token = getToken();
   const router = useRouter();
   console.log(item);
 

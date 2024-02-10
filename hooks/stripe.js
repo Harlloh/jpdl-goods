@@ -1,9 +1,9 @@
-import { BASE_URL } from "@/api/auth/apis";
+import { BASE_URL, getToken } from "@/api/auth/apis";
 import axios from "axios";
 import { useState } from "react";
 
 export const checkOutService = async (product) => {
-  const token = localStorage.getItem("user");
+  const token = getToken();
   let loading = false;
   let redirectUrl;
   try {
@@ -27,7 +27,7 @@ export const checkOutService = async (product) => {
   }
 };
 export const handleSubscriptions = async (product) => {
-  const token = localStorage.getItem("user");
+  const token = getToken();
   let loading = false;
   let redirectUrl;
   try {

@@ -18,12 +18,12 @@ import toast from "react-hot-toast";
 import Heading from "../components/Heading";
 import { useRouter } from "next/navigation";
 import OrderDetails from "../order/[orderId]/OrderDetails";
-import { BASE_URL } from "@/api/auth/apis";
+import { BASE_URL, getToken } from "@/api/auth/apis";
 import { FaTimes } from "react-icons/fa";
 
 const Orders = () => {
   const { userSubs, fetchUserProducts } = useCart();
-  const userToken = localStorage.getItem("user");
+  const userToken = getToken();
   const [loading, setLoading] = useState(false);
 
   let rows: any = [];

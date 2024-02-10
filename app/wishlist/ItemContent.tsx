@@ -10,6 +10,7 @@ import { useCart } from "@/hooks/useCartHook";
 import { ImageType } from "../admin/add-products/addProductForm";
 import { useRouter } from "next/navigation";
 import Button from "../components/Button";
+import { getToken } from "@/api/auth/apis";
 
 export type wishProductType = {
   id: string;
@@ -57,12 +58,11 @@ const ItemContent: React.FC<ProductContentProp> = ({ item }) => {
   // }, [cartProduct]);
   const router = useRouter();
   // console.log(item.images[0].image, "ZZZZZZZZZ");
-  const token = localStorage.getItem('user')
+  const token = getToken();
   return (
     <div className="grid grid-cols-4 text-xs md:text-sm gap-4 border-t-[1.5px] border-slate-20 py-4 items-center">
       {/* <div className="col-span-2 justify-self-start flex gap-2 md:gap-4 items-center"> */}
       <div className="col-span-2 justify-self-start flex gap-2 md:gap-4 flex-col md:flex-row items-center">
-
         <Link href={`/product/${item.id}`}>
           {/* <p>{item.selectedImage.image}</p> */}
           <div className="relative mx-[70px] aspect-square w-[100px]">
@@ -90,7 +90,7 @@ const ItemContent: React.FC<ProductContentProp> = ({ item }) => {
           lable="remove from wishlist"
           small
           outline
-          handleClick={() => handleRemoveProductFromWish(item,token)}
+          handleClick={() => handleRemoveProductFromWish(item, token)}
         />
       </div>
       <div className="justify-self-end font-semibold">

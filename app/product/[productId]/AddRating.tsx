@@ -7,7 +7,7 @@ import toast from "react-hot-toast";
 import Button from "@/app/components/Button";
 import Heading from "@/app/components/Heading";
 import Inputs from "@/app/components/inputs/inputs";
-import { BASE_URL } from "@/api/auth/apis";
+import { BASE_URL, getToken } from "@/api/auth/apis";
 
 interface AddRatingProps {
   product: any;
@@ -46,7 +46,7 @@ const AddRating: React.FC<AddRatingProps> = ({ product }) => {
       return toast.error("No rating is selected");
     }
 
-    const userToken = localStorage.getItem("user");
+    const userToken = getToken();
 
     if (!userToken) {
       setIsLoading(false);

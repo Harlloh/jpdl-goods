@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { CiHeart } from "react-icons/ci";
 import { useCart } from "@/hooks/useCartHook";
 import { FaHeart } from "react-icons/fa";
+import { getToken } from "@/api/auth/apis";
 
 interface ProductCardProps {
   data: any;
@@ -36,7 +37,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ data }) => {
     }
   }, [wishProducts]);
 
-  const userToken = localStorage.getItem("user");
+  const userToken = getToken();
 
   return (
     <div className="col-span-1 shadow-sm cursor-pointer border-[1.2px] border-slate-200 bg-slate-50 rounded-md p-2 transition hover:scale-105 text-center text-sm">

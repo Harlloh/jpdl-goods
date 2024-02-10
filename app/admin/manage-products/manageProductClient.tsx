@@ -23,7 +23,7 @@ import NullData from "@/app/components/NullData";
 import getAllProducts from "@/hooks/useGetProducts";
 import useGetProducts from "@/hooks/useGetProducts";
 import Loading from "@/app/components/Loading";
-import { BASE_URL } from "@/api/auth/apis";
+import { BASE_URL, getIsAdmin, getToken } from "@/api/auth/apis";
 import { FaEye, FaToggleOff, FaToggleOn } from "react-icons/fa";
 interface ManageProductClientProps {
   products: any[];
@@ -33,8 +33,8 @@ const ManageProductClient = () => {
   const { productss, loading, error, fetchProducts } = useGetProducts();
   const [searchTerm, setSearchTerm] = useState("");
 
-  const userToken = localStorage.getItem("user");
-  const storedisAdmin = localStorage.getItem("isAdmin");
+  const userToken = getToken();
+  const storedisAdmin = getIsAdmin();
   const isAdmin = storedisAdmin ? atob(storedisAdmin) : null;
 
   const filteredRows = productss?.filter((product: any) =>

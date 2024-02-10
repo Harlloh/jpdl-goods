@@ -7,12 +7,13 @@ import MenuItem from "./MenuItem";
 import Backdrop from "./Backdrop";
 import { useCart } from "@/hooks/useCartHook";
 import { type } from "os";
+import { getIsAdmin, getToken } from "@/api/auth/apis";
 // import { signOut } from "next-auth/react";
 
 const UserMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const userToken = localStorage.getItem("user");
-  const storedAdmin = localStorage.getItem("isAdmin");
+  const userToken = getToken();
+  const storedAdmin = getIsAdmin();
   const isAdmin = storedAdmin ? atob(storedAdmin) === "true" : false;
 
   const currentUser = userToken;

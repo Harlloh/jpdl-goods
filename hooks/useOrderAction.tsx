@@ -4,12 +4,12 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import useGetAllOrders from "./getOrders";
-import { BASE_URL } from "@/api/auth/apis";
+import { BASE_URL, getToken } from "@/api/auth/apis";
 
 const useOrderActions = () => {
   const { fetchOrders } = useGetAllOrders();
   //   const router = useRouter();
-  const userToken = localStorage.getItem("user");
+  const userToken = getToken();
 
   const handleDelivered = useCallback(
     (id: string, currentPage: any) => {

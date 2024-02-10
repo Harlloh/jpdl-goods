@@ -15,7 +15,7 @@ import { formatPrice } from "@/app/utils/formatPrice";
 import ListRating from "./ListRating";
 import UserOrder from "../../userOrder/[orderId]/page";
 import Product from "./page";
-import { BASE_URL } from "@/api/auth/apis";
+import { BASE_URL, getToken } from "@/api/auth/apis";
 import axios from "axios";
 import { handleSubscriptions } from "@/hooks/stripe";
 import Loading from "@/app/components/Loading";
@@ -47,7 +47,7 @@ const Horizontal = () => {
 };
 
 const ProductDetails: React.FC<ProductParams> = ({ products }) => {
-  const userToken = localStorage.getItem("user");
+  const userToken = getToken();
   const router = useRouter();
 
   const { handleAddProductToCart, cartProducts, userSubs } = useCart();

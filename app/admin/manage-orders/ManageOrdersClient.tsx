@@ -27,13 +27,14 @@ import useGetAllOrders from "@/hooks/getOrders";
 import useOrderActions from "@/hooks/useOrderAction";
 import Orders from "../../subscriptions/page";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
+import { getIsAdmin } from "@/api/auth/apis";
 
 const ManageOrdersClient = () => {
   const { orders, loadings, errors, fetchOrders } = useGetAllOrders();
   const { handleDispatch, handleDelivered } = useOrderActions();
   let [currentPage, setCurrentPage] = useState(0);
 
-  const storedisAdmin = localStorage.getItem("isAdmin");
+  const storedisAdmin = getIsAdmin();
   const isAdmin = storedisAdmin ? atob(storedisAdmin) : null;
   const [searchTerm, setSearchTerm] = useState("");
 

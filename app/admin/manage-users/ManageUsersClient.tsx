@@ -24,7 +24,7 @@ import useGetProducts from "@/hooks/useGetProducts";
 import useGetAllUsers from "@/hooks/useGetAllUser";
 import { FaBan } from "react-icons/fa";
 import Loading from "@/app/components/Loading";
-import { BASE_URL } from "@/api/auth/apis";
+import { BASE_URL, getIsAdmin, getToken } from "@/api/auth/apis";
 interface ManageProductClientProps {
   products: any[];
 }
@@ -33,8 +33,8 @@ const ManageUsersClient = () => {
   // const { productss, loading, error } = useGetProducts();
   const { users, loadings, errors, fetchUsers } = useGetAllUsers();
 
-  const userToken = localStorage.getItem("user");
-  const storedisAdmin = localStorage.getItem("isAdmin");
+  const userToken = getToken();
+  const storedisAdmin = getIsAdmin();
   const isAdmin = storedisAdmin ? atob(storedisAdmin) : null;
 
   const router = useRouter();

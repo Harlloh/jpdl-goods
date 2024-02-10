@@ -27,7 +27,7 @@ import { AiOutlinePlusCircle } from "react-icons/ai";
 import { useCart } from "@/hooks/useCartHook";
 import NullData from "@/app/components/NullData";
 import useGetShopCategories from "@/hooks/usegetShopCategories";
-import { BASE_URL } from "@/api/auth/apis";
+import { BASE_URL, getIsAdmin, getToken } from "@/api/auth/apis";
 
 // ... (existing imports)
 export type ImageType = {
@@ -60,9 +60,9 @@ const EditProductForm: React.FC<EditProductFormProps> = ({ product }) => {
   const [images, setImages] = useState<ImageType[] | null>();
   const [isProductCreated, setIsProductCreated] = useState(false);
   const router = useRouter();
-  const storedisAdmin = localStorage.getItem("isAdmin");
+  const storedisAdmin = getIsAdmin();
   const isAdmin = storedisAdmin ? atob(storedisAdmin) : null;
-  const userToken = localStorage.getItem("user");
+  const userToken = getToken();
 
   const {
     register,

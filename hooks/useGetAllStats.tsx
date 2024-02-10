@@ -1,4 +1,4 @@
-import { BASE_URL } from "@/api/auth/apis";
+import { BASE_URL, getToken } from "@/api/auth/apis";
 import axios from "axios";
 import { useEffect, useState } from "react";
 interface EndpointResponse {
@@ -14,7 +14,7 @@ const useGetAllStats = () => {
   const [orderStat, setOrderStat] = useState<EndpointResponse | any>([]);
   const [loadings, setLoading] = useState(true);
   const [errors, setError] = useState(null);
-  const userToken = localStorage.getItem("user");
+  const userToken = getToken();
   const fetchStats = async () => {
     try {
       setLoading(true);

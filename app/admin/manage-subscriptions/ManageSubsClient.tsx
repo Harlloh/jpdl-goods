@@ -26,11 +26,12 @@ import Loading from "@/app/components/Loading";
 import useGetAllOrders from "@/hooks/getOrders";
 import useGetAllSubs from "@/hooks/useGetSubs";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
+import { getIsAdmin, getToken } from "@/api/auth/apis";
 
 const ManageSubClient = () => {
   const { subs, loadings, errors, fetchSubs } = useGetAllSubs();
 
-  const storedisAdmin = localStorage.getItem("isAdmin");
+  const storedisAdmin = getIsAdmin();
   const isAdmin = storedisAdmin ? atob(storedisAdmin) : null;
   const [searchTerm, setSearchTerm] = useState("");
   let [currentPage, setCurrentPage] = useState(0);
@@ -45,7 +46,7 @@ const ManageSubClient = () => {
   }
 
   const router = useRouter();
-  const userToken = localStorage.getItem("user");
+  const userToken = getToken();
   let rows: any = [];
   if (subs) {
     rows = filteredRows.map((order: any, index) => {

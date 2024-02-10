@@ -8,6 +8,7 @@ import { cartProductType } from "../product/[productId]/ProductDetails";
 import Button from "../components/Button";
 import ItemContent, { wishProductType } from "./ItemContent";
 import { formatPrice } from "../utils/formatPrice";
+import { getToken } from "@/api/auth/apis";
 
 function WishClient() {
   const { wishProducts, handleClearWish, cartTotalQty, cartTotalAmount } =
@@ -29,7 +30,7 @@ function WishClient() {
       </div>
     );
   }
-  const token = localStorage.getItem("user");
+  const token = getToken();
   return (
     <div>
       <Heading title="Your Wishlist" center />

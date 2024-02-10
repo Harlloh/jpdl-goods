@@ -1,4 +1,4 @@
-import { BASE_URL } from "@/api/auth/apis";
+import { BASE_URL, getToken } from "@/api/auth/apis";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
@@ -6,7 +6,7 @@ const useGetAllSubs = () => {
   const [subs, setSubs] = useState([]);
   const [loadings, setLoading] = useState(true);
   const [errors, setError] = useState(null);
-  const userToken = localStorage.getItem("user");
+  const userToken = getToken();
   const fetchSubs = async (pagenumber: number) => {
     try {
       setLoading(true);
