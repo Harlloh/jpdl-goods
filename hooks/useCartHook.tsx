@@ -2,7 +2,9 @@ import { BASE_URL } from "@/api/auth/apis";
 import { cartProductType } from "@/app/product/[productId]/ProductDetails";
 import { wishProductType } from "@/app/wishlist/ItemContent";
 import axios from "axios";
+import { AnyRecord } from "dns";
 import { useRouter } from "next/navigation";
+import { AnyNode } from "postcss";
 import {
   createContext,
   useCallback,
@@ -36,6 +38,7 @@ type cartContextType = {
   cartProducts: cartProductType[] | null;
   wishProducts: cartProductType[] | null;
   userOrders: any[];
+  userSubs: any[];
   handleAddProductToCart: (product: cartProductType, token: any) => void;
   handleAddProductToWish: (product: cartProductType, token: any) => void;
   handleRemoveProductFromCart: (product: cartProductType, token: any) => void;
@@ -47,6 +50,7 @@ type cartContextType = {
   handleLogOut: () => void;
   handleSignUp: (formData: SignUpTypes) => void;
   handleSignIn: (formData: SignInTypes) => void;
+  fetchUserProducts: (token: any) => void;
 };
 export const cartContext = createContext<cartContextType | null>(null);
 
@@ -73,6 +77,7 @@ export const CartContextProvider = (props: PropsType) => {
     null
   );
   const [userOrders, setUserOrders] = useState<any | null>(null);
+  const [userSubs, setUserSubs] = useState<any | null>(null);
 
   const handleSignUp = useCallback(async (formData: SignUpTypes) => {
     try {
@@ -160,10 +165,12 @@ export const CartContextProvider = (props: PropsType) => {
       const wishItems: cartProductType[] | null = await res.data.data
         .favourites;
       const orders: any[] | null = await res.data.data.orders;
+      const subs: any[] | null = await res.data.data.subscriptions;
 
       setCartProducts(cartItems);
       setWishProducts(wishItems);
       setUserOrders(orders);
+      setUserSubs(subs);
 
       localStorage.setItem("cartItems", JSON.stringify(cartItems));
       localStorage.setItem("wishItems", JSON.stringify(wishItems));
@@ -434,6 +441,7 @@ export const CartContextProvider = (props: PropsType) => {
     cartProducts,
     wishProducts,
     userOrders,
+    userSubs,
     handleAddProductToCart,
     handleAddProductToWish,
     handleRemoveProductFromCart,
@@ -445,6 +453,7 @@ export const CartContextProvider = (props: PropsType) => {
     handleSignIn,
     handleSignUp,
     handleLogOut,
+    fetchUserProducts,
   };
   return <cartContext.Provider value={value} {...props} />;
 };

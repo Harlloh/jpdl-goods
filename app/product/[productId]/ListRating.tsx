@@ -2,6 +2,7 @@
 
 import Avatar from "@/app/components/Avatar";
 import Heading from "@/app/components/Heading";
+import NullData from "@/app/components/NullData";
 import { Rating } from "@mui/material";
 import moment from "moment";
 import Image from "next/image";
@@ -18,7 +19,7 @@ const ListRating: React.FC<RatingProps> = ({ product }) => {
     <div className="mt-5">
       <Heading title="Product Review" />
       <div className="text-sm mt-2">
-        {product &&
+        {product.length > 0 ? (
           product.map((review: any) => {
             return (
               <div key={review.id} className="max-w-[300px] ">
@@ -38,7 +39,10 @@ const ListRating: React.FC<RatingProps> = ({ product }) => {
                 </div>
               </div>
             );
-          })}
+          })
+        ) : (
+          <NullData title="No Reviews for this product yet!" />
+        )}
       </div>
     </div>
   );

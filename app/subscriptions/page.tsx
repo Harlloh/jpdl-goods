@@ -12,38 +12,58 @@ import {
   MdRemoveRedEye,
 } from "react-icons/md";
 import ActionBtn from "../components/ActionBtn";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import Heading from "../components/Heading";
 import { useRouter } from "next/navigation";
+import OrderDetails from "../order/[orderId]/OrderDetails";
+import { BASE_URL } from "@/api/auth/apis";
+import { FaTimes } from "react-icons/fa";
 
 const Orders = () => {
-  const { userOrders } = useCart();
-  const orders = userOrders;
-  console.log(orders);
+  const { userSubs, fetchUserProducts } = useCart();
+  const userToken = localStorage.getItem("user");
+  const [loading, setLoading] = useState(false);
+
   let rows: any = [];
   const router = useRouter();
+  console.log(userSubs);
 
-  if (orders) {
-    rows = orders.map((order: any) => {
-      const totalAmount = order.orderDetails.reduce(
-        (acc: number, item: any) => acc + item.price * item.quantity,
-        0
-      );
+  if (userSubs && userSubs.length > 0) {
+    rows = userSubs.map((order: any) => {
+      // const totalAmount = order.orderDetails.reduce(
+      //   (acc: number, item: any) => acc + item.price * item.quantity,
+      //   0
+      // );
       return {
-        id: order.id,
-        // customer: order.user.name,
-        amount: formatPrice(totalAmount),
-        paymentStatus: order.status,
-        date: moment(order.createdDate).fromNow(),
+        id: order.orderDetails.id,
+        subscriptionId: order.id,
+        brand: order.orderDetails.brand,
+        category: order.orderDetails.category,
+        name: order.orderDetails.name,
+        amount: formatPrice(order.orderDetails.price),
+        images: order.orderDetails.selectedImage.image,
+
+        // paymentStatus: order.delivery_status,
+        // date: moment(order.createdDate).fromNow(),
         deliveryStatus: order.delivery_status,
       };
     });
   }
   const columns: GridColDef[] = [
     // { field: "id", headerName: "ID", width: 220 },
-    // { field: "customer", headerName: "Customer Name", width: 130 },
+    {
+      field: "images",
+      headerName: "Images",
+      width: 170,
+      renderCell: (params) => {
+        return <img src={params.row.images} alt={params.row.name} />;
+      },
+    },
+    { field: "name", headerName: "Name", width: 130 },
+    { field: "category", headerName: "Category", width: 100 },
+    { field: "brand", headerName: "Brand", width: 100 },
     {
       field: "amount",
       headerName: "Amount(USD)",
@@ -52,34 +72,34 @@ const Orders = () => {
         return <div style={{ fontWeight: "bold" }}>{params.row.amount}</div>;
       },
     },
-    {
-      field: "paymentStatus",
-      headerName: "Payment Status",
-      width: 130,
-      renderCell: (params) => {
-        return (
-          <div className="text-center items-center flex ">
-            {params.row.paymentStatus === "pending" ? (
-              <Status
-                text="pending"
-                icon={MdAccessTime}
-                bg="bg-slate-200"
-                color="text-slate-700"
-              />
-            ) : params.row.paymentStatus === "complete" ? (
-              <Status
-                text="Completed"
-                icon={MdDone}
-                bg="bg-green-200"
-                color="text-green-700"
-              />
-            ) : (
-              <></>
-            )}
-          </div>
-        );
-      },
-    },
+    // {
+    //   field: "paymentStatus",
+    //   headerName: "Payment Status",
+    //   width: 130,
+    //   renderCell: (params) => {
+    //     return (
+    //       <div className="text-center items-center flex ">
+    //         {params.row.paymentStatus === "pending" ? (
+    //           <Status
+    //             text="pending"
+    //             icon={MdAccessTime}
+    //             bg="bg-slate-200"
+    //             color="text-slate-700"
+    //           />
+    //         ) : params.row.paymentStatus === "complete" ? (
+    //           <Status
+    //             text="Completed"
+    //             icon={MdDone}
+    //             bg="bg-green-200"
+    //             color="text-green-700"
+    //           />
+    //         ) : (
+    //           <></>
+    //         )}
+    //       </div>
+    //     );
+    //   },
+    // },
     {
       field: "deliveryStatus",
       headerName: "Delivery Status",
@@ -115,7 +135,7 @@ const Orders = () => {
         );
       },
     },
-    { field: "date", headerName: "Date", width: 130 },
+    // { field: "date", headerName: "Date", width: 130 },
     {
       field: "action",
       headerName: "Actions",
@@ -123,10 +143,16 @@ const Orders = () => {
       renderCell: (params) => {
         return (
           <div className="flex justify-between gap-3 w-full">
-            <ActionBtn
+            {/* <ActionBtn
               icon={MdRemoveRedEye}
               onClick={() => {
-                router.push(`/userOrder/${params.row.id}`);
+                router.push(`/product/${params.row.id}`);
+              }}
+            /> */}
+            <ActionBtn
+              icon={FaTimes}
+              onClick={() => {
+                handleCancleSub(params.row.subscriptionId);
               }}
             />
           </div>
@@ -135,12 +161,41 @@ const Orders = () => {
     },
   ];
 
+  const handleCancleSub = async (subId: string) => {
+    try {
+      setLoading(true);
+      const res = await axios.post(
+        `${BASE_URL}/payment/subscription/cancel/${subId}`,
+        null,
+        {
+          headers: {
+            Authorization: userToken,
+          },
+        }
+      );
+
+      console.log(res);
+
+      if (res.status === 200) {
+        toast.success(res.data.message);
+        fetchUserProducts(userToken);
+      } else {
+        throw new Error();
+      }
+    } catch (error: any) {
+      toast.error(error.response.data.message);
+      console.log(error, "error");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="max-w-[1150px] m-auto text-xl">
       <div className="mb-4 mt-8">
         <Heading title="Your Subscribed Products" center />
       </div>
-      <div style={{ height: 600, width: "80%" }}>
+      <div style={{ height: "fit-content", width: "fit-content" }}>
         <DataGrid
           rows={rows}
           columns={columns}
