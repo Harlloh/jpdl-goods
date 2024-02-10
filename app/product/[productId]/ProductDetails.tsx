@@ -50,13 +50,11 @@ const ProductDetails: React.FC<ProductParams> = ({ products }) => {
   const userToken = localStorage.getItem("user");
   const router = useRouter();
 
-  const { handleAddProductToCart, cartProducts } = useCart();
+  const { handleAddProductToCart, cartProducts, userSubs } = useCart();
 
   const [isProductInCart, setIsProductInCart] = useState(false);
   const [subLoading, setSubLoading] = useState(false);
-  // console.log(products, ">>>>>>>>>>>>>>>>>>>>>>>>");
 
-  console.log(products.reviews?.length);
   const productRating =
     products.reviews.length > 0
       ? products.reviews.reduce(
@@ -65,7 +63,6 @@ const ProductDetails: React.FC<ProductParams> = ({ products }) => {
         ) / products.reviews.length
       : null;
 
-  console.log(products);
   useEffect(() => {
     // Function to toggle the modal visibility
     const toggleModal = () => {
@@ -171,9 +168,7 @@ const ProductDetails: React.FC<ProductParams> = ({ products }) => {
     }
   }, [cartProducts]);
 
-  console.log(productRating, "from product details page");
   const handleSubscription = async (product: any) => {
-    console.log("You have successfully subscribed to this product", product);
     // try {
     //   const res = await axios.post(
     //     `${BASE_URL}/payment/subscription/check-out`,
@@ -186,10 +181,8 @@ const ProductDetails: React.FC<ProductParams> = ({ products }) => {
     //   );
     //   const redirectUrl = res.data.data;
     //   window.location.href = redirectUrl;
-    //   console.log(res);
 
     // } catch (error:any) {
-    //   console.log(error)
     // }
 
     const { redirectUrl, loading } = await handleSubscriptions(product);
@@ -201,9 +194,10 @@ const ProductDetails: React.FC<ProductParams> = ({ products }) => {
       return <Loading />;
     }
   };
-
-  console.log(products, ">>>>>>>>>>>>");
-
+  const isProductInSubscription = userSubs?.some(
+    (sub) => sub.orderDetails.id === products.id
+  );
+  console.log(isProductInSubscription);
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-12 py-6">
       <ProductImage
@@ -313,14 +307,20 @@ const ProductDetails: React.FC<ProductParams> = ({ products }) => {
         {/* subscription */}
         {products.isSubscribe && (
           <div>
-            <button
-              data-modal-target="default-modal"
-              data-modal-toggle="default-modal"
-              className="block text-white bg-orange-500 hover:bg-teal-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-              type="button"
-            >
-              Subscription
-            </button>
+            {isProductInSubscription ? (
+              <div className="text-red-500 p-3">
+                This product is already in your subscription.
+              </div>
+            ) : (
+              <button
+                data-modal-target="default-modal"
+                data-modal-toggle="default-modal"
+                className="block text-white bg-orange-500 hover:bg-teal-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                type="button"
+              >
+                Subscription
+              </button>
+            )}
 
             <div
               id="default-modal"

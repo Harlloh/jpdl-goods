@@ -143,12 +143,12 @@ const Orders = () => {
       renderCell: (params) => {
         return (
           <div className="flex justify-between gap-3 w-full">
-            {/* <ActionBtn
+            <ActionBtn
               icon={MdRemoveRedEye}
               onClick={() => {
                 router.push(`/product/${params.row.id}`);
               }}
-            /> */}
+            />
             <ActionBtn
               icon={FaTimes}
               onClick={() => {

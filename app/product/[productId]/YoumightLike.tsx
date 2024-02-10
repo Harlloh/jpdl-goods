@@ -23,9 +23,6 @@ const YouMightLike = () => {
     }
   }, [productss]);
 
-  console.log(shuffledProduct, ">>>>>>>>>>>>");
-  console.log(productss, "))))))))");
-
   return (
     <div className="my-5 ">
       <h1 className="font-semibold text-3xl">You might also like</h1>
