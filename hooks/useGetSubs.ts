@@ -11,7 +11,7 @@ const useGetAllSubs = () => {
     try {
       setLoading(true);
       const res = await axios.get(
-        `${BASE_URL}/order/get/all?page=${pagenumber}`,
+        `${BASE_URL}/subscription/get/all?page=${pagenumber}`,
         {
           headers: {
             Authorization: userToken,

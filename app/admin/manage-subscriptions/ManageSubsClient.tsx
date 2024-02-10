@@ -26,7 +26,7 @@ import Loading from "@/app/components/Loading";
 import useGetAllOrders from "@/hooks/getOrders";
 import useGetAllSubs from "@/hooks/useGetSubs";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
-import { getIsAdmin, getToken } from "@/api/auth/apis";
+import { BASE_URL, getIsAdmin, getToken } from "@/api/auth/apis";
 
 const ManageSubClient = () => {
   const { subs, loadings, errors, fetchSubs } = useGetAllSubs();
@@ -184,7 +184,7 @@ const ManageSubClient = () => {
   const handleDispatch = useCallback((id: any) => {
     axios
       .put(
-        `https://store-api-pyo1.onrender.com/order/update/${id}?status=1`,
+        `${BASE_URL}/subscription/update/${id}?status=1`,
         {},
         {
           headers: {
@@ -206,7 +206,7 @@ const ManageSubClient = () => {
   // //this is to change the status from either in stock or out of stock
   const handleDelevered = useCallback((id: string) => {
     axios
-      .put(`https://store-api-pyo1.onrender.com/order/update/${id}?status=2`, {
+      .put(`${BASE_URL}/subscription/update/${id}?status=2`, {
         headers: {
           Authorization: userToken,
         },
