@@ -24,6 +24,7 @@ import getAllProducts from "@/hooks/useGetProducts";
 import useGetProducts from "@/hooks/useGetProducts";
 import Loading from "@/app/components/Loading";
 import { BASE_URL } from "@/api/auth/apis";
+import { FaEye, FaToggleOff, FaToggleOn } from "react-icons/fa";
 interface ManageProductClientProps {
   products: any[];
 }
@@ -39,24 +40,30 @@ const ManageProductClient = () => {
   const filteredRows = productss?.filter((product: any) =>
     product.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
+  console.log(productss);
 
   const router = useRouter();
   const storage = getStorage(firebaseApp);
   let rows: any = [];
-  if (productss) {
-    rows = productss.map((product: any, index) => {
+  if (filteredRows) {
+    rows = filteredRows.map((product: any, index) => {
+      console.log(product);
+
       return {
         id: product.id,
         sn: index + 1, // Use the appropriate property as the unique identifier
         name: product.name,
-        price: formatPrice(product.price),
+        price: product.price,
         category: product.category,
         brand: product.brand,
         inStock: product.inStock,
         images: product.images,
+        subscribeable: product.isSubscribe,
+        subscribeButton: product.isSubscribe,
       };
     });
   }
+
   const columns: GridColDef[] = [
     // { field: "sn", headerName: "S/N", width: 70 },
     {
@@ -68,6 +75,32 @@ const ManageProductClient = () => {
       },
     },
     { field: "name", headerName: "Name", width: 220 },
+    {
+      field: "subscribeable",
+      headerName: "Subscribeable",
+      width: 150,
+      renderCell: (params) => {
+        return (
+          <div className="text-center items-center flex ">
+            {params.row.subscribeable === true ? (
+              <Status
+                text="SubscribeAble"
+                icon={MdDone}
+                bg="bg-teal-200"
+                color="text-teal-700"
+              />
+            ) : (
+              <Status
+                text="UnsubscribAable"
+                icon={MdClose}
+                bg="bg-rose-200"
+                color="text-rose-700"
+              />
+            )}
+          </div>
+        );
+      },
+    },
     {
       field: "price",
       headerName: "Price(USD)",
@@ -139,11 +172,75 @@ const ManageProductClient = () => {
                 router.push(`/admin/edit/${params.row.id}`);
               }}
             /> */}
+            {/* {params.row.subscribeable !== true ? (
+              <ActionBtn
+                icon={FaToggleOn}
+                onClick={() => handleIsSubscribe(params.row.id)}
+              />
+            ) : (
+              <ActionBtn
+                icon={FaToggleOff}
+                onClick={() => handleIsSubscribe(params.row.id)}
+              />
+            )} */}
+          </div>
+        );
+      },
+    },
+    {
+      field: "subscribeButton",
+      headerName: "Toggle Subscription",
+      width: 150,
+      renderCell: (params) => {
+        return (
+          <div className="flex justify-center gap-3 w-full">
+            {params.row.subscribeable !== true ? (
+              <ActionBtn
+                icon={FaToggleOn}
+                onClick={() => handleIsSubscribe(params.row.id)}
+              />
+            ) : (
+              <ActionBtn
+                icon={FaToggleOff}
+                onClick={() => handleNotSubscribe()}
+              />
+            )}
           </div>
         );
       },
     },
   ];
+
+  //this is to change the status from either in stock or out of stock
+  const handleIsSubscribe = useCallback(
+    (id: string) => {
+      axios
+        .put(
+          `${BASE_URL}/product/subscription/add/${id}`,
+          null, // pass null as the request body if not sending any data
+          {
+            headers: {
+              Authorization: userToken,
+            },
+          }
+        )
+        .then((res) => {
+          console.log(res);
+          toast.success(res.data.message);
+          fetchProducts(); // Assuming fetchProducts is a function you have defined to fetch products
+          router.refresh();
+        })
+        .catch((error) => {
+          toast.error(error.response.data.message);
+          console.log(error, "error");
+        });
+    },
+    [userToken, fetchProducts, router]
+  );
+
+  const handleNotSubscribe = () => {
+    toast("Product Subscription cannot be turned off");
+  };
 
   //this is to change the status from either in stock or out of stock
   const handleToggleStock = useCallback(
@@ -235,9 +332,9 @@ const ManageProductClient = () => {
         placeholder="search for a product..."
         className="mb-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-half p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
       />
-      <div style={{ height: 800, width: "100%" }}>
+      <div style={{ height: "fit-content", width: "fit-content" }}>
         <DataGrid
-          rows={filteredRows}
+          rows={rows}
           columns={columns}
           initialState={{
             pagination: {
