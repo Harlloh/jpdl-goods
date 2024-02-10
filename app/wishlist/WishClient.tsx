@@ -29,7 +29,7 @@ function WishClient() {
       </div>
     );
   }
-  const token = localStorage.getItem('user')
+  const token = localStorage.getItem("user");
   return (
     <div>
       <Heading title="Your Wishlist" center />
@@ -45,14 +45,14 @@ function WishClient() {
           })}
       </div>
       <div className="border-t-[1.5px] border-slate-200 py-4 flex justify-end gap-4">
-        <div className="w-[90px]">
+        {/* <div className="w-[90px]">
           <Button
             lable="Clear wishList"
             outline
             small
             handleClick={() => handleClearWish(token)}
           />
-        </div>
+        </div> */}
       </div>
     </div>
   );

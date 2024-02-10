@@ -193,7 +193,9 @@ const ProductDetails: React.FC<ProductParams> = ({ products }) => {
 
         <Horizontal />
 
-        <div className="text-justify">{products.description}</div>
+        <div className="text-justify text-wrap max-w-[600px] items-center bg-red descrip">
+          <p> {products.description}</p>
+        </div>
 
         <Horizontal />
 

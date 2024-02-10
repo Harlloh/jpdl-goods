@@ -15,3 +15,9 @@
   background-size: cover;
   background-position: center center;
 }
+.descrip {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  max-width: 600px;
+}
