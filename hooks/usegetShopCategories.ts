@@ -3,7 +3,7 @@ import { BASE_URL } from "@/api/auth/apis";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
-const getShopCategories = () => {
+const useGetShopCategories = () => {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -26,4 +26,4 @@ const getShopCategories = () => {
   return { categories, loading, error, fetchProducts };
 };
 
-export default getShopCategories;
+export default useGetShopCategories;

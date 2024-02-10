@@ -4,10 +4,10 @@ import Container from "../Container";
 import FooterList from "./FooterList";
 import Link from "next/link";
 import { FaFacebook, FaTwitter, FaYoutube, FaInstagram } from "react-icons/fa";
-import getShopCategories from "@/hooks/getShopCategories";
+import useGetShopCategories from "@/hooks/usegetShopCategories";
 
 export default function Footer() {
-  const { categories, loading, error } = getShopCategories();
+  const { categories, loading, error } = useGetShopCategories();
 
   return (
     <footer className="bg-teal-700 text-slate-200 text-sm mt-16 ">

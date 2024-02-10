@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Scrollbar, A11y, Autoplay } from "swiper/modules";
-import getShopCategories from "@/hooks/getShopCategories";
+import useGetShopCategories from "@/hooks/usegetShopCategories";
 import { useEffect, useState } from "react";
 
 // interface ShopCategory {
@@ -19,24 +19,25 @@ import { useEffect, useState } from "react";
 // }
 
 const ShopCategories = () => {
-  const router = useRouter();
-  const [categories, setCategories] = useState<any>([]);
+  // const router = useRouter();
+  // const [categories, setCategories] = useState<any>([]);
 
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const categoriesData = await getShopCategories();
-        setCategories(categoriesData);
-      } catch (error) {
-        console.error("Error fetching categories:", error);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchCategories = async () => {
+  //     try {
+  //       const { categories } = useGetShopCategories();
+  //       const categoriesData = categories;
+  //       setCategories(categoriesData);
+  //     } catch (error) {
+  //       console.error("Error fetching categories:", error);
+  //     }
+  //   };
 
-    fetchCategories();
-  }, []);
+  //   fetchCategories();
+  // }, []);
   return (
     <div className="flex flex-col items-center gap-5 py-5">
-      <h1 className="text-3xl font-semibold underline">Shop by Category</h1>
+      {/* <h1 className="text-3xl font-semibold underline">Shop by Category</h1>
       <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-8">
         <Swiper
           // install Swiper modules
@@ -68,7 +69,7 @@ const ShopCategories = () => {
                   fill
                   className="w-full"
                 /> */}
-                    <img
+      {/* <img
                       src={category.image}
                       alt={category.name}
                       className="w-full"
@@ -84,7 +85,7 @@ const ShopCategories = () => {
             );
           })}
         </Swiper>
-      </div>
+      </div> */}
     </div>
   );
 };

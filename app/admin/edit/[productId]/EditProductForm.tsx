@@ -26,7 +26,7 @@ import useAddCategory from "@/hooks/useCreateCategory";
 import { AiOutlinePlusCircle } from "react-icons/ai";
 import { useCart } from "@/hooks/useCartHook";
 import NullData from "@/app/components/NullData";
-import getShopCategories from "@/hooks/getShopCategories";
+import useGetShopCategories from "@/hooks/usegetShopCategories";
 import { BASE_URL } from "@/api/auth/apis";
 
 // ... (existing imports)
@@ -236,7 +236,7 @@ const EditProductForm: React.FC<EditProductFormProps> = ({ product }) => {
     }
   };
 
-  const { categories } = getShopCategories();
+  const { categories } = useGetShopCategories();
   if (!isAdmin) {
     return <NullData title="Oops access denied" />;
   }

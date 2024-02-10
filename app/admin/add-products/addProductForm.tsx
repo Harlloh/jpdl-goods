@@ -26,7 +26,7 @@ import useAddCategory from "@/hooks/useCreateCategory";
 import { AiOutlinePlusCircle } from "react-icons/ai";
 import { useCart } from "@/hooks/useCartHook";
 import NullData from "@/app/components/NullData";
-import getShopCategories from "@/hooks/getShopCategories";
+import useGetShopCategories from "@/hooks/usegetShopCategories";
 import { BASE_URL } from "@/api/auth/apis";
 
 export type ImageType = {
@@ -272,7 +272,7 @@ function AddProductForm() {
       console.error("Error fetching categories:", error);
     }
   };
-  const { categories, fetchProducts } = getShopCategories();
+  const { categories, fetchProducts } = useGetShopCategories();
   if (!isAdmin) {
     console.log(isAdmin, "ksadfkjds");
     return <NullData title="Oops access denied" />;

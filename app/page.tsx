@@ -5,12 +5,9 @@ import ProductCard from "./components/Products/ProductCard";
 import { products } from "./utils/Product";
 import HeroSection from "./components/HeroSection";
 import ShopCategories from "./components/ShopCategories";
-import getShopCategories from "@/hooks/getShopCategories";
 import FeaturedProduct from "./components/FeaturedProducts";
 
 export default async function Home() {
-
-  
   let displayedProductsCache = null;
 
   //Fisher-Yates shuffle algorithm
@@ -43,18 +40,29 @@ export default async function Home() {
         <Container>
           <div className="mb-9">
             {/* <ShopCategories  /> */}
-            <Homebanner head1={'Summer Sale!'} p1={'Enjoy discounts on selected items'} p2={' GET 50% OFF'} />
+            <Homebanner
+              head1={"Summer Sale!"}
+              p1={"Enjoy discounts on selected items"}
+              p2={" GET 50% OFF"}
+            />
           </div>
           <FeaturedProduct type="newArrival" />
-          <Homebanner head1={'Summer Sale!'} p1={'Enjoy discounts on selected items'} p2={' GET 50% OFF'} left/>
+          <Homebanner
+            head1={"Summer Sale!"}
+            p1={"Enjoy discounts on selected items"}
+            p2={" GET 50% OFF"}
+            left
+          />
 
           <FeaturedProduct type="mostPopular" />
-          <Homebanner head1={'Summer Sale!'} p1={'Enjoy discounts on selected items'} p2={' GET 50% OFF'}/>
+          <Homebanner
+            head1={"Summer Sale!"}
+            p1={"Enjoy discounts on selected items"}
+            p2={" GET 50% OFF"}
+          />
 
           <FeaturedProduct type="featured" />
-
         </Container>
-
       </div>
     </>
   );

@@ -4,7 +4,7 @@ import { formatPrice } from "@/app/utils/formatPrice";
 import Image from "next/image";
 import React from "react";
 interface OrderFavDetailProp {
-  item: cartProductType;
+  item: any;
 }
 
 const OrderFavDetail: React.FC<OrderFavDetailProp> = ({ item }) => {
@@ -14,7 +14,7 @@ const OrderFavDetail: React.FC<OrderFavDetailProp> = ({ item }) => {
       <div className="col-span-2 justify-self-start flex gap-2 md:gap-4">
         <div className="relative w-[70px] aspect-square">
           <img
-            src={item?.images[0].image}
+            src={item?.images[0]?.image}
             alt={item.name}
             className="object-contain"
           />
