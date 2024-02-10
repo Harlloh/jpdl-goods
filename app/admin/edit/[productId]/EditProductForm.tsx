@@ -64,10 +64,6 @@ const EditProductForm: React.FC<EditProductFormProps> = ({ product }) => {
   const isAdmin = storedisAdmin ? atob(storedisAdmin) : null;
   const userToken = localStorage.getItem("user");
 
-  if (!isAdmin) {
-    return <NullData title="Oops access denied" />;
-  }
-
   const {
     register,
     handleSubmit,
@@ -241,6 +237,9 @@ const EditProductForm: React.FC<EditProductFormProps> = ({ product }) => {
   };
 
   const { categories } = getShopCategories();
+  if (!isAdmin) {
+    return <NullData title="Oops access denied" />;
+  }
 
   return (
     <>
