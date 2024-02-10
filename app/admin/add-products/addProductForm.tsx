@@ -60,7 +60,16 @@ function AddProductForm() {
   const isAdmin = storedisAdmin ? atob(storedisAdmin) : null;
   const userToken = localStorage.getItem("user");
   // const [categories,setCategories] = useState([])
-
+  console.log(isAdmin, ">>>>>>>>>>>");
+  useEffect(() => {
+    const checkAdmin = () => {
+      if (!isAdmin) {
+        console.log(isAdmin, "ksadfkjds");
+        return <NullData title="Oops access denied" />;
+      }
+    };
+    checkAdmin();
+  }, []);
   const {
     register,
     handleSubmit,
@@ -211,7 +220,8 @@ function AddProductForm() {
         router.refresh();
       })
       .catch((error) => {
-        toast.error("Something went wrong with the product creation");
+        console.log(error);
+        toast.error(error.response.data.message);
       })
       .finally(() => {
         setIsLoading(false);
