@@ -20,6 +20,7 @@ import { useRouter } from "next/navigation";
 import OrderDetails from "../order/[orderId]/OrderDetails";
 import { BASE_URL, getToken } from "@/api/auth/apis";
 import { FaTimes } from "react-icons/fa";
+import NullData from "../components/NullData";
 
 const Orders = () => {
   const { userSubs, fetchUserProducts } = useCart();
@@ -195,20 +196,24 @@ const Orders = () => {
       <div className="mb-4 mt-8">
         <Heading title="Your Subscribed Products" center />
       </div>
-      <div style={{ height: "fit-content", width: "fit-content" }}>
-        <DataGrid
-          rows={rows}
-          columns={columns}
-          initialState={{
-            pagination: {
-              paginationModel: { page: 0, pageSize: 10 },
-            },
-          }}
-          pageSizeOptions={[5, 10]}
-          checkboxSelection
-          disableRowSelectionOnClick
-        />
-      </div>
+      {rows.length > 0 ? (
+        <div style={{ height: "fit-content", width: "fit-content" }}>
+          <DataGrid
+            rows={rows}
+            columns={columns}
+            initialState={{
+              pagination: {
+                paginationModel: { page: 0, pageSize: 10 },
+              },
+            }}
+            pageSizeOptions={[5, 10]}
+            checkboxSelection
+            disableRowSelectionOnClick
+          />
+        </div>
+      ) : (
+        <NullData title="You have no subscriptions yet!" />
+      )}
     </div>
   );
 };

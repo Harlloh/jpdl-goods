@@ -47,7 +47,6 @@ function Product({ params }: { params: IParams }) {
   const product = (productss as any)?.find((item: any) => {
     return item.id === params.productId;
   });
-  console.log(product, ">.");
 
   const shortReview =
     product?.reviews?.length > 3

@@ -47,12 +47,10 @@ const LoginForm = () => {
       console.log(data);
       router.push("/"); // Redirect to login after signup
     } catch (error: any) {
-      toast.error("Something went wrong");
       // Handle signup error, show an error message, etc.
     } finally {
       setIsLoading(false);
     }
-    debugger;
     console.log(userData, "asdfkksdfbiasdfu");
   };
 
@@ -87,6 +85,7 @@ const LoginForm = () => {
       <Button
         lable={`${isLoading ? "Logging in" : "Login"}`}
         handleClick={handleSubmit(onSubmit)}
+        disabled={isLoading}
       />
       <p className="text-sm">
         Don&apos;t have an accound?{" "}

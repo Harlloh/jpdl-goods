@@ -20,7 +20,7 @@ const FeaturedProduct: React.FC<any> = ({ type }) => {
       <div role="status">
         <svg
           aria-hidden="true"
-          className="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
+          className="w-8 h-8 text-gray-200 animate-spin fill-blue-600"
           viewBox="0 0 100 101"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
@@ -65,7 +65,7 @@ const FeaturedProduct: React.FC<any> = ({ type }) => {
   return (
     <section className="mt-9 py-5 ">
       <span className="flex justify-between items-center gap-4">
-        <h1 className="text-start text-black font-semibold text-4xl mb-6 text-nowrap">
+        <h1 className="text-start md:text-black md:font-semibold text-sm md:text-2xl lg:text-4xl mb-6 text-nowrap">
           {type === "newArrival"
             ? "New Arrivals"
             : type === "mostPopular"

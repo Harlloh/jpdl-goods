@@ -17,6 +17,7 @@ function VerifyClient({ params }: VerifyClientProps) {
   const [loading, setLoading] = useState(false);
   const [isVerified, setIsVerified] = useState("");
   const router = useRouter();
+  console.log(params);
 
   useEffect(() => {
     const verifyUser = async () => {
@@ -28,6 +29,7 @@ function VerifyClient({ params }: VerifyClientProps) {
           toast.success(res.data.message);
         }
         console.log(res);
+        console.log(params);
       } catch (error) {
         toast.error("Error verifying your email address");
         console.log(error, "erorrrrrr");

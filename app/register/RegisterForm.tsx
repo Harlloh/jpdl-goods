@@ -45,7 +45,7 @@ const RegisterForm = () => {
       await handleSignUp(data);
       console.log(data);
       // Optionally, perform any other actions upon successful signup
-      router.push("/login"); // Redirect to login after signup
+      router.push("/openmail"); // Redirect to login after signup
     } catch (error: any) {
       toast.error("Something went wrong");
       // Handle signup error, show an error message, etc.
@@ -57,12 +57,12 @@ const RegisterForm = () => {
   return (
     <>
       <Heading title="Sign up for E-shop" />
-      <Button
+      {/* <Button
         outline
         lable="Sign up with Google"
         icon={AiOutlineGoogle}
         handleClick={() => {}}
-      />
+      /> */}
       <hr className="bg-slate-300 w-full h-px" />
       <Inputs
         id="first_name"
@@ -102,6 +102,7 @@ const RegisterForm = () => {
       />
       <Button
         lable={`${isLoading ? "Loading" : "Sign up"}`}
+        disabled={isLoading}
         handleClick={handleSubmit(onSubmit)}
       />
       <p className="text-sm">

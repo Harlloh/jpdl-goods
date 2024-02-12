@@ -65,6 +65,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ data }) => {
           )}
 
           <img
+            onClick={() => router.push(`/product/${data.id}`)}
             src={data.images[0]?.image}
             alt="kasdfsdklf"
             className="w-full h-full object-contain"
