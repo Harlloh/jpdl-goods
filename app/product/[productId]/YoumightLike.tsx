@@ -28,7 +28,7 @@ const YouMightLike = () => {
       <h1 className="font-semibold md:text-2xl text-xl xl:text-3xl">
         You might also like
       </h1>
-      <div className="flex gap-4 items-center">
+      <div className="flex gap-4 items-center w-screen overflow-x-scroll">
         {loading ? (
           <div role="status">
             <svg

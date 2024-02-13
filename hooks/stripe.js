@@ -41,9 +41,12 @@ export const handleSubscriptions = async (product) => {
         },
       }
     );
+    const succMeassage = error.response.data.message;
+
     redirectUrl = responseURL.data.data;
-    return { redirectUrl, loading };
+    return { redirectUrl, loading, succMeassage };
   } catch (error) {
+    // const errorMeassage = error.response.data.message;
     loading = false;
     return { redirectUrl: false, loading };
   } finally {

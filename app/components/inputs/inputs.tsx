@@ -1,6 +1,7 @@
 "use client";
 
 import { FieldErrors, FieldValues, UseFormRegister } from "react-hook-form";
+import { FaEye } from "react-icons/fa";
 
 interface InputProp {
   id: string;

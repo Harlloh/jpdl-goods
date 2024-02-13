@@ -197,7 +197,7 @@ const Orders = () => {
         <Heading title="Your Subscribed Products" center />
       </div>
       {rows.length > 0 ? (
-        <div style={{ height: "fit-content", width: "fit-content" }}>
+        <div style={{ height: "fit-content", width: "100%" }}>
           <DataGrid
             rows={rows}
             columns={columns}

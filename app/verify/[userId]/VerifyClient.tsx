@@ -38,7 +38,7 @@ function VerifyClient({ params }: VerifyClientProps) {
       }
     };
     verifyUser();
-  }, [params.userId]);
+  }, []);
   if (loading) {
     return <Loading />;
   }

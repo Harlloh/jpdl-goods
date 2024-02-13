@@ -332,7 +332,7 @@ const ManageProductClient = () => {
         placeholder="search for a product..."
         className="mb-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-half p-2.5"
       />
-      <div style={{ height: "fit-content", width: "fit-content" }}>
+      <div style={{ height: "fit-content", width: "100%" }}>
         <DataGrid
           rows={rows}
           columns={columns}

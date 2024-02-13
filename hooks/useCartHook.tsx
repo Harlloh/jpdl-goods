@@ -85,9 +85,8 @@ export const CartContextProvider = (props: PropsType) => {
       toast.success(req.data.message);
       const res = req.data;
       setUserData(res);
-      toast.success("Signed up succesfully");
     } catch (error: any) {
-      toast.error("Signed up failed");
+      toast.error(error.response.data.message);
     }
   }, []);
 
@@ -275,7 +274,7 @@ export const CartContextProvider = (props: PropsType) => {
         });
       } catch (error: any) {
         console.error("Error adding product to wish list", error);
-        toast.error(error.response.data.message);
+        toast.error(error.response.data.message || error.message);
       }
     },
     []

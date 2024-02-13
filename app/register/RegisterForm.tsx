@@ -12,6 +12,11 @@ import toast from "react-hot-toast";
 import { getToken } from "@/api/auth/apis";
 
 const RegisterForm = () => {
+  const [showPassword, setShowPassword] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword((prevShowPassword) => !prevShowPassword);
+  };
   const currentUser = getToken();
 
   const router = useRouter();
@@ -98,8 +103,18 @@ const RegisterForm = () => {
         register={register}
         errors={errors}
         required
-        type="password"
+        type={showPassword ? "text" : "password"}
       />
+      <div className="flex items-center mt-2">
+        <input
+          type="checkbox"
+          id="showPassword"
+          checked={showPassword}
+          onChange={togglePasswordVisibility}
+          className="mr-2"
+        />
+        <label htmlFor="showPassword">Show Password</label>
+      </div>
       <Button
         lable={`${isLoading ? "Loading" : "Sign up"}`}
         disabled={isLoading}
