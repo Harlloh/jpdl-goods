@@ -19,6 +19,7 @@ import { BASE_URL, getToken } from "@/api/auth/apis";
 import axios from "axios";
 import { handleSubscriptions } from "@/hooks/stripe";
 import Loading from "@/app/components/Loading";
+import SmLoading from "@/app/components/SmLoading";
 
 interface ProductParams {
   products: any;
@@ -54,6 +55,8 @@ const ProductDetails: React.FC<ProductParams> = ({ products }) => {
 
   const [isProductInCart, setIsProductInCart] = useState(false);
   const [subLoading, setSubLoading] = useState(false);
+  const [cartloading, setCartLoading] = useState(false);
+  const [isSubscribed, setIsSubscribed] = useState(false);
 
   const productRating =
     products.reviews.length > 0
@@ -169,35 +172,39 @@ const ProductDetails: React.FC<ProductParams> = ({ products }) => {
   }, [cartProducts]);
 
   const handleSubscription = async (product: any) => {
-    // try {
-    //   const res = await axios.post(
-    //     `${BASE_URL}/payment/subscription/check-out`,
-    //     product,
-    //     {
-    //       headers: {
-    //         Authorization: userToken,
-    //       },
-    //     }
-    //   );
-    //   const redirectUrl = res.data.data;
-    //   window.location.href = redirectUrl;
-
-    // } catch (error:any) {
-    // }
-
-    const { redirectUrl, loading } = await handleSubscriptions(product);
-    setSubLoading(loading);
-    if (redirectUrl) {
-      window.location.href = redirectUrl;
-    }
-    if (loading) {
-      return <Loading />;
+    try {
+      setSubLoading(true);
+      const { redirectUrl } = await handleSubscriptions(product);
+      if (redirectUrl) {
+        window.location.href = redirectUrl;
+      }
+      setIsSubscribed(true);
+    } catch (error) {
+      // Handle error if needed
+      console.error("Error handling subscription:", error);
+    } finally {
+      setSubLoading(false);
     }
   };
+
   const isProductInSubscription = userSubs?.some(
     (sub) => sub.orderDetails.id === products.id
   );
   console.log(isProductInSubscription);
+
+  const handleAddToCart = async () => {
+    try {
+      setCartLoading(true);
+      await handleAddProductToCart(cartProduct, userToken);
+      // Optionally, you can set isProductInCart state here based on the result if needed.
+      setIsProductInCart(true);
+    } catch (error) {
+      // Handle error if needed
+      console.error("Error adding product to cart:", error);
+    } finally {
+      setCartLoading(false);
+    }
+  };
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-12 py-6">
       <ProductImage
@@ -287,12 +294,9 @@ const ProductDetails: React.FC<ProductParams> = ({ products }) => {
             <Horizontal />
             <div className="max-w-[300px]">
               <Button
-                disabled={!products.inStock}
-                lable={"Add to cart"}
-                handleClick={() => {
-                  debugger;
-                  handleAddProductToCart(cartProduct, userToken);
-                }}
+                disabled={!products.inStock || cartloading}
+                lable={cartloading ? "Adding to cart" : "Add to cart"}
+                handleClick={handleAddToCart}
               />
               <Link
                 href={"/shop"}
@@ -307,7 +311,7 @@ const ProductDetails: React.FC<ProductParams> = ({ products }) => {
         {/* subscription */}
         {products.isSubscribe && (
           <div>
-            {isProductInSubscription ? (
+            {isProductInSubscription || isSubscribed ? (
               <div className="text-red-500 p-3">
                 This product is already in your subscription.
               </div>
@@ -315,10 +319,16 @@ const ProductDetails: React.FC<ProductParams> = ({ products }) => {
               <button
                 data-modal-target="default-modal"
                 data-modal-toggle="default-modal"
-                className="block text-white bg-orange-500 hover:bg-teal-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                className={`block text-white bg-orange-500 hover:bg-teal-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800`}
                 type="button"
               >
-                Subscription
+                {subLoading ? (
+                  <>
+                    <SmLoading />
+                  </>
+                ) : (
+                  "Subscription"
+                )}
               </button>
             )}
 
@@ -382,12 +392,20 @@ const ProductDetails: React.FC<ProductParams> = ({ products }) => {
 
                   <div className="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
                     <button
-                      onClick={() => handleSubscription(cartProduct)}
+                      onClick={(e) => {
+                        e.preventDefault(); // Prevent the default behavior of the button click
+                        handleSubscription(cartProduct);
+                      }}
                       data-modal-hide="default-modal"
                       type="button"
-                      className="text-white bg-teal-700 hover:scale-115 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                      className={`text-white bg-teal-700 hover:scale-115 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 ${
+                        subLoading ? "opacity-50 cursor-not-allowed" : ""
+                      }`}
+                      disabled={subLoading}
                     >
-                      Subscribe to this product
+                      {subLoading
+                        ? "Subscribing..."
+                        : "Subscribe to this product"}
                     </button>
                     <button
                       data-modal-hide="default-modal"

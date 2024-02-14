@@ -19,7 +19,7 @@ const useGetAllSubs = () => {
         }
       );
       console.log(res, "hellloooo");
-      const productsData = res.data.data.orders.map((product: any) => {
+      const productsData = res.data.data.subscriptions.map((product: any) => {
         // Rename _id to id
         const { _id, ...rest } = product;
         return { id: _id, ...rest };

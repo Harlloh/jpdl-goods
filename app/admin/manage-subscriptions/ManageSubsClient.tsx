@@ -39,7 +39,7 @@ const ManageSubClient = () => {
   const filteredRows = subs?.filter((order: any) =>
     order.user.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
-  console.log(filteredRows, "usersssssssssss");
+  console.log(filteredRows, "usersssssssssss", subs);
 
   if (!isAdmin) {
     return <NullData title="Oops access denied" />;
@@ -232,6 +232,7 @@ const ManageSubClient = () => {
     setCurrentPage((prev) => (prev -= 1));
     fetchSubs(currentPage);
   };
+  console.log(rows);
 
   return (
     <div className="max-w-[1150px] m-auto text-xl">
