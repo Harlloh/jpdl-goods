@@ -50,10 +50,10 @@ const ManageSubClient = () => {
   let rows: any = [];
   if (subs) {
     rows = filteredRows.map((order: any, index) => {
-      const totalAmount = order.orderCart.reduce(
-        (acc: number, item: any) => acc + item.price * item.quantity,
-        0
-      );
+      const { price = 0, quantity = 0 } = order?.orderCart || {};
+
+      // Calculate totalAmount using the extracted properties
+      const totalAmount = price * quantity;
       return {
         id: order.id,
         sn: index + 1,
@@ -166,12 +166,12 @@ const ManageSubClient = () => {
                 handleDelevered(params.row.id);
               }}
             />
-            <ActionBtn
+            {/* <ActionBtn
               icon={MdRemoveRedEye}
               onClick={() => {
                 router.push(`/order/${params.row.id}`);
               }}
-            />
+            /> */}
           </div>
         );
       },
@@ -237,7 +237,7 @@ const ManageSubClient = () => {
   return (
     <div className="max-w-[1150px] m-auto text-xl">
       <div className="mb-4 mt-8">
-        <Heading title="Manage Orders" center />
+        <Heading title="Manage Subscription" center />
       </div>
       <div>
         <input
